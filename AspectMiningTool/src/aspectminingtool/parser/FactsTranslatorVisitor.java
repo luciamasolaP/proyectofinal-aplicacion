@@ -19,17 +19,19 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import aspectminingtool.data.Fact;
 
-public class FactsTranslator extends ASTVisitor {
+public class FactsTranslatorVisitor extends ASTVisitor {
 
+	//falta ver como tratar a los métodos super."metodo"
+	
 	private String actualMethod;
 	private String actualPackage;
 	private String actualClass;
 	private ArrayList<Fact> facts;
 	
 	/**
-	 * Initialize the class
+	 * Initializes the class
 	 */
-	public FactsTranslator(){
+	public FactsTranslatorVisitor(){
 		super();
 		this.actualClass = "";
 		this.actualMethod = "";
@@ -38,29 +40,24 @@ public class FactsTranslator extends ASTVisitor {
 	}
 	
 	/**
-	 * This method returns all the facts collected from the class being visited
+	 * Returns all the facts collected from the CompilationUnit being visited
 	 * @return facts
-	 * 				ArrayList with facts
+	 * 				ArrayList with the facts
 	 */
 	public ArrayList<Fact> getFacts(){
 		return facts;
 	}
 	
 	/**
-	 *  Visita un Paquete.
-	 *  Obtiene el paquete al qué pertenece la clase.
-	 *  En esta parte se debe hacer el filtrado por paquete. Si corresponde a un paquete excluido devolver false
+	 *  Visits a package node and obtains the name of the package where the node belongs
+	 *  
 	 *  @param node  
 	 *  			the node to visit
 	 */
 	public boolean visit(PackageDeclaration node) {
-
+		//En esta parte se debe hacer el filtrado por paquete. Si corresponde a un paquete excluido devolver false
 		//if no excluyo el paquete {
 		this.actualPackage = node.getName().getFullyQualifiedName();
-		//paquete(nombrePaquete)
-		Fact fact = new Fact("package");
-		fact.addParameter(node.getName().getFullyQualifiedName());
-		facts.add(fact);
 		return true;
 	//}
 	// return false;
@@ -70,8 +67,7 @@ public class FactsTranslator extends ASTVisitor {
 	
 	
 	/**
-	 *  Visita una Clase.
-	 *  Setea el tipo (interface o clase abstracta), junto con las clases que extiende y las interfaces que implementa
+	 *  Visits a TypeDeclaration AST node to obtain information about the declaration of the node (type, extends, etc)
 	 *  @param node  
 	 *  			the node to visit
 	 */
@@ -88,21 +84,19 @@ public class FactsTranslator extends ASTVisitor {
 	}
 	
 	/**
-	 *  Visita una Método. Setea el tipo, la clase a la que pertence, el paquete y el parámetro que devuelve.
+	 *  Visits a MethodDeclaration AST node. It looks for the class and package that the method belongs, and it obtains the return type.
 	 *  @param node  
 	 *  			the node to visit
 	 */
 	
 	public boolean visit(MethodDeclaration node) {
 		
-		//definir que parámetros devuelve, si es void u otro y si es constructos
-		
 		this.actualMethod = node.getName().getFullyQualifiedName();
 		
 		String treturn = null;
 		IMethodBinding binding = node.resolveBinding();
 		// 
-		if (binding!=null) { //trato de resolver el binding
+		if (binding!=null) { 
 			
 			if (!node.isConstructor()) {
 				ITypeBinding ireturn = binding.getReturnType();
@@ -113,13 +107,13 @@ public class FactsTranslator extends ASTVisitor {
 				treturn = node.getReturnType2().toString();
 			}
 		}
-		//modulo(claveModulo,nombreModulo) claveModulo = nombrePaquete.nombreClase.nombreModulo
-		Fact fact1 = new Fact("module");
-		String moduleName = actualPackage + "-" +actualMethod + "-" + actualClass;
+		//method(claveModulo,nombreModulo) claveModulo = nombrePaquete.nombreClase.nombreModulo
+		Fact fact1 = new Fact("method");
+		String moduleName = actualPackage + "-" +actualClass + "-" + actualMethod;
 		fact1.addParameter(moduleName);
 		fact1.addParameter(actualMethod);
 
-		//retorno(claveModulo,tipoRetorno)
+		//returnType(claveModulo,tipoRetorno)
 		Fact fact2 = new Fact("returnType");
 		fact2.addParameter(moduleName);
 		fact2.addParameter(treturn);
@@ -132,7 +126,7 @@ public class FactsTranslator extends ASTVisitor {
 	
 	
 	/**
-	 *  Visita las invocaciones de un método. Setea el método llamador con this.metodoActual, el metodo invocado junto con la clase y paquete a la que pertencen
+	 *  Visits de MethodInvocation node (the invocations of a method from another method).
 	 *  @param node  
 	 *  			the node to visit
 	 */
@@ -147,7 +141,7 @@ public class FactsTranslator extends ASTVisitor {
 
 			String calledMethod = packageName + "-" + className+ "-" + methodName; 
 			String callerMethod = this.actualPackage + "-" + this.actualClass + "-" + this.actualMethod;
-			//llamada(claveModuloLlamador,claveModuloLlamado)
+			//call(claveModuloLlamador,claveModuloLlamado)
 			Fact fact = new Fact("call");
 			fact.addParameter(callerMethod);
 			fact.addParameter(calledMethod);
@@ -158,25 +152,25 @@ public class FactsTranslator extends ASTVisitor {
 	}
 	
 	/**
-	 * devuelve en un arreglo el tipo de unidad de compilación que se está visitando (inteface,clase asbtracta o clase)
+	 * Adds facts to the facts array identifying the type of the node (interface,abstract or class)
 	 * 
-	 * @paran node AST being visite
-	 * @return v array containing the fact that represents the type of the node
+	 * @paran 
+	 * 			AST node being visite
+	 * 
 	 */
 	private void getCompilationType(TypeDeclaration node){
 	
 		this.actualClass = node.getName().getFullyQualifiedName();
 		Fact fact = new Fact();
 		
-		//determina si es una interface
 		if (node.isInterface()) {
-			//interface(claveInterface,nombre) claveInterface = nombreInterface+nombrePaquete
+			//interface(key,name) key = InterfacePackage+"-"+InterfaceName
 			fact.setName("interface");
 			String interfaceId = this.actualPackage + "-" + this.actualClass; 
 			fact.addParameter(interfaceId);
 			fact.addParameter(this.actualClass);
 			
-		} else { //determina si la clase es abstracta.
+		} else { 
 			List lism = node.modifiers();
 			Iterator i = lism.iterator();
 			boolean clase_abstract = false;
@@ -185,7 +179,7 @@ public class FactsTranslator extends ASTVisitor {
 				if (ie.isModifier()) { 
 					if (((Modifier)ie).isAbstract()) {
 						clase_abstract = true;
-						//abstract(claveClase,nombre) claveClase = nombreClase+nombrePaquete
+						//abstract(key,name) key = packageName+className
 						fact.setName("abstract");
 						String abstractId = this.actualPackage + "-" + this.actualClass;
 						fact.addParameter(abstractId);
@@ -194,9 +188,8 @@ public class FactsTranslator extends ASTVisitor {
 					}
 				}
 			}
-			//si no es interface ni clase abstracta es una clase
 			if (!clase_abstract) {
-				//class(claveClase,nombre) claveClase = nombreClase+nombrePaquete
+				//class(key,name) key = packageName+className
 				fact.setName("class");
 				String className = this.actualPackage + "-" + this.actualClass;
 				fact.addParameter(className);
@@ -211,25 +204,24 @@ public class FactsTranslator extends ASTVisitor {
 	
 	
 	/**
-	 * devuelve en un arreglo el tipo de unidad de compilación que se está visitando (inteface,clase asbtracta o clase)
+	 * Adds the facts that defines the abstract class that the node extends.
 	 * 
-	 * @paran node AST being visite
-	 * @return v array containing the facts that represents the super clase
+	 * @param 
+	 * 			AST node being visited
 	 */
 	private void getExtendingClases(TypeDeclaration node){
 		
 		Fact fact = new Fact();
 		
-		// determina las clases que extiende
-		Type type = node.getSuperclassType(); // devuelve la clase a lo que extiende
+		Type type = node.getSuperclassType(); 
 		if ((type != null) && type.isSimpleType()){
 			String pack = "";
 			ITypeBinding bindingType = type.resolveBinding();
 			
 			if (bindingType != null)
-				pack = bindingType.getPackage().getName(); //paquete al que pertenece la clase.
+				pack = bindingType.getPackage().getName(); 
 			
-			//extends(claveClaseHija,claveClaseMadre) claveClaseHija = nombreClase + nombrePaquete
+			//extends(claveClaseHija,claveClaseMadre) claveClaseHija = nombrePaquete + nombreClase 
 			fact.setName("extends");
 			String extendedClass = pack + "-" +((SimpleType)type).getName();
 			String c = this.actualPackage + "-" + this.actualClass;
@@ -242,10 +234,11 @@ public class FactsTranslator extends ASTVisitor {
 	}
 	
 	/**
-	 * devuelve en un arreglo el tipo de unidad de compilación que se está visitando (inteface,clase asbtracta o clase)
+	 * Adds the facts that defines the interfaces that the node implements and extends.
 	 * 
-	 * @paran node AST being visite
-	 * @return v array containing the interfaces of the Compilation Unit being analized
+	 * @param 
+	 * 			node AST being visited
+	 * 
 	 */
 	private void getImplementedInterfaces(TypeDeclaration node){
 		

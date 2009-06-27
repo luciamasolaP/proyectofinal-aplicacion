@@ -5,7 +5,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            objectClass="org.eclipse.core.resources.IProject"
             id="AspectMiningTool.contribution1">
          <menu
                label="Perform Mining"

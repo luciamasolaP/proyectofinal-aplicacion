@@ -16,7 +16,8 @@ public abstract class AbtractASTInspector {
 	 *
 	 * @param lwUnit
 	 *            the Java Model handle for the compilation unit
-	 * @return the root AST node of the parsed source
+	 * @return 
+	 * 			the root AST node of the parsed source
 	 */
 	protected CompilationUnit parse(ICompilationUnit lwUnit) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);

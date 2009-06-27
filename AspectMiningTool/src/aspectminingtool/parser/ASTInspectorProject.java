@@ -11,9 +11,15 @@ import aspectminingtool.data.Fact;
 
 public class ASTInspectorProject extends AbtractASTInspector {
 
+	/**
+	 * This method parses an ICompilationUnit and visits the resulting AST node (CompilationUnit) to obtain the facts that represent it.
+	 * @param lwUnit
+	 * 				the compilation being processed.
+	 */
 	public void run(ICompilationUnit lwUnit) {
+		
 		CompilationUnit unit = parse(lwUnit);
-		FactsTranslator factsTranslator = new FactsTranslator();
+		FactsTranslatorVisitor factsTranslator = new FactsTranslatorVisitor();
 		factsTranslator.process(unit);
 		ArrayList<Fact> facts = factsTranslator.getFacts();
 		//debe haber una clase que haga el formateo de los hechos, dado un hecho haga el formateo para 

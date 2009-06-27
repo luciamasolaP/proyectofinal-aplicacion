@@ -8,7 +8,7 @@ public class Fact {
 	private ArrayList<String> parameters;
 	
 	/**
-	 * This method initializes a Fact
+	 * Initializes a Fact
 	 * @param name
 	 * 				the name of the fact
 	 */
@@ -17,13 +17,16 @@ public class Fact {
 		parameters = new ArrayList<String>();
 	}
 	
+	/**
+	 * Initializes a Fact
+	 */
 	public Fact(){
 		this.setName("");
 		parameters = new ArrayList<String>();
 	}
 
 	/**
-	 * This method sets the name of the Fact
+	 * Sets the name of the Fact
 	 * @param name
 	 * 				the name of the
 	 */
@@ -32,7 +35,7 @@ public class Fact {
 	}
 
 	/**
-	 * This method returns the name of the Fact
+	 * Returns the name of the Fact
 	 * @return name
 	 * 				the name of the fact
 	 */
@@ -41,7 +44,7 @@ public class Fact {
 	}
 
 	/**
-	 * This method sets the attributes of the fact
+	 * Sets the attributes of the fact
 	 * @param parameters
 	 * 				fact parameters
 	 */
@@ -50,7 +53,7 @@ public class Fact {
 	}
 
 	/**
-	 * This method returns the parameters of the fact 
+	 * Returns the parameters of the fact 
 	 * @return parameters
 	 *  				the parameters of the fact
 	 */
@@ -59,7 +62,7 @@ public class Fact {
 	}
 	
 	/**
-	 * This method add a single parameter to the Fact
+	 * Add a single parameter to the Fact
 	 * @param param
 	 * 				the parameter of the fact
 	 */

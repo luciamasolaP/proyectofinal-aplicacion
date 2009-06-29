@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -14,6 +15,7 @@ import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -21,8 +23,7 @@ import aspectminingtool.data.Fact;
 
 public class FactsTranslatorVisitor extends ASTVisitor {
 
-	//falta ver como tratar a los métodos super."metodo"
-	
+
 	private String actualMethod;
 	private String actualPackage;
 	private String actualClass;
@@ -75,7 +76,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 		
 		this.getCompilationType(node);
 		
-		this.getExtendingClases(node);
+		this.getExtendingClasses(node);
 		
 		this.getImplementedInterfaces(node);
 				
@@ -126,18 +127,46 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	
 	
 	/**
+	 *  Visits de SuperMethodInvocation node 
+	 *  @param node  
+	 *  			the node to visit
+	 */
+	public boolean visit(SuperMethodInvocation node) {
+		
+		IMethodBinding nodeBinding = node.resolveMethodBinding();
+		this.getCalls(node.getName().getFullyQualifiedName(),nodeBinding);
+				
+		return true;	
+	}
+	
+	/**
 	 *  Visits de MethodInvocation node (the invocations of a method from another method).
 	 *  @param node  
 	 *  			the node to visit
 	 */
 	public boolean visit(MethodInvocation node) {
 		
-		if (node.resolveMethodBinding() != null ) {
-			String methodName = node.getName().getFullyQualifiedName();
-			String className = node.resolveMethodBinding().getDeclaringClass().getName(); //clase que declara el método llamado
-			String packageName = node.resolveMethodBinding().getDeclaringClass().getPackage().getName(); // paquete que declara el método llamado
-			String projectName = node.resolveMethodBinding().getJavaElement().getJavaProject().getElementName();
-			// String treturn = node.resolveMethodBinding().getMethodDeclaration().getReturnType().getQualifiedName();//typo que devuelve el método
+		
+		IMethodBinding nodeBinding = node.resolveMethodBinding();
+		this.getCalls(node.getName().getFullyQualifiedName(),nodeBinding);		
+		return true;	
+	}
+	
+	/**
+	 * Gets the fact of a call between two methods
+	 * 
+	 * @param methodName
+	 * 					the name of the method 
+	 * @param nodeBinding
+	 * 					binding of the method
+	 * 
+	 */
+	private void getCalls(String methodName, IMethodBinding nodeBinding){
+		
+		if (nodeBinding != null ) {
+			//String methodName = node.getName().getFullyQualifiedName();
+			String className = nodeBinding.getDeclaringClass().getName(); //clase que declara el método llamado
+			String packageName = nodeBinding.getDeclaringClass().getPackage().getName(); // paquete que declara el método llamado
 
 			String calledMethod = packageName + "-" + className+ "-" + methodName; 
 			String callerMethod = this.actualPackage + "-" + this.actualClass + "-" + this.actualMethod;
@@ -148,8 +177,8 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 			facts.add(fact);
 		}
 		
-		return true;	
 	}
+	
 	
 	/**
 	 * Adds facts to the facts array identifying the type of the node (interface,abstract or class)
@@ -209,7 +238,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	 * @param 
 	 * 			AST node being visited
 	 */
-	private void getExtendingClases(TypeDeclaration node){
+	private void getExtendingClasses(TypeDeclaration node){
 		
 		Fact fact = new Fact();
 		

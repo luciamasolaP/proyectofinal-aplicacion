@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.Expression;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -23,7 +22,20 @@ import aspectminingtool.data.Fact;
 
 public class FactsTranslatorVisitor extends ASTVisitor {
 
-
+/*
+ * method(idMethod,methodName) idMethod = packageName-className-methodName
+ * returnType(idMethod,idReturn)
+ * class(idClass,className) idClass = packageName-className
+ * define-in(idMethod,idClass)
+ * interface(id,interfaceName) id = packageName-interfaceName
+ * abstract(id,abtractName) id = packageName + abstractName
+ * 
+ * call(idCaller,idMethod)
+ * extends(idClaseHija,idClasePadre) // extends(idInterfaceHija,idInterfacePadre)
+ * implements(idClaseHija,idInteracePadre)
+ * 
+ * 
+ */
 	private String actualMethod;
 	private String actualPackage;
 	private String actualClass;
@@ -114,13 +126,20 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 		fact1.addParameter(moduleName);
 		fact1.addParameter(actualMethod);
 
-		//returnType(claveModulo,tipoRetorno)
-		Fact fact2 = new Fact("returnType");
+		//define-in(claveModulo,claveClaseContenedora)
+		Fact fact2 = new Fact("define-in");
 		fact2.addParameter(moduleName);
-		fact2.addParameter(treturn);
+		String  classId = actualPackage + "-" + actualClass;
+		fact2.addParameter(classId);
+		
+		//returnType(claveModulo,tipoRetorno)
+		Fact fact3 = new Fact("returnType");
+		fact3.addParameter(moduleName);
+		fact3.addParameter(treturn);
 		
 		facts.add(fact1);
 		facts.add(fact2);
+		facts.add(fact3);
 		
 		return true;
 	}

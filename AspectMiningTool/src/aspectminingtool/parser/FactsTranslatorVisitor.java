@@ -68,12 +68,9 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	 *  			the node to visit
 	 */
 	public boolean visit(PackageDeclaration node) {
-		//En esta parte se debe hacer el filtrado por paquete. Si corresponde a un paquete excluido devolver false
-		//if no excluyo el paquete {
+
 		this.actualPackage = node.getName().getFullyQualifiedName();
 		return true;
-	//}
-	// return false;
 
 	}
 	
@@ -104,12 +101,17 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	
 	public boolean visit(MethodDeclaration node) {
 		
-		this.actualMethod = node.getName().getFullyQualifiedName();
+		String moduleName = node.getName().getFullyQualifiedName();
 		
 		String treturn = null;
 		IMethodBinding binding = node.resolveBinding();
-		// 
+		String params = "";
 		if (binding!=null) { 
+			
+			ITypeBinding[] parameters = binding.getParameterTypes(); 
+			for (int i=0;i<parameters.length;i++)
+				params += parameters[i].getQualifiedName() + "-";
+			
 			
 			if (!node.isConstructor()) {
 				ITypeBinding ireturn = binding.getReturnType();
@@ -120,26 +122,29 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 				treturn = node.getReturnType2().toString();
 			}
 		}
-		//method(claveModulo,nombreModulo) claveModulo = nombrePaquete.nombreClase.nombreModulo
+		//method(claveModulo,nombreModulo) claveModulo = nombrePaquete-nombreClase-nombreModulo-TipoDeParametros
 		Fact fact1 = new Fact("method");
-		String moduleName = actualPackage + "-" +actualClass + "-" + actualMethod;
-		fact1.addParameter(moduleName);
-		fact1.addParameter(actualMethod);
+		this.actualMethod = actualClass + "-" + moduleName + "-" + params;
+		fact1.addParameter(this.actualMethod);
 
-		//define-in(claveModulo,claveClaseContenedora)
-		Fact fact2 = new Fact("define-in");
+		Fact fact2 = new Fact("name");
+		fact2.addParameter(this.actualMethod);
 		fact2.addParameter(moduleName);
-		String  classId = actualPackage + "-" + actualClass;
-		fact2.addParameter(classId);
+		
+		//define-in(claveModulo,claveClaseContenedora)
+		Fact fact3 = new Fact("define-in");
+		fact3.addParameter(this.actualMethod);
+		fact3.addParameter(this.actualClass);
 		
 		//returnType(claveModulo,tipoRetorno)
-		Fact fact3 = new Fact("returnType");
-		fact3.addParameter(moduleName);
-		fact3.addParameter(treturn);
+		Fact fact4 = new Fact("returnType");
+		fact4.addParameter(this.actualMethod);
+		fact4.addParameter(treturn);
 		
 		facts.add(fact1);
 		facts.add(fact2);
 		facts.add(fact3);
+		facts.add(fact4);
 		
 		return true;
 	}
@@ -186,14 +191,20 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 			//String methodName = node.getName().getFullyQualifiedName();
 			String className = nodeBinding.getDeclaringClass().getName(); //clase que declara el método llamado
 			String packageName = nodeBinding.getDeclaringClass().getPackage().getName(); // paquete que declara el método llamado
-
-			String calledMethod = packageName + "-" + className+ "-" + methodName; 
-			String callerMethod = this.actualPackage + "-" + this.actualClass + "-" + this.actualMethod;
+			
+			String params = "";
+			ITypeBinding[] parameters = nodeBinding.getMethodDeclaration().getParameterTypes();
+			for (int i=0;i<parameters.length;i++)
+				params += parameters[i].getQualifiedName() + "-";
+			
+			String calledMethod = packageName + "-" + className+ "-" + methodName + "-" + params; 
 			//call(claveModuloLlamador,claveModuloLlamado)
 			Fact fact = new Fact("call");
-			fact.addParameter(callerMethod);
+			fact.addParameter(this.actualMethod);
 			fact.addParameter(calledMethod);
+			
 			facts.add(fact);
+
 		}
 		
 	}
@@ -202,21 +213,19 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	/**
 	 * Adds facts to the facts array identifying the type of the node (interface,abstract or class)
 	 * 
-	 * @paran 
+	 * @param 
 	 * 			AST node being visite
 	 * 
 	 */
 	private void getCompilationType(TypeDeclaration node){
 	
-		this.actualClass = node.getName().getFullyQualifiedName();
+		String className = node.getName().getFullyQualifiedName();
+		this.actualClass = this.actualPackage + "-" + className;
 		Fact fact = new Fact();
 		
 		if (node.isInterface()) {
-			//interface(key,name) key = InterfacePackage+"-"+InterfaceName
+			//interface(key) key = InterfacePackage+"-"+InterfaceName
 			fact.setName("interface");
-			String interfaceId = this.actualPackage + "-" + this.actualClass; 
-			fact.addParameter(interfaceId);
-			fact.addParameter(this.actualClass);
 			
 		} else { 
 			List lism = node.modifiers();
@@ -227,25 +236,25 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 				if (ie.isModifier()) { 
 					if (((Modifier)ie).isAbstract()) {
 						clase_abstract = true;
-						//abstract(key,name) key = packageName+className
+						//abstract(key) key = packageName+className
 						fact.setName("abstract");
-						String abstractId = this.actualPackage + "-" + this.actualClass;
-						fact.addParameter(abstractId);
-						fact.addParameter(this.actualClass);
-
 					}
 				}
 			}
 			if (!clase_abstract) {
-				//class(key,name) key = packageName+className
+				//class(key) key = packageName+className
 				fact.setName("class");
-				String className = this.actualPackage + "-" + this.actualClass;
-				fact.addParameter(className);
-				fact.addParameter(this.actualClass);
 			}
 		}
 		
+		fact.addParameter(this.actualClass);
+		
+		Fact fact1 = new Fact("name");
+		fact1.addParameter(this.actualClass);
+		fact1.addParameter(className);
+		
 		facts.add(fact);
+		facts.add(fact1);
 		
 	}
 	
@@ -259,7 +268,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 	 */
 	private void getExtendingClasses(TypeDeclaration node){
 		
-		Fact fact = new Fact();
+		
 		
 		Type type = node.getSuperclassType(); 
 		if ((type != null) && type.isSimpleType()){
@@ -270,10 +279,9 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 				pack = bindingType.getPackage().getName(); 
 			
 			//extends(claveClaseHija,claveClaseMadre) claveClaseHija = nombrePaquete + nombreClase 
-			fact.setName("extends");
+			Fact fact = new Fact("extends");
 			String extendedClass = pack + "-" +((SimpleType)type).getName();
-			String c = this.actualPackage + "-" + this.actualClass;
-			fact.addParameter(c);
+			fact.addParameter(this.actualClass);
 			fact.addParameter(extendedClass);
 			facts.add(fact);
 
@@ -294,7 +302,6 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 		List listaInterfaces = node.superInterfaceTypes();
 		if (listaInterfaces != null) {
 
-			String actualInterface = this.actualPackage + "-" + this.actualClass;			
 			Iterator ite = listaInterfaces.iterator();
 			
 			while (ite.hasNext()) {
@@ -316,7 +323,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 						fact.setName("implements");
 	
 					String interfaceId = interfacePackage + "-" +((SimpleType)typ).getName() ;  // nombre completo de la interface : paquete + nonbre
-					fact.addParameter(actualInterface);
+					fact.addParameter(this.actualClass);
 					fact.addParameter(interfaceId);
 
 					facts.add(fact);

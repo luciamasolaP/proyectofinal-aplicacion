@@ -48,6 +48,8 @@ public class PerformMining implements IObjectActionDelegate {
 			AIP.run(lwUnit); // devuelve un AbstractASTArticle y a este se le ejecuta el run(lwUnit)
 		}
 		*/
+		
+		
 				
 		if (selection instanceof IStructuredSelection) {
 			

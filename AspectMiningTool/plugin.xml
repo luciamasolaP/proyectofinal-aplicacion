@@ -22,6 +22,12 @@
                enablesFor="1"
                id="AspectMiningTool.newAction">
          </action>
+         <action
+               class="aspectminingtool.popup.actions.ProjectFilter"
+               menubarPath="AspectMiningTool.menu1/group1"
+               id="AspectMiningTool.action2"
+               label="ProjectFilter">
+         </action>
       </objectContribution>
    </extension>
 

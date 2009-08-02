@@ -4,14 +4,19 @@ public class ProjectData {
 
 	private static ProjectData instance = null;
 	
+	/**
+	 * Initializes the singleton
+	 */
 	private ProjectData(){
 	}
 	
-	public static ProjectData getInstace(){
-		if ( instance == null)
+	public static ProjectData getInstance(){
+		if (instance == null)
 			instance = new ProjectData();
 		
-		return instance;
+		return instance;	
+			
 	}
+
 	
 }

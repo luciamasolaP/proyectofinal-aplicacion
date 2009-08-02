@@ -1,11 +1,14 @@
 package aspectminingtool.popup.actions;
 
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
@@ -45,12 +48,12 @@ public class ProjectFilter implements IObjectActionDelegate {
 			IProject project = (IProject) ((IStructuredSelection) selection).getFirstElement();
 			IJavaProject javaProject = JavaCore.create(project);
 		
-			SettingsDialogs dialog = new SettingsDialogs(shell,javaProject);
-			dialog.open();
+			Display display = Display.getDefault();
+			Shell shell1 = new Shell(display);
+			SettingsDialogs inst = new SettingsDialogs(shell1, SWT.NULL, javaProject);
+			inst.open();
 		
 		}
-		
-		
 		
 	}
 

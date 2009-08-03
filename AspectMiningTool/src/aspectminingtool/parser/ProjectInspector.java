@@ -1,35 +1,50 @@
 package aspectminingtool.parser;
 
-import aspectminingtool.data.ProjectData;
+import java.util.ArrayList;
 
-public class ProjectInspector {
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaModelException;
 
-	private ProjectData projectData;
-	private Filter filter;
+import aspectminingtool.data.Fact;
+
+
+/**
+ * ProjectInspector is responsible of walking through the project representation, as well as calling the ASTClassInspector in order to get the facts representing each class. 
+ * 
+ * @author maria
+ *
+ */
+public class ProjectInspector{
+
+
 	
 	public ProjectInspector(){
-		projectData = ProjectData.getInstace();
-		this.filter = null;
 	}
 	                     
-	
-	public ProjectInspector(Filter f){
 		
-		projectData = ProjectData.getInstace();
-		setFilter(f);
+	public ArrayList<Fact> getProjectFacts(IJavaProject javaProject){
 		
-	}
-
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-	}
-
-	public Filter getFilter() {
-		return filter;
-	}
-	
-	public void runMining(){
-		//aca va recorrer el proyecto, preguntar al filtro si corresponde o no, y llamar a AbstractASTInspector
+		ArrayList<Fact> facts = new ArrayList<Fact>();
+		
+		try {
+			IPackageFragment[] fragments = javaProject.getPackageFragments();
+			
+			for (int i=0 ; i < fragments.length ; i++){
+				ICompilationUnit[] compUnit = fragments[i].getCompilationUnits();
+				
+				for(int y=0 ; y < compUnit.length ; y++){
+					ASTClassInspector AIP = new ASTClassInspector(); 
+					facts.addAll(AIP.getCompilationFacts(compUnit[y]));
+				}
+				
+			}
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+		}
+		return facts;
+		
 	}
 	
 	

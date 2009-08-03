@@ -20,22 +20,32 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import aspectminingtool.data.Fact;
 
+/**
+	
+ * FactsTranslatorVisitor is an extension of ASTVisitor. It defines how to visit the AST nodes that are useful for the application, as well 
+ * as what to do with the information from each type. The class creates facts representing information obtained from each AST Node. It creates
+ * the following fact:
+ * 
+ * Fact: method - Parameters: idMethod,methodName. 
+ * Fact: returnType - Parameters:  Parameters: idMethod,idReturn
+ * Fact: class - Parameters: idClass,className 
+ * Fact: define-in - Parameters: idMethod,idClass
+ * Fact: interface - Parameters: id,interfaceName 
+ * Fact: abstract - Parameters: idAbstract,abtractName  
+ * Fact: call - Parameters: idCaller,idMethod
+ * Fact: extends - Parameters: idClaseHija,idClasePadre // idInterfaceHija,idInterfacePadre
+ * Fact: implements - Parameters: idClaseHija,idInteracePadre
+ *  
+ *  idMethod = packageName-className-methodName
+ *  idClass = packageName-className
+ *  id = packageName-interfaceName
+ *  idAbstract = packageName + abstractName
+ *  
+ * @author maria
+ *
+ */
 public class FactsTranslatorVisitor extends ASTVisitor {
 
-/*
- * method(idMethod,methodName) idMethod = packageName-className-methodName
- * returnType(idMethod,idReturn)
- * class(idClass,className) idClass = packageName-className
- * define-in(idMethod,idClass)
- * interface(id,interfaceName) id = packageName-interfaceName
- * abstract(id,abtractName) id = packageName + abstractName
- * 
- * call(idCaller,idMethod)
- * extends(idClaseHija,idClasePadre) // extends(idInterfaceHija,idInterfacePadre)
- * implements(idClaseHija,idInteracePadre)
- * 
- * 
- */
 	private String actualMethod;
 	private String actualPackage;
 	private String actualClass;

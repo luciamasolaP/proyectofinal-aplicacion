@@ -13,9 +13,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-
-
-
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 /**
 * This code was edited or generated using CloudGarden's Jigloo
@@ -38,21 +37,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 	private IJavaProject project;
 	private static CheckboxTreeViewer treeViewer1;
 
-	/**
-	* Auto-generated main method to display this 
-	* org.eclipse.swt.widgets.Dialog inside a new Shell.
-	*/
-	public static void main(String[] args) {
-		try {
-			Display display = Display.getDefault();
-			Shell shell = new Shell(display);
-			SettingsDialogs inst = new SettingsDialogs(shell, SWT.NULL, null);
-			inst.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	
 	public SettingsDialogs(Shell parent, int style, IJavaProject project) {
 		super(parent, style);
 		this.project = project;
@@ -88,6 +73,11 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 				acceptButton.setLayoutData(acceptButtonLData);
 				acceptButton.setSize(64, 25);
 				acceptButton.setBounds(245, 253, 53, 25);
+				acceptButton.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent evt) {
+						acceptButtonWidgetSelected(evt);
+					}
+				});
 			}
 			{
 				cancelButton = new Button(dialogShell, SWT.PUSH | SWT.CENTER);
@@ -98,6 +88,11 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 				cancelButtonLData.bottom =  new FormAttachment(1000, 1000, -7);
 				cancelButtonLData.right =  new FormAttachment(1000, 1000, -14);
 				cancelButton.setLayoutData(cancelButtonLData);
+				cancelButton.addSelectionListener(new SelectionAdapter() {
+					public void widgetSelected(SelectionEvent evt) {
+						cancelButtonWidgetSelected(evt);
+					}
+				});
 			}
 			{
 				selectLabel = new CLabel(dialogShell, SWT.NONE);
@@ -113,8 +108,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 			treeViewer1.addCheckStateListener(new ICheckStateListener() {
 			      public void checkStateChanged(CheckStateChangedEvent event) {
 
-			          // . . . checks or unchekcs all its children
-			    	  treeViewer1.setSubtreeChecked(event.getElement(), event.getChecked());
+			    	 treeViewer1.setSubtreeChecked(event.getElement(), event.getChecked());
 			 		 ProjectTreeContentProvider projectTreeContentProvider = (ProjectTreeContentProvider) treeViewer1.getContentProvider();
 			         checkPath(event.getElement(),treeViewer1,projectTreeContentProvider);
 			          
@@ -156,4 +150,27 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
         
 	}
 	
+	/**
+	 * Fills the Filter with the user selections
+	 * @param evt
+	 */
+	private void acceptButtonWidgetSelected(SelectionEvent evt) {
+
+		Object[] checkedElements = treeViewer1.getCheckedElements();
+		for (int i=0 ; i < checkedElements.length ; i++)
+			
+			System.out.println("elemento: "+ checkedElements[i]);
+		
+	
+		
+	}
+	/**
+	 * Close the Dialog
+	 * @param evt
+	 */
+	private void cancelButtonWidgetSelected(SelectionEvent evt) {
+		dialogShell.close();
+		
+	}
+
 }

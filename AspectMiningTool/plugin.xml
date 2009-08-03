@@ -7,26 +7,23 @@
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             id="AspectMiningTool.contribution1">
-         <menu
-               label="Perform Mining"
-               path="additions"
-               id="AspectMiningTool.menu1">
-            <separator
-                  name="group1">
-            </separator>
-         </menu>
-         <action
-               label="PerformMining"
-               class="aspectminingtool.popup.actions.PerformMining"
-               menubarPath="AspectMiningTool.menu1/group1"
-               enablesFor="1"
-               id="AspectMiningTool.newAction">
-         </action>
          <action
                class="aspectminingtool.popup.actions.ProjectFilter"
                menubarPath="AspectMiningTool.menu1/group1"
                id="AspectMiningTool.action2"
                label="ProjectFilter">
+         </action>
+         <action
+               class="aspectminingtool.popup.actions.FanInPopUp"
+               id="AspectMiningTool.action1"
+               menubarPath="AspectMiningTool.menu1/group1"
+               label="Fan In Analysis">
+         </action>
+         <action
+               class="aspectminingtool.popup.actions.UniqueMethodPopUp"
+               id="AspectMiningTool.action3"
+               menubarPath="AspectMiningTool.menu1/group1"
+               label="Unique Method Analysis">
          </action>
       </objectContribution>
    </extension>

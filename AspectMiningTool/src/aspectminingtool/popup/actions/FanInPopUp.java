@@ -1,9 +1,9 @@
 package aspectminingtool.popup.actions;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
-import aspectminingtool.data.Fact;
+import aspectminingtool.InferenceEngine.Algorithm;
+
 
 public class FanInPopUp extends AbstractPerformMiningPopup {
 
@@ -11,8 +11,9 @@ public class FanInPopUp extends AbstractPerformMiningPopup {
 
 	}
 
-	public void createAlgorithm() {
-
+	public Algorithm getAlgorithm() {
+		
+		/*
 		//this.algorithm = new FanInAlgorithm();...
 		System.out.println("Fan In");
 		for (Iterator<Fact> i = Facts.iterator(); i.hasNext(); ){
@@ -25,7 +26,13 @@ public class FanInPopUp extends AbstractPerformMiningPopup {
 			System.out.println(f.getName() + "( "+ parameters + " )");
 				
 		}
+	
+		*/
+		for (Iterator i = Facts.iterator(); i.hasNext();){
+			System.out.println(i.next().toString());
+		}
 		
+		return null;
 	}
 
 }

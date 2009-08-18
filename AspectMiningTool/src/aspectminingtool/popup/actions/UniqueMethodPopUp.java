@@ -3,6 +3,7 @@ package aspectminingtool.popup.actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import aspectminingtool.InferenceEngine.Algorithm;
 import aspectminingtool.data.Fact;
 
 public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
@@ -11,10 +12,11 @@ public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
 
 	}
 
-	public void createAlgorithm() {
-
+	public Algorithm getAlgorithm() {
+		
+		/*
 		//this.algorithm = new FanInAlgorithm();...
-		System.out.println("Unique Method");
+		System.out.println("Fan In");
 		for (Iterator<Fact> i = Facts.iterator(); i.hasNext(); ){
 			Fact f = i.next();
 			ArrayList<String> params = f.getParameters();
@@ -25,7 +27,14 @@ public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
 			System.out.println(f.getName() + "( "+ parameters + " )");
 				
 		}
+	
+		*/
+		for (Iterator i = Facts.iterator(); i.hasNext();){
+			System.out.println(i.next().toString());
+		}
 		
+		return null;
 	}
+
 
 }

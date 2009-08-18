@@ -44,7 +44,7 @@ import aspectminingtool.data.Fact;
  * @author maria
  *
  */
-public class FactsTranslatorVisitor extends ASTVisitor {
+public class FactsTranslatorVisitor extends FactsVisitor {
 
 	private String actualMethod;
 	private String actualPackage;
@@ -136,26 +136,17 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 		Fact fact1 = new Fact("method");
 		this.actualMethod = actualClass + "-" + moduleName + "-" + params;
 		fact1.addParameter(this.actualMethod);
+		fact1.addParameter(moduleName);
+		fact1.addParameter(treturn);
 
-		Fact fact2 = new Fact("name");
-		fact2.addParameter(this.actualMethod);
-		fact2.addParameter(moduleName);
-		
 		//define-in(claveModulo,claveClaseContenedora)
 		Fact fact3 = new Fact("define-in");
 		fact3.addParameter(this.actualMethod);
 		fact3.addParameter(this.actualClass);
-		
-		//returnType(claveModulo,tipoRetorno)
-		Fact fact4 = new Fact("returnType");
-		fact4.addParameter(this.actualMethod);
-		fact4.addParameter(treturn);
-		
+
 		facts.add(fact1);
-		facts.add(fact2);
 		facts.add(fact3);
-		facts.add(fact4);
-		
+
 		return true;
 	}
 	
@@ -258,13 +249,9 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 		}
 		
 		fact.addParameter(this.actualClass);
-		
-		Fact fact1 = new Fact("name");
-		fact1.addParameter(this.actualClass);
-		fact1.addParameter(className);
+		fact.addParameter(className);
 		
 		facts.add(fact);
-		facts.add(fact1);
 		
 	}
 	
@@ -289,7 +276,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 				pack = bindingType.getPackage().getName(); 
 			
 			//extends(claveClaseHija,claveClaseMadre) claveClaseHija = nombrePaquete + nombreClase 
-			Fact fact = new Fact("extends");
+			Fact fact = new Fact("inherits");
 			String extendedClass = pack + "-" +((SimpleType)type).getName();
 			fact.addParameter(this.actualClass);
 			fact.addParameter(extendedClass);
@@ -319,7 +306,6 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 				Type typ = (Type)ite.next();
 				if (typ.isSimpleType()) {
 					
-					
 					Fact fact = new Fact();
 					String interfacePackage = "";
 					if (typ.resolveBinding() != null)
@@ -327,7 +313,7 @@ public class FactsTranslatorVisitor extends ASTVisitor {
 					
 					if (node.isInterface()) // Interface extends Interface
 						//extends(claveInterfaceHija,claveInterfacePadre)
-						fact.setName("extends");							
+						fact.setName("Inherits");							
 					else // Clase o Abstract implements Interface
 						//implements(claveClaseHija,claveInterfacePadre)
 						fact.setName("implements");

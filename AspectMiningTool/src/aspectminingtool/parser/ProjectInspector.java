@@ -24,9 +24,9 @@ public class ProjectInspector{
 	}
 	                     
 		
-	public ArrayList<Fact> getProjectFacts(IJavaProject javaProject){
+	public ArrayList getProjectFacts(IJavaProject javaProject, FactsVisitor visitor){
 		
-		ArrayList<Fact> facts = new ArrayList<Fact>();
+		ArrayList facts = new ArrayList();
 		
 		try {
 			IPackageFragment[] fragments = javaProject.getPackageFragments();
@@ -36,7 +36,7 @@ public class ProjectInspector{
 				
 				for(int y=0 ; y < compUnit.length ; y++){
 					ASTClassInspector AIP = new ASTClassInspector(); 
-					facts.addAll(AIP.getCompilationFacts(compUnit[y]));
+					facts.addAll(AIP.getCompilationFacts(compUnit[y],visitor));
 				}
 				
 			}

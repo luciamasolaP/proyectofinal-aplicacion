@@ -18,6 +18,12 @@ import aspectminingtool.data.Fact;
  */
 public class ASTClassInspector {
 
+	FactsVisitor factsVisitor;
+	
+	public ASTClassInspector(){
+
+	}
+	
 	/**
 	 * This method parses an ICompilationUnit and visits the resulting AST node (CompilationUnit) to obtain the information of the node.
 	 * @param lwUnit
@@ -25,12 +31,12 @@ public class ASTClassInspector {
 	 * @return
 	 * 				ArrayList<Fact> with the facts representing the compilation unit
 	 */
-	public ArrayList<Fact> getCompilationFacts(ICompilationUnit lwUnit){
+	public ArrayList<Fact> getCompilationFacts(ICompilationUnit lwUnit, FactsVisitor visitor){
 		
 		CompilationUnit unit = parse(lwUnit);
-		FactsTranslatorVisitor factsTranslator = new FactsTranslatorVisitor();
-		factsTranslator.process(unit);
-		return factsTranslator.getFacts();
+		factsVisitor = visitor;
+		factsVisitor.process(unit);
+		return factsVisitor.getFacts();
 	}
 	
 	
@@ -50,4 +56,14 @@ public class ASTClassInspector {
 		return (CompilationUnit) parser.createAST(null /* IProgressMonitor */); // parse
 	}
 
+	public FactsVisitor getFactsVisitor() {
+		return factsVisitor;
+	}
+
+	public void setFactsVisitor(FactsVisitor factsVisitor) {
+		this.factsVisitor = factsVisitor;
+	}
+
+	
+	
 }

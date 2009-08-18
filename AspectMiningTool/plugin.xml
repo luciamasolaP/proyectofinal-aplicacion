@@ -7,6 +7,14 @@
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             id="AspectMiningTool.contribution1">
+            <menu
+               label="Perform Mining"
+               path="additions"
+               id="AspectMiningTool.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
          <action
                class="aspectminingtool.popup.actions.ProjectFilter"
                menubarPath="AspectMiningTool.menu1/group1"

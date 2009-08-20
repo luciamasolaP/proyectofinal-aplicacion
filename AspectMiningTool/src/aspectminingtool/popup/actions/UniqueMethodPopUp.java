@@ -29,10 +29,10 @@ public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
 		}
 	
 		*/
-		for (Iterator i = Facts.iterator(); i.hasNext();){
+	/*	for (Iterator i = Facts.iterator(); i.hasNext();){
 			System.out.println(i.next().toString());
 		}
-		
+		*/
 		return null;
 	}
 

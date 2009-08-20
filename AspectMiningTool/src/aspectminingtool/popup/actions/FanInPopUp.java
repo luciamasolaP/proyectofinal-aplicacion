@@ -28,10 +28,11 @@ public class FanInPopUp extends AbstractPerformMiningPopup {
 		}
 	
 		*/
+	/*	System.out.println("hechos creados por el visitor: ");
 		for (Iterator i = Facts.iterator(); i.hasNext();){
 			System.out.println(i.next().toString());
 		}
-		
+		*/
 		return null;
 	}
 

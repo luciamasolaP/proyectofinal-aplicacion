@@ -3,7 +3,7 @@
 (deftemplate Interface (declare (from-class Interface)))
 (deftemplate Method    (declare (from-class Method)))
 (deftemplate Define_In    (declare (from-class Define_In)))
-(deftemplate Class       (declare (from-class Class)))
+(deftemplate Class       (declare (from-class model.Class)))
 (deftemplate Inherits    (declare (from-class Inherits)))
 (deftemplate Implements    (declare (from-class Implements)))
 (deftemplate Call    (declare (from-class Call)))
@@ -49,13 +49,18 @@
 (deftemplate father_counted
 	(slot elem)
     (slot elem2)
+	(slot metodo)
 )
 
 (deftemplate son_counted
 	(slot elem)
     (slot elem2)
+	(slot metodo)
 )
 
+(deftemplate calculado
+	(slot id)
+)
 
 (defrule init_fan-in_metric
     (Method (id ?Method))
@@ -73,8 +78,16 @@
     (assert (call_counted (caller_id ?Caller) (callee_id ?Method)))
     (bind ?NewMetric (+ ?Metric 1))        
     (retract ?OldFanInMetric)
-    (assert (fan-in_metric (method_id ?Method) (metric ?NewMetric)))    
+    (assert (fan-in_metric (method_id ?Method) (metric ?NewMetric)))
+    (assert (calculado (id ?Method)))    
 )
+
+(defrule no_callers
+    (Method (id ?idMethod))
+    (not (Call (callee_id ?idMethod)))
+    =>
+    (assert (calculado(id ?idMethod)))
+    )
 
 "Define los familiares de cada clase e Interface."
 (defrule assert_familiar_1
@@ -126,34 +139,50 @@
 
 (defrule acum_fan-in_padres
 	(Method (id ?Method)(name ?MethodName))
+	?calculado <- (calculado (id ?Method))
     (fan-in_metric (method_id ?Method) (metric ?MethodMetric))
     (Define_In (method_id ?Method) (class_id ?Class))
     (familiar (elem ?Class) (elem2 ?Familiar))
-    (not (father_counted (elem ?Class) (elem2 ?Familiar))) 
+    (not (father_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method))) 
     (Define_In (method_id ?FamiliarMethod) (class_id ?Familiar))
     (Method (id ?FamiliarMethod) (name ?MethodName))
+    (calculado (id ?FamiliarMethod))
     ?OldFanInMetric <- (fan-in_metric_acum (method_id ?FamiliarMethod) (metric ?FamiliarMethodMetric))
     =>
-    (assert (father_counted (elem ?Class) (elem2 ?Familiar))) ;se marca como contado. 
+    (assert (father_counted (elem ?Class) (elem2 ?Familiar) (metodo ?Method))) ;se marca como contado. 
     (bind ?NewMetric (+ ?MethodMetric ?FamiliarMethodMetric))
     (retract ?OldFanInMetric) ;se elimina el fan-in viejo.
     (assert (fan-in_metric_acum (method_id ?FamiliarMethod) (metric ?NewMetric))) ;se agrega el fan-in nuevo.
 )
 
 (defrule acum_fan-in_hijos
-	(Method (id ?Method)(name ?MethodName))
+    (Method (id ?Method)(name ?MethodName))
+    ?calculado <- (calculado (id ?Method))
     (fan-in_metric (method_id ?Method) (metric ?MethodMetric))
     (Define_In (method_id ?Method) (class_id ?Class))
     (familiar (elem ?Familiar) (elem2 ?Class))
-    (not (son_counted (elem ?Class) (elem2 ?Familiar))) 
+    (not (son_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method)))
     (Define_In (method_id ?FamiliarMethod) (class_id ?Familiar))
     (Method (id ?FamiliarMethod) (name ?MethodName))
     ?OldFanInMetric <- (fan-in_metric_acum (method_id ?FamiliarMethod) (metric ?FamiliarMethodMetric))
     =>
-    (assert (son_counted (elem ?Class) (elem2 ?Familiar))) ;se marca como contado. 
+    (assert (son_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method))) ;se marca como contado. 
     (bind ?NewMetric (+ ?MethodMetric ?FamiliarMethodMetric))
     (retract ?OldFanInMetric) ;se elimina el fan-in viejo.
     (assert (fan-in_metric_acum (method_id ?FamiliarMethod) (metric ?NewMetric))) ;se agrega el fan-in nuevo.
+)
+
+(defrule final_fan-in
+	"calcula el fan in total, esto es el propio más el acumulado"
+	(Method (id ?Method))
+	(fan-in_metric(method_id ?Method) (metric ?OwnValue))
+    (fan-in_metric_acum (method_id ?Method) (metric ?AcumValue))
+
+    ?OldFanInMetric <- (final_fan-in_metric (method_id ?Method) (metric ?))
+    =>
+    (bind ?NewValue (+ ?OwnValue ?AcumValue))
+
+    (modify ?OldFanInMetric (metric ?NewValue))
 )
 
 (defrule final_fan-in
@@ -167,13 +196,13 @@
     (modify ?OldFanInMetric (metric ?NewValue))
 )
 
-(defquery prueba
+(defquery fanInTotal
 	"comment"
 	(declare (variables ?ln))
 	(final_fan-in_metric(method_id ?mi)(metric ?m))
     )
 
-(defquery prueba1
+(defquery llamados
 	"comment"
 	(declare (variables ?ln))
 	(Call (caller_id ?Caller) (callee_id ?Method))

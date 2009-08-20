@@ -6,12 +6,9 @@ Bundle-Version: 1.0.0
 Bundle-Activator: aspectminingtool.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.core.resources,
- gov.sandia.jess;bundle-version="7.1.0"
+ org.eclipse.core.resources
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: jess,
  org.eclipse.jdt.core,
  org.eclipse.jdt.core.dom
-Bundle-ClassPath: lib/jess.jar,
- .

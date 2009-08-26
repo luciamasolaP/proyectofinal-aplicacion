@@ -5,11 +5,14 @@ public class Method {
 	String id;
 	String name;
 	String returnType;
+	String class_id;
 
-	public Method(String id, String name, String returnType){
+	
+	public Method(String id, String name, String returnType, String class_id){
 		this.id = id;
 		this.name = name;
 		this.returnType = returnType;
+		this.class_id = class_id;
 	}
 	
 	public String getId() {
@@ -37,9 +40,17 @@ public class Method {
 	}
 	
 	public String toString(){
-		String st = "Method("+this.id+","+this.name+","+this.returnType+")";
+		String st = "Method("+this.id+","+this.name+","+this.returnType+","+this.class_id+")";
 		return st;
 	}
-	
+
+	public String getClass_id() {
+		return class_id;
+	}
+
+	public void setClass_id(String class_id) {
+		this.class_id = class_id;
+	}
+
 
 }

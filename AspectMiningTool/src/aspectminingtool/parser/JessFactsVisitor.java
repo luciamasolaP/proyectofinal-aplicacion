@@ -139,13 +139,13 @@ public class JessFactsVisitor extends FactsVisitor {
 		//method(claveModulo,nombreModulo,tipoRetorn) claveModulo = nombrePaquete-nombreClase-nombreModulo-TipoDeParametros
 		
 		this.actualMethod = actualClass + "-" + moduleName + "-" + params;
-		Method m = new Method(this.actualMethod,moduleName,treturn);
+		Method m = new Method(this.actualMethod,moduleName,treturn,this.actualClass);
 				
 		//define-in(claveModulo,claveClaseContenedora)
-		Define_In define_In = new Define_In(this.actualMethod,this.actualClass); 
+		//Define_In define_In = new Define_In(this.actualMethod,this.actualClass); 
 				
 		facts.add(m);
-		facts.add(define_In);
+		//facts.add(define_In);
 
 		return true;
 	}

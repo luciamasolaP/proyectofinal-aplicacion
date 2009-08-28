@@ -8,7 +8,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import aspectminingtool.data.Fact;
 
 /**
  * ASTClassInspector obtains the facts representing a Compilation Unit using the FactsTranslatorVisitor and the ASTParser.
@@ -31,7 +30,7 @@ public class ASTClassInspector {
 	 * @return
 	 * 				ArrayList<Fact> with the facts representing the compilation unit
 	 */
-	public ArrayList<Fact> getCompilationFacts(ICompilationUnit lwUnit, FactsVisitor visitor){
+	public ArrayList getCompilationFacts(ICompilationUnit lwUnit, FactsVisitor visitor){
 		
 		CompilationUnit unit = parse(lwUnit);
 		factsVisitor = visitor;

@@ -1,89 +1,69 @@
 package aspectminingtool.InferenceEngine;
 
+
 import java.util.ArrayList;
-import java.util.Iterator;
+import jess.JessException;
+import jess.Rete;
 
 import model.Interface;
+import aspectminingtool.Activator;
+import aspectminingtool.Algorithms.Algorithm;
 
-import jess.Fact;
-import jess.JessException;
-import jess.QueryResult;
-import jess.Rete;
-import jess.ValueVector;
 
-public class JessInferenceEngine implements InferenceEngine {
+
+public class JessInferenceEngine extends InferenceEngine {
 
 	Rete engine;
 	
 	public JessInferenceEngine(){
-		engine = new Rete(new Interface(null, null));
+		this.engine = new Rete(new Interface(null, null));
+	}
+	
+	public Rete getEngine(){
+		return engine;
 	}
 	
 	@Override
-	public void executeAlgorithm(Algorithm algorithm, ArrayList facts) {
-
+	protected void confirgureAlgorithm(){
+		
+		String archive = algorithm.getArchive();	
+		String PlugInPath = Activator.getInstallLocation();
+		String finalArchivePath = PlugInPath + archive;
+		
 		try {
-			
-			engine.batch("F:\\workspace-Tesis\\workspacePlugin\\AspectMiningTool\\Fan-In.clp");
-
-			
+			engine.batch(finalArchivePath);
 		} catch (JessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 		
+	}
+	
+	@Override
+	protected void persistFacts(ArrayList facts) {
+
 		try {
 			engine.addAll(facts);
 		} catch (JessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+
+	@Override
+	protected void executeAlgorithm() {
 
 		try {
 			engine.run();
 		} catch (JessException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		
-		QueryResult result;
-		try {
-			result = engine.runQueryStar("fanInTotal", new ValueVector().add("Smith"));
-			 while (result.next()) {
-		            System.out.println("fan in total: "+result.getString("mi") + " " + result.getString("m"));
-		        }
-		} catch (JessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-       
-        
-        QueryResult result1;
-		try {
-			result1 = engine.runQueryStar("llamados", new ValueVector().add("Smith"));
-			 while (result1.next()) {
-		            System.out.println("llamados: "+result1.getString("Caller") + " " + result1.getString("Method"));
-		        }
-		} catch (JessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-		for (Iterator i = engine.listFacts(); i.hasNext() ; ){
-			
-			Fact f = (Fact)i.next();
-
-			System.out.println(f);
-
-		}
+		}	
 		
 	}
 
-	@Override
-	public void persistFacts(ArrayList facts) {
 
-		
-	}
 
 }

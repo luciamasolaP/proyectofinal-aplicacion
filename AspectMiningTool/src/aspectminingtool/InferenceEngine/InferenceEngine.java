@@ -2,10 +2,30 @@ package aspectminingtool.InferenceEngine;
 
 import java.util.ArrayList;
 
-public interface InferenceEngine {
+import aspectminingtool.Algorithms.Algorithm;
 
-	public void persistFacts(ArrayList facts);
-	public void executeAlgorithm(Algorithm algorithm,ArrayList facts);
+public abstract class InferenceEngine {
+
+	Algorithm algorithm;
 	
+	
+	public void setAlgorithm(Algorithm algorithm){
+		
+		this.algorithm = algorithm;
+		
+	}
+	
+	public void execute(ArrayList facts){
+		
+		confirgureAlgorithm();
+		persistFacts(facts);
+		executeAlgorithm();
+		
+	}
+	
+	protected abstract void confirgureAlgorithm();
+	protected abstract void persistFacts(ArrayList facts);
+	protected abstract void executeAlgorithm();
+		
 	
 }

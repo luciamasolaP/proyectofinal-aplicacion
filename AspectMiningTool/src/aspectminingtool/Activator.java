@@ -1,7 +1,14 @@
 package aspectminingtool;
 
+import java.io.IOException;
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -58,4 +65,18 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+	
+	public static String getInstallLocation(){
+		Bundle bundle = Platform.getBundle(PLUGIN_ID);;
+		URL locationUrl = FileLocator.find(bundle,new Path("/"), null);
+		URL fileUrl = null;
+		try {
+			fileUrl = FileLocator.toFileURL(locationUrl);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return fileUrl.getFile();
+		}
+	
 }

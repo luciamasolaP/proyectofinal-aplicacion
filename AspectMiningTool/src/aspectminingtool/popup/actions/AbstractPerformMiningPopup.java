@@ -12,7 +12,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import aspectminingtool.InferenceEngine.Algorithm;
+import aspectminingtool.Algorithms.Algorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 import aspectminingtool.data.Fact;
@@ -24,7 +24,7 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 
 	
 	private ISelection selection;
-	//protected Algorithm algorithm;
+	protected Algorithm algorithm;
 	protected ArrayList Facts;
 	
 	/**
@@ -34,7 +34,13 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 		super();
 	}
 
-	public abstract Algorithm getAlgorithm();
+	public abstract void setAlgorithm(InferenceEngine inferenceEngine);
+	
+	public void getResults() {
+		
+		algorithm.viewResults();
+		
+	}
 	
 	/**
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
@@ -64,8 +70,13 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 			Facts = projectInspector.getProjectFacts(javaProject, new JessFactsVisitor());
 			
 			InferenceEngine inferenceEngine = new JessInferenceEngine();
-			inferenceEngine.persistFacts(Facts);
-			inferenceEngine.executeAlgorithm(this.getAlgorithm(),Facts);
+			setAlgorithm(inferenceEngine);
+			inferenceEngine.setAlgorithm(algorithm);
+			inferenceEngine.execute(Facts);
+			
+			getResults();
+			
+		//	drawResults();
 
 			
 		}

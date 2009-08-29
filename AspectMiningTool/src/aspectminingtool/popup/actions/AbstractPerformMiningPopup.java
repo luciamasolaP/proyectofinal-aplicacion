@@ -1,5 +1,6 @@
 package aspectminingtool.popup.actions;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -7,10 +8,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+
+
 
 import aspectminingtool.Algorithms.Algorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
@@ -64,17 +70,26 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 						
 			IJavaProject javaProject = JavaCore.create(project);
 							
-			ProjectInspector projectInspector = new ProjectInspector();
+			ProjectInspector projectInspector = new ProjectInspector(javaProject,new JessFactsVisitor());
+			Shell shell = new Shell();
+			 try {
+				 
+		          new ProgressMonitorDialog(shell).run(true, true, projectInspector);
+		       
 			
-			//clase que persiste los hechos en la base de datos, momentaneamente se guarda el arreglo en Facts
-			Facts = projectInspector.getProjectFacts(javaProject, new JessFactsVisitor());
+				Facts = projectInspector.getFacts();
+				InferenceEngine inferenceEngine = new JessInferenceEngine();
+				setAlgorithm(inferenceEngine);
+				inferenceEngine.setAlgorithm(algorithm);
+				inferenceEngine.execute(Facts);
+				
+				getResults();
 			
-			InferenceEngine inferenceEngine = new JessInferenceEngine();
-			setAlgorithm(inferenceEngine);
-			inferenceEngine.setAlgorithm(algorithm);
-			inferenceEngine.execute(Facts);
-			
-			getResults();
+			 } catch (InvocationTargetException e) {
+		          MessageDialog.openError(shell, "Error", e.getMessage());
+		        } catch (InterruptedException e) {
+		          MessageDialog.openInformation(shell, "Cancelled", e.getMessage());
+		        }
 			
 		//	drawResults();
 

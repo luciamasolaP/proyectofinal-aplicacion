@@ -1,7 +1,8 @@
 package aspectminingtool.popup.actions;
 
 
-import aspectminingtool.Algorithms.Algorithm;
+
+import aspectminingtool.Algorithms.UniqueMethodsAlgorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 
 
@@ -14,7 +15,7 @@ public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
 	@Override
 	public void setAlgorithm(InferenceEngine inferenceEngine) {
 
-		algorithm = null;
+		algorithm = new UniqueMethodsAlgorithm(inferenceEngine);
 	}
 
 

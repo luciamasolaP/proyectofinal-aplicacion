@@ -33,7 +33,7 @@ public class FanInAlgorithm extends Algorithm {
 		try {
 			result = engine.runQueryStar("fanInTotal", new ValueVector().add("Smith"));
 			 while (result.next()) {
-		            System.out.println("fan in total: "+result.getString("mi") + " " + result.getString("m"));
+		            System.out.println("fan in total Metodo: "+result.getString("mi") + " fan-in " + result.getString("m") + " clase: " + result.getString("class"));
 		        }
 		} catch (JessException e) {
 			// TODO Auto-generated catch block

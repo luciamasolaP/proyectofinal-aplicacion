@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import model.*;
-import model.Class;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
@@ -19,6 +17,9 @@ import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.SuperMethodInvocation;
 import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+
+import JessIntegrationModel.*;
+import JessIntegrationModel.Class;
 
 
 
@@ -140,7 +141,7 @@ public class JessFactsVisitor extends FactsVisitor {
 		//method(claveModulo,nombreModulo,tipoRetorn) claveModulo = nombrePaquete-nombreClase-nombreModulo-TipoDeParametros
 		
 		this.actualMethod = actualClass + "." + moduleName + "." + params;
-		Method m = new Method(this.actualMethod,moduleName,treturn,this.actualClass);
+		Method m = new Method(this.actualMethod,moduleName,treturn,this.actualClass,params);
 				
 		//define-in(claveModulo,claveClaseContenedora)
 		//Define_In define_In = new Define_In(this.actualMethod,this.actualClass); 

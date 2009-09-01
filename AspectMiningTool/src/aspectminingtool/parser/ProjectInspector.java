@@ -54,6 +54,8 @@ public class ProjectInspector implements IRunnableWithProgress{
 				for (int y = 0; y < compUnit.length; y++) {
 					ASTClassInspector AIP = new ASTClassInspector();
 					facts.addAll(AIP.getCompilationFacts(compUnit[y],visitor));
+				//	compUnit[y].getPackageDeclaration(null);
+					
 					
 					if (monitor.isCanceled())
 						//System.out.println("cancel");

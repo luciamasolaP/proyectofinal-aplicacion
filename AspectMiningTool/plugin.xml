@@ -35,5 +35,38 @@
          </action>
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="AspectMiningTool.category1"
+            name="AspectMiningTool">
+      </category>
+      <view
+            allowMultiple="true"
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.ViewPartFanIn"
+            id="aspectminingtool.views.ViewPartFanIn"
+            name="FanIn Results"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.ViewPartFanIn">
+         <command
+               commandId="aspectminingtool.commands.CommandShowProjectView"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="aspectminingtool.commands.CommandShowProjectView"
+            id="aspectminingtool.commands.CommandShowProjectView"
+            name="showProjectView">
+      </command>
+   </extension>
 
 </plugin>

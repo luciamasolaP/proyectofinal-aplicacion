@@ -24,12 +24,14 @@ public class CommandShowProjectView extends AbstractHandler implements IHandler 
 		
 		ViewPartFanIn view = (ViewPartFanIn)HandlerUtil.getActivePart(event);
 		
-		IJavaProject javaProject = view.getModel().getProjectModel().getProject(); //TODO obtener java project del modelo de la vista
-	
-		Display display = Display.getDefault();
-		Shell shell1 = new Shell(display);
-		SettingsDialogs inst = new SettingsDialogs(shell1, SWT.NULL, javaProject);
-		inst.open();
+		if (view.getModel() != null){
+			IJavaProject javaProject = view.getModel().getProjectModel().getProject(); //TODO obtener java project del modelo de la vista
+		
+			Display display = Display.getDefault();
+			Shell shell1 = new Shell(display);
+			SettingsDialogs inst = new SettingsDialogs(shell1, SWT.NULL, javaProject);
+			inst.open();
+		}
 		
 		return null;
 	}

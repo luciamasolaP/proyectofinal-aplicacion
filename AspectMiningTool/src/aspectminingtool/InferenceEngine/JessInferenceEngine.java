@@ -2,10 +2,12 @@ package aspectminingtool.InferenceEngine;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
 import jess.JessException;
 import jess.Rete;
 
-import model.Interface;
+import JessIntegrationModel.Interface;
 import aspectminingtool.Activator;
 import aspectminingtool.Algorithms.Algorithm;
 
@@ -40,18 +42,7 @@ public class JessInferenceEngine extends InferenceEngine {
 		
 	}
 	
-	@Override
-	protected void persistFacts(ArrayList facts) {
-
-		try {
-			engine.addAll(facts);
-		} catch (JessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
+	
 	@Override
 	protected void executeAlgorithm() {
 
@@ -61,6 +52,17 @@ public class JessInferenceEngine extends InferenceEngine {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}	
+		
+	}
+
+	@Override
+	protected void persistFacts(List facts) {
+		try {
+			engine.addAll(facts);
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

@@ -13,11 +13,4 @@ public abstract class Algorithm {
 		
 	}
 	
-	public Algorithm(InferenceEngine infEngine){
-		inferenceEngine = infEngine;
-	}
-	
-	
-	public abstract void viewResults();
-
 }

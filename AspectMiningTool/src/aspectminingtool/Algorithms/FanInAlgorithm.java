@@ -5,25 +5,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
-import aspectminingtool.InferenceEngine.InferenceEngine;
-import aspectminingtool.InferenceEngine.JessInferenceEngine;
-
 import jess.Fact;
 import jess.JessException;
 import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
 
+import aspectminingtool.InferenceEngine.JessInferenceEngine;
+
+
+
 public class FanInAlgorithm extends Algorithm {
 
-	public FanInAlgorithm(InferenceEngine infEngine) {
+	public FanInAlgorithm() {
 
-		super(infEngine);
 		archive = "Fan-In.clp";
 
 	}
 
-	@Override
+
 	public void viewResults() {
 		
 		JessInferenceEngine jessInferenceEngine = (JessInferenceEngine)inferenceEngine;
@@ -69,6 +69,77 @@ public class FanInAlgorithm extends Algorithm {
 	       
 	     
 	        outfile.close();
+	    }
+	    catch (IOException e)    {    }
+	    
+	    QueryResult result2;
+		try {
+			result2 = engine.runQueryStar("fanInTotalBorderDec", new ValueVector().add("Smith"));
+			 while (result2.next()) {
+		            System.out.println( "Fan-in Total: "+result2.getString("m") + " Fan in acum " + result2.getString("m1") + " Fan in propio " + result2.getString("m2"));
+
+			 
+			 }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		
+		
+		
+		
+		try 
+	    {
+	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados.txt"));
+		    
+	        	 QueryResult result3;
+	 			try {
+	 				result3 = engine.runQueryStar("llamadosBorderDec", new ValueVector().add("Smith"));
+	 				 while (result3.next()) {
+
+	 					 	String l = "metodo llamador: " + result3.getString("Caller") + " metodo llamado " + result3.getString("*metodo*");
+	 					 	outfile1.write(l);
+	 						outfile1.newLine();
+	 				 
+	 				 }
+	 			} catch (JessException e) {
+	 				// TODO Auto-generated catch block
+	 				e.printStackTrace();
+	 			}
+	        	
+
+	        
+	      
+	     
+	        outfile1.close();
+	    }
+	    catch (IOException e)    {    }
+	    
+	    try 
+	    {
+	        BufferedWriter outfile2 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados_no_directos.txt"));
+		    
+	        	 QueryResult result3;
+	 			try {
+	 				result3 = engine.runQueryStar("llamadosNoDirectos", new ValueVector().add("Smith"));
+	 				 while (result3.next()) {
+
+	 					 	String l = "metodo llamador: " + result3.getString("Caller") + " metodo llamado " + result3.getString("*metodo*");
+	 					 	outfile2.write(l);
+	 						outfile2.newLine();
+	 				 
+	 				 }
+	 			} catch (JessException e) {
+	 				// TODO Auto-generated catch block
+	 				e.printStackTrace();
+	 			}
+	        	
+
+	        
+	      
+	     
+	        outfile2.close();
 	    }
 	    catch (IOException e)    {    }
 		

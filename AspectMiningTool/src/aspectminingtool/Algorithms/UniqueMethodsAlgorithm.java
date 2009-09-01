@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
-import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 
 import jess.Fact;
@@ -16,14 +15,13 @@ import jess.ValueVector;
 
 public class UniqueMethodsAlgorithm extends Algorithm {
 
-	public UniqueMethodsAlgorithm(InferenceEngine infEngine) {
+	public UniqueMethodsAlgorithm() {
 
-		super(infEngine);
 		archive = "UniqueMethods.clp";
 
 	}
 
-	@Override
+
 	public void viewResults() {
 		
 		JessInferenceEngine jessInferenceEngine = (JessInferenceEngine)inferenceEngine;

@@ -1,8 +1,7 @@
 package aspectminingtool.popup.actions;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
@@ -16,12 +15,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-
-
+import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ProjectModel;
 import aspectminingtool.Algorithms.Algorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
-import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.data.Fact;
+import aspectminingtool.model.AspectMiningModel;
 import aspectminingtool.parser.JessFactsVisitor;
 import aspectminingtool.parser.ProjectInspector;
 
@@ -31,8 +29,8 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 	
 	private ISelection selection;
 	protected Algorithm algorithm;
-	protected ArrayList Facts;
-	
+	protected List Facts;
+	protected ProjectModel pm;
 	/**
 	 * Constructor for Action1.
 	 */
@@ -40,13 +38,8 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 		super();
 	}
 
-	public abstract void setAlgorithm(InferenceEngine inferenceEngine);
+	public abstract Algorithm getAlgorithm();
 	
-	public void getResults() {
-		
-		algorithm.viewResults();
-		
-	}
 	
 	/**
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
@@ -69,21 +62,26 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 			IProject project = (IProject) ((IStructuredSelection) selection).getFirstElement();
 						
 			IJavaProject javaProject = JavaCore.create(project);
-							
+						
+			pm = AspectMiningModel.createProjectModel(javaProject);
+			
 			ProjectInspector projectInspector = new ProjectInspector(javaProject,new JessFactsVisitor());
+			
 			Shell shell = new Shell();
 			 try {
 				 
-		          new ProgressMonitorDialog(shell).run(true, true, projectInspector);
+				 new ProgressMonitorDialog(shell).run(true, true, projectInspector);
 		       
-			
-				Facts = projectInspector.getFacts();
-				InferenceEngine inferenceEngine = new JessInferenceEngine();
-				setAlgorithm(inferenceEngine);
-				inferenceEngine.setAlgorithm(algorithm);
-				inferenceEngine.execute(Facts);
+				 Facts = projectInspector.getFacts();
 				
-				getResults();
+				 InferenceEngine inferenceEngine = AspectMiningModel.getInferenceEngine();
+				 
+				 inferenceEngine.setAlgorithm(getAlgorithm());
+				 
+				 inferenceEngine.execute(Facts);
+			
+				 showResults(getResults());
+				
 			
 			 } catch (InvocationTargetException e) {
 		          MessageDialog.openError(shell, "Error", e.getMessage());
@@ -99,6 +97,10 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 			System.out.println("no es una IStructuredSelection");
 		
 	}
+
+	protected abstract void showResults(IResultsModel results2);
+
+	protected abstract IResultsModel getResults();
 
 	/**
 	 * guarda la seleccción realizada por el usuario.

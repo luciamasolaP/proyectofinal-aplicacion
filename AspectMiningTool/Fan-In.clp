@@ -1,8 +1,8 @@
-(import model.*)
+(import JessIntegrationModel.*)
 
 (deftemplate Interface (declare (from-class Interface)))
 (deftemplate Method    (declare (from-class Method)))
-(deftemplate Class       (declare (from-class model.Class)))
+(deftemplate Class       (declare (from-class JessIntegrationModel.Class)))
 (deftemplate Inherits    (declare (from-class Inherits)))
 (deftemplate Implements    (declare (from-class Implements)))
 (deftemplate Call    (declare (from-class Call)))
@@ -82,6 +82,7 @@
 	(slot caller_id)
     (slot calle_id))
 
+(defglobal ?*metodo* = "CH.ifa.draw.figures.BorderDecorator.displayBox.")
 
 (defrule init_fan-in_metric
     (Method (id ?Method))
@@ -122,10 +123,10 @@
 
 (defrule acum_fan-in_padres
     (declare (salience 1000))
-	(Method (id ?Method)(name ?MethodName)(class_id ?Class))
+	(Method (id ?Method)(name ?MethodName)(class_id ?Class)(parametros ?p))
     (familiar (elem ?Class) (elem2 ?Familiar))
     (not (father_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method)))
-    (Method (id ?FamiliarMethod) (name ?MethodName)(class_id ?Familiar))
+    (Method (id ?FamiliarMethod) (name ?MethodName)(class_id ?Familiar)(parametros ?p))
     =>
     (assert (father_counted (elem ?Class) (elem2 ?Familiar) (metodo ?Method))) ;se marca como contado. 
     (assert (metodoFamiliar (metodo1 ?Method) (metodo2 ?FamiliarMethod))) ;se marcan los metodos familiares de un metodo 
@@ -134,10 +135,10 @@
 
 (defrule acum_fan-in_hijos
     (declare (salience 1000))
-    (Method (id ?Method)(name ?MethodName)(class_id ?Class))
+    (Method (id ?Method)(name ?MethodName)(class_id ?Class)(parametros ?p))
     (familiar (elem ?Familiar) (elem2 ?Class))
     (not (son_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method)))
-    (Method (id ?FamiliarMethod) (name ?MethodName)(class_id ?Familiar))
+    (Method (id ?FamiliarMethod) (name ?MethodName)(class_id ?Familiar)(parametros ?p))
     =>
     (assert (son_counted (elem ?Class) (elem2 ?Familiar)(metodo ?Method))) ;se marca como contado. 
     (assert (metodoFamiliar (metodo1 ?Method) (metodo2 ?FamiliarMethod))) ;se marcan los metodos familiares de un metodo
@@ -152,6 +153,16 @@
 	=>
     (assert (metodoFamiliar_counted(metodo1 ?metodoLlamado)(metodo2 ?metodoFamiliar)))
     (assert (llamado_no_directo(calle_id ?metodoFamiliar)(caller_id ?metodoLlamador)))
+    )
+
+(defrule propagarLlamadas1
+   	(declare (salience 500))
+    (Call (callee_id ?metodoLlamado)(caller_id ?metodoLlamador))
+    (metodoFamiliar (metodo1 ?metodoLlamado)(metodo2 ?metodoLlamador))
+    (not (metodoFamiliar_counted(metodo1 ?metodoLlamado)(metodo2 ?metodoLlamador)))
+	=>
+    (assert (metodoFamiliar_counted(metodo1 ?metodoLlamado)(metodo2 ?metodoLlamador)))
+    (assert (llamado_no_directo(calle_id ?metodoLlamador)(caller_id ?metodoLlamador)))
     )
 
 (defrule count_callers
@@ -202,5 +213,38 @@
     (call_counted (caller_id ?Caller) (callee_id ?Method))
 	
     )
+
+(defquery FinalfanIn
+	"comment"
+	(declare (variables ?ln))
+    (final_fan-in_metric(method_id ?metodo)(metric ?m))
+	
+   
+    )
+
+(defquery fanInTotalBorderDec
+	"comment"
+	(declare (variables ?ln))
+    (final_fan-in_metric(method_id ?*metodo*)(metric ?m))
+	(fan-in_metric_acum (method_id ?*metodo*)(metric ?m1))
+    (fan-in_metric (method_id ?*metodo*)(metric ?m2))
+   
+    )
+
+(defquery llamadosBorderDec
+	"comment"
+	(declare (variables ?ln))
+    (call_counted (caller_id ?Caller) (callee_id ?*metodo*))
+
+    )
+
+(defquery llamadosNoDirectos
+	"comment"
+	(declare (variables ?ln))
+    (llamado_no_directo (caller_id ?Caller) (calle_id ?*metodo*))
+
+    )
+
+
 
 

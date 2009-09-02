@@ -1,25 +1,53 @@
 package aspectminingtool.views;
 
-import org.eclipse.jface.viewers.TableTreeViewer;
+import java.util.Arrays;
+import java.util.Comparator;
+
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.part.ViewPart;
+
+import org.eclipse.swt.widgets.Table;
+
+import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 
 import JessIntegrationModel.IResultsModel;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class ViewPartFanIn extends ViewPart {
     public static final String ID_VIEW =
         "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
-    
-    private TableTreeViewer ttv;
 
+   
+    private TreeViewer ttv;
+    private Tree tree = null; 
+    private IResultsModel model;
     Composite composite1;
-
-	private IResultsModel model;
+   
+	
     
     /**
      * 
@@ -34,7 +62,9 @@ public class ViewPartFanIn extends ViewPart {
      */
     public void createPartControl(Composite parent) {
         composite1 = new Composite(parent, SWT.NULL);
-        composite1.setLayout(new GridLayout(4, false));
+        FillLayout composite1Layout = new FillLayout(org.eclipse.swt.SWT.HORIZONTAL);
+        composite1.setLayout(composite1Layout);
+        tree =  new Tree(composite1, SWT.BORDER);
         
         this.createContents();
     }
@@ -66,42 +96,56 @@ public class ViewPartFanIn extends ViewPart {
 
 	public void createContents(){
     	
-    	ttv = new TableTreeViewer(composite1);
-        ttv.getTableTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+    	ttv = new TreeViewer(tree);
+      //  ttv.getTableTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+        ViewerSorter sorter = null;
+        
+        
         // Set the content and label providers
         ttv.setContentProvider(new FanInContentProvider());
         ttv.setLabelProvider(new FanInLabelProvider());
-      //  ttv.setInput(new PlayerTableModel());
-
+      
         // Set up the table
-        Table table = ttv.getTableTree().getTable();
-        new TableColumn(table, SWT.LEFT).setText("Method");
-        new TableColumn(table, SWT.LEFT).setText("Fan in");
+                
+        final TreeColumn tc1 = new TreeColumn(tree, SWT.LEFT);
+        tc1.setText("Method");
+        tc1.setWidth(498);
         
+               
+//        tc1.addSelectionListener(new SelectionAdapter() {
+//          	
+//            public void widgetSelected(SelectionEvent e) {
+//            	ttv.setSorter(new ColumnSorter(ColumnSorter.METHODS));
+//                 }
+//            });       
+//        
+        
+        
+        TreeColumn tc2 =  new TreeColumn(tree, SWT.LEFT);
+        tc2.setText("Fan in");
+        tc2.setWidth(50);
 
-        // Expand everything
-        ttv.expandAll();
+       
 
         // Pack the columns
-        for (int i = 0, n = table.getColumnCount(); i < n; i++) {
-          table.getColumn(i).pack();
+        for (int i = 0, n = tree.getColumnCount(); i < n; i++) {
+        //  tree.getColumn(i).pack();
         }
 
         // Turn on the header and the lines
-        table.setHeaderVisible(true);
-        table.setLinesVisible(true);
+        tree.setHeaderVisible(true);
+        tree.setLinesVisible(true);
 
         // Pack the window
-        composite1.pack();
+     //   composite1.pack();
+        
 
-        // Scroll to top
-//        ttv.reveal(ttv.getElementAt(0));
 
-      //  return ttv.getTableTree();
     	
     }
 
 	
     
-}
+        }
+

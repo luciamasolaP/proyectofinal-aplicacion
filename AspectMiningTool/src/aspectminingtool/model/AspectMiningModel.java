@@ -11,11 +11,10 @@ import aspectminingtool.InferenceEngine.JessInferenceEngine;
 
 public class AspectMiningModel {
 
-	private static InferenceEngine inferenceEngine = new JessInferenceEngine();
 	private static List<ProjectModel> projectsModel = new ArrayList<ProjectModel>();
 	
 	public static InferenceEngine getInferenceEngine(){
-		return inferenceEngine;
+		return new JessInferenceEngine();
 	}
 	
 	public static ProjectModel createProjectModel(IJavaProject iproject){

@@ -27,10 +27,12 @@ public class UniqueMethodPopUp extends AbstractPerformMiningPopup {
 	}
 
 	@Override
-	protected IResultsModel getResults() {
+	protected IResultsModel getResults(InferenceEngine InferenceEngine) {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 
 	
 

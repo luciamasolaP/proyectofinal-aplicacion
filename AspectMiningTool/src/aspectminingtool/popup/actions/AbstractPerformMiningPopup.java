@@ -80,7 +80,7 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 				 
 				 inferenceEngine.execute(Facts);
 			
-				 showResults(getResults());
+				 showResults(getResults(inferenceEngine));
 				
 			
 			 } catch (InvocationTargetException e) {
@@ -100,7 +100,7 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 
 	protected abstract void showResults(IResultsModel results2);
 
-	protected abstract IResultsModel getResults();
+	protected abstract IResultsModel getResults(InferenceEngine InferenceEngine);
 
 	/**
 	 * guarda la seleccción realizada por el usuario.

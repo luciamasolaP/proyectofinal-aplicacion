@@ -30,14 +30,18 @@ public class FanInPopUp extends AbstractPerformMiningPopup {
 	protected void showResults(IResultsModel results) {
 		try {
 
-			ViewPartFanIn view = (ViewPartFanIn) PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage().findView(
-							ViewPartFanIn.ID_VIEW);
-						
+//			ViewPartFanIn view = (ViewPartFanIn) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//			.getActivePage().showView(ViewPartFanIn.ID_VIEW,results.getId() , IWorkbenchPage.VIEW_CREATE);
+//			para abrir en multiples vistas, esto y ***			
+
+			ViewPartFanIn view = (ViewPartFanIn) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+			.getActivePage().showView(ViewPartFanIn.ID_VIEW );
+			
 			view.setModel(results);
 
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().showView(ViewPartFanIn.ID_VIEW);
+//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ViewPartFanIn.ID_VIEW,results.getId() , IWorkbenchPage.VIEW_ACTIVATE);
+//			**			
+			
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,9 +49,9 @@ public class FanInPopUp extends AbstractPerformMiningPopup {
 	}
 
 	@Override
-	protected IResultsModel getResults() {
+	protected IResultsModel getResults(InferenceEngine inferenceEngine) {
 
-		return new FanInModel(pm);
+		return new FanInModel(pm, inferenceEngine);
 
 	}
 

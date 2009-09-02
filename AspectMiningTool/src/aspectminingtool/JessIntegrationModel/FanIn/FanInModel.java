@@ -29,6 +29,7 @@ public class FanInModel implements IResultsModel{
 	Map<String,Method> methods;
 	ProjectModel projectModel;
 	List<Fan_in_Result> resultadoFanIn = new ArrayList<Fan_in_Result>();
+	InferenceEngine inferenceEngine = null;
 	
 
 	public FanInModel(Map<String,final_fan_in_metric> metrics,
@@ -42,12 +43,13 @@ public class FanInModel implements IResultsModel{
 		
 	}
 
-	public FanInModel(ProjectModel pm) {
+	public FanInModel(ProjectModel pm, InferenceEngine inferenceEngine) {
 		super();
 		this.metrics = new HashMap<String,final_fan_in_metric>();
 		this.methods = new HashMap<String,Method>();
 		this.calls = new HashMap<String,List<Call_Counted>>();
 		this.projectModel = null;
+		this.inferenceEngine = inferenceEngine;
 		contructModel(pm);
 	}
 	
@@ -119,14 +121,11 @@ public class FanInModel implements IResultsModel{
 	
 	private void contructModel(ProjectModel projectModel){
 		
-		
-		JessInferenceEngine engine = (JessInferenceEngine) AspectMiningModel.getInferenceEngine();
-		
 		setProjectModel(projectModel);
 		
-		setMethods(constructMethods(engine));
-		setCalls(contructCalls(engine));
-		setMetrics(constructMetrics(engine));
+		setMethods(constructMethods(inferenceEngine));
+		setCalls(contructCalls(inferenceEngine));
+		setMetrics(constructMetrics(inferenceEngine));
 		createFanInResul();
 
 		

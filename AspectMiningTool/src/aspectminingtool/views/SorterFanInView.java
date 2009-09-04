@@ -28,7 +28,6 @@ public class SorterFanInView extends ViewerSorter {
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int rc = 0;
-		if (e1 instanceof Fan_in_Result){
 			Fan_in_Result fir1 = (Fan_in_Result)e1;
 	    	Fan_in_Result fir2 = (Fan_in_Result)e2;
 		    switch (column) {
@@ -46,21 +45,6 @@ public class SorterFanInView extends ViewerSorter {
 			  break;
 		    }
 		    
-		}
-		else{
-			Call_Counted cc1 = (Call_Counted)e1;
-			Call_Counted cc2 = (Call_Counted)e1;
-			switch (column) {
-		    case 0:
-		    	String name1 = cc1.getCaller_id();
-		    	String name2 = cc2.getCaller_id();
-		    	rc = name1.compareTo(name2);
-		      break;
-		    case 1:
-		    	rc = this.direction == -1 ? 1 : -1;
-			  break;
-		    }
-		}
 
 		if (direction == DESCENDING)
 		      rc = -rc;

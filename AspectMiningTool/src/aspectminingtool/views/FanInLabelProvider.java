@@ -4,7 +4,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 
 public class FanInLabelProvider implements ITableLabelProvider {
@@ -25,9 +24,6 @@ public class FanInLabelProvider implements ITableLabelProvider {
 		    	return ((Fan_in_Result)element).getMetric();
 		}
 		 
-		if (element instanceof Call_Counted)
-		    return columnIndex == 0 ? ((Call_Counted)element).toString(): "";
-		
 		return "";
 	}
 

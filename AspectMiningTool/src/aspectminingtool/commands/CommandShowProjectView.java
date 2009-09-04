@@ -13,7 +13,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import aspectminingtool.treeView.SettingsDialogs;
+import aspectminingtool.dialogs.SettingsDialogs;
 import aspectminingtool.views.ViewPartFanIn;
 
 public class CommandShowProjectView extends AbstractHandler implements IHandler {

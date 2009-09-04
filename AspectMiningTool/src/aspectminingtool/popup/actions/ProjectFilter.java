@@ -14,7 +14,7 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 
-import aspectminingtool.treeView.SettingsDialogs;
+import aspectminingtool.dialogs.SettingsDialogs;
 
 public class ProjectFilter implements IObjectActionDelegate {
 

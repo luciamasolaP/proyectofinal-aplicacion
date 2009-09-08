@@ -4,10 +4,31 @@ public class Call {
 
 	String caller_id;  
 	String callee_id;
+	String precedence;
+	String id;
 	
-	public Call(String caller_id, String calle_id){
+	public String getPrecedence() {
+		return precedence;
+	}
+
+	public void setPrecedence(String precedence) {
+		this.precedence = precedence;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Call(String caller_id, String calle_id, String precedence, String id){
 		this.caller_id = caller_id;
 		this.callee_id = calle_id;
+		this.precedence = precedence;
+		this.id = id;
+		System.out.println("Call("+this.caller_id+","+this.callee_id+", "+precedence +", "+id+")");
     }
 	
     public String getCaller_id() {
@@ -24,7 +45,7 @@ public class Call {
 	}
 	
 	public String toString(){
-		String st = "Call("+this.caller_id+","+this.callee_id+")";
+		String st = "Call("+this.caller_id+","+this.callee_id+", "+precedence +", "+id+")";
 		return st;
 	}
     

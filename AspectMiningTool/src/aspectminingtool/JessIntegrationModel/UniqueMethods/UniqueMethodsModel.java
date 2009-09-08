@@ -1,0 +1,262 @@
+package aspectminingtool.JessIntegrationModel.UniqueMethods;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import jess.Filter;
+import jess.JessException;
+import jess.QueryResult;
+import jess.Rete;
+import jess.ValueVector;
+
+import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
+import JessIntegrationModel.ProjectModel;
+import aspectminingtool.InferenceEngine.InferenceEngine;
+import aspectminingtool.InferenceEngine.JessInferenceEngine;
+
+
+public class UniqueMethodsModel implements IResultsModel{
+
+	Map<String,List<Call_Counted>> calls;
+	Map<String,Final_UniqueMehtods_metric> metrics;
+	Map<String,Method> methods;
+	ProjectModel projectModel;
+	List<UniqueMethods_Result> resultadoFanIn = new ArrayList<UniqueMethods_Result>();
+	InferenceEngine inferenceEngine = null;
+	
+
+	public UniqueMethodsModel(Map<String,Final_UniqueMehtods_metric> metrics,
+			Map<String,Method> methods, Map<String,List<Call_Counted>> calls, ProjectModel pm) {
+		super();
+		this.metrics = metrics;
+		this.methods = methods;
+		this.calls = calls;
+		this.projectModel = pm;
+
+		
+	}
+
+	public UniqueMethodsModel(ProjectModel pm, InferenceEngine inferenceEngine) {
+		super();
+		this.metrics = new HashMap<String,Final_UniqueMehtods_metric>();
+		this.methods = new HashMap<String,Method>();
+		this.calls = new HashMap<String,List<Call_Counted>>();
+		this.projectModel = null;
+		this.inferenceEngine = inferenceEngine;
+		contructModel(pm);
+	}
+	
+	public Map<String,Final_UniqueMehtods_metric> getMetrics() {
+		return metrics;
+	}
+
+	public void setMetrics(Map<String,Final_UniqueMehtods_metric> metrics) {
+		this.metrics = metrics;
+	}
+
+	public Map<String,Method> getMethods() {
+		return methods;
+	}
+
+	public void setMethods(Map<String,Method> methods) {
+		this.methods = methods;
+	}
+
+	public Map<String,List<Call_Counted>> getCalls() {
+		return calls;
+	}
+
+	public void setCalls(Map<String,List<Call_Counted>> calls) {
+		this.calls = calls;
+	}
+
+
+	public void addCallCounted(Call_Counted cc){
+		String id = cc.getCalle_id();
+		List<Call_Counted> call = calls.get(id);
+
+		if (call == null){
+			call = new ArrayList<Call_Counted>();
+		}
+		
+
+		call.add(cc);
+		
+		
+		calls.remove(id);
+		calls.put(id, call);
+	}
+	
+	public void addFanInMetric(Final_UniqueMehtods_metric ff){
+
+		this.metrics.put(ff.getMetodo(), ff);
+		
+	}
+	
+	public void addMethod(Method m){
+		this.methods.put(m.getId(),m);
+	}
+
+	@Override
+	public String getId() {
+		return projectModel.getName();
+	}
+
+
+	public ProjectModel getProjectModel() {
+		return projectModel;
+	}
+
+	public void setProjectModel(ProjectModel projectModel) {
+		this.projectModel = projectModel;
+	}
+	
+	
+	private void contructModel(ProjectModel projectModel){
+		
+		setProjectModel(projectModel);
+		
+		setMethods(constructMethods(inferenceEngine));
+		setCalls(contructCalls(inferenceEngine));
+		setMetrics(constructMetrics(inferenceEngine));
+		createFanInResul();
+
+		
+	}
+
+	private void createFanInResul() {
+		
+		for (Iterator i = this.methods.keySet().iterator() ; i.hasNext() ; ){
+			
+			String key = (String)i.next();
+			
+			UniqueMethods_Result fir = new UniqueMethods_Result(methods.get(key),metrics.get(key).getMetric());
+			this.resultadoFanIn.add(fir);
+			
+		}
+		
+	}
+
+	public List<UniqueMethods_Result> getResultadoFanIn() {
+		return resultadoFanIn;
+	}
+
+	public void setResultadoFanIn(List<UniqueMethods_Result> resultadoFanIn) {
+		this.resultadoFanIn = resultadoFanIn;
+	}
+
+	private Map<String, Final_UniqueMehtods_metric> constructMetrics(InferenceEngine engine) {
+		
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		QueryResult result;
+		try {
+			result = jessEngine.runQueryStar("FinalfanIn", new ValueVector().add(""));
+			 while (result.next()) {
+				 Final_UniqueMehtods_metric ff = new Final_UniqueMehtods_metric(result.getString("metodo"), result.getString("m"));
+		         addFanInMetric(ff);
+		        }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try 
+	    {
+	        BufferedWriter outfile = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\fan-in result.txt"));
+	        
+	        for (Iterator i = metrics.keySet().iterator(); i.hasNext() ; ){
+	        	String nombre = (String)i.next();
+	        	outfile.write(((Final_UniqueMehtods_metric)metrics.get(nombre)).toString());
+				outfile.newLine();
+
+
+			}
+	       
+	     
+	        outfile.close();
+	    }
+	    catch (IOException e)    {    }
+		
+		return metrics;
+	}
+
+	private Map<String, List<Call_Counted>> contructCalls(InferenceEngine engine) {
+		
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		QueryResult result;
+		try {
+			result = jessEngine.runQueryStar("llamados", new ValueVector().add(""));
+			 while (result.next()) {
+				 Call_Counted cc = new Call_Counted(result.getString("Caller"), result.getString("Method"));
+		         addCallCounted(cc);
+		        }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try 
+	    {
+	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados.txt"));
+	        
+	        for (Iterator i = calls.keySet().iterator(); i.hasNext() ; ){
+	        	String nombre = (String)i.next();
+	        	List<Call_Counted> llamadas = calls.get(nombre);
+	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
+	        		
+	        		Call_Counted ll = (Call_Counted)ii.next();
+	        		outfile1.write(ll.toString());
+					outfile1.newLine();       		
+	        		
+	        	}
+
+			}
+	       
+	     
+	        outfile1.close();
+	    }
+	    catch (IOException e)    {    }
+		
+		return calls;
+	}
+
+	private Map<String,Method> constructMethods(InferenceEngine engine) {
+
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		Iterator methodsResult = jessEngine.getObjects(new Filter.ByClass(Method.class));
+		
+		for (;methodsResult.hasNext();){
+			Method m = (Method)methodsResult.next();
+			addMethod(m);
+		}
+		
+		
+		try 
+	    {
+	        BufferedWriter outfile2 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\metodos.txt"));
+	        
+	        for (Iterator i = methods.keySet().iterator(); i.hasNext() ; ){
+	        	String nombre = (String)i.next();
+	        	Method m = methods.get(nombre);
+	        	
+	        	outfile2.write(m.toString());
+				outfile2.newLine();       		
+	        		
+	        	}
+ 
+	        outfile2.close();
+	    }
+	    catch (IOException e)    {    }
+		
+		return methods;
+	}
+	
+	
+}

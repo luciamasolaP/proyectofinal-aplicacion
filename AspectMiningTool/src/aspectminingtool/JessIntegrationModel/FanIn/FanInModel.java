@@ -14,13 +14,11 @@ import jess.JessException;
 import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
-
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.model.AspectMiningModel;
 
 public class FanInModel implements IResultsModel{
 
@@ -31,7 +29,7 @@ public class FanInModel implements IResultsModel{
 	List<Fan_in_Result> resultadoFanIn = new ArrayList<Fan_in_Result>();
 	InferenceEngine inferenceEngine = null;
 	
-
+	
 	public FanInModel(Map<String,final_fan_in_metric> metrics,
 			Map<String,Method> methods, Map<String,List<Call_Counted>> calls, ProjectModel pm) {
 		super();
@@ -39,7 +37,6 @@ public class FanInModel implements IResultsModel{
 		this.methods = methods;
 		this.calls = calls;
 		this.projectModel = pm;
-
 		
 	}
 
@@ -86,9 +83,7 @@ public class FanInModel implements IResultsModel{
 			call = new ArrayList<Call_Counted>();
 		}
 		
-
 		call.add(cc);
-		
 		
 		calls.remove(id);
 		calls.put(id, call);
@@ -136,7 +131,6 @@ public class FanInModel implements IResultsModel{
 		for (Iterator i = this.methods.keySet().iterator() ; i.hasNext() ; ){
 			
 			String key = (String)i.next();
-			
 			Fan_in_Result fir = new Fan_in_Result(methods.get(key),metrics.get(key).getMetric());
 			this.resultadoFanIn.add(fir);
 			

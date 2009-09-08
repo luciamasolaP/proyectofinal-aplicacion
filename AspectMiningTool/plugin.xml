@@ -44,9 +44,16 @@
       <view
             allowMultiple="true"
             category="AspectMiningTool.category1"
-            class="aspectminingtool.views.ViewPartFanIn"
+            class="aspectminingtool.views.FanIn.ViewPartFanIn"
             id="aspectminingtool.views.ViewPartFanIn"
             name="FanIn Results"
+            restorable="true">
+      </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods"
+            id="aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods"
+            name="Unique Methods Results"
             restorable="true">
       </view>
    </extension>
@@ -67,6 +74,11 @@
             defaultHandler="aspectminingtool.commands.CommandShowProjectView"
             id="aspectminingtool.commands.CommandShowProjectView"
             name="showProjectView">
+      </command>
+      <command
+            defaultHandler="aspectminingtool.commands.CommandOpenResource"
+            id="aspectminingtool.commands.CommandOpenResource"
+            name="openResource">
       </command>
    </extension>
 

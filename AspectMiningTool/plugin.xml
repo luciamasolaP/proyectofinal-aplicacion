@@ -33,6 +33,12 @@
                menubarPath="AspectMiningTool.menu1/group1"
                label="Unique Method Analysis">
          </action>
+         <action
+               class="aspectminingtool.popup.actions.FlowGraphPopUp"
+               id="aspectminingtool.popup.actions.FlowGraphPopUp"
+               label="Flow Graph"
+               menubarPath="AspectMiningTool.menu1/group1">
+         </action>
       </objectContribution>
    </extension>
    <extension
@@ -56,11 +62,26 @@
             name="Unique Methods Results"
             restorable="true">
       </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.Seeds.ViewPartSeeds"
+            id="aspectminingtool.views.Seeds.ViewPartSeeds"
+            name="Seeds"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="toolbar:aspectminingtool.views.ViewPartFanIn">
+         <command
+               commandId="aspectminingtool.commands.CommandShowProjectView"
+               icon="images/configure.gif"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods">
          <command
                commandId="aspectminingtool.commands.CommandShowProjectView"
                icon="images/configure.gif"

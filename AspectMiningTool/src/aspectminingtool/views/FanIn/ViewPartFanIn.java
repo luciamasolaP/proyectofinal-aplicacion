@@ -40,6 +40,7 @@ import JessIntegrationModel.ProjectModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.views.ViewFilterProject;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -51,7 +52,7 @@ import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanIn extends ViewPart {
+public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
 	private SashForm sashForm1;
 	private TableColumn tableCallsColumn1;

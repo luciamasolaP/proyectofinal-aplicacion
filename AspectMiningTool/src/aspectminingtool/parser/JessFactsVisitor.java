@@ -140,7 +140,7 @@ public class JessFactsVisitor extends FactsVisitor {
 		}
 		//method(claveModulo,nombreModulo,tipoRetorn) claveModulo = nombrePaquete-nombreClase-nombreModulo-TipoDeParametros
 		
-		this.actualMethod = actualClass + "." + moduleName + "." + params;
+		this.actualMethod = actualClass + "//" + moduleName + "///" + params;
 		Method m = new Method(this.actualMethod,moduleName,treturn,this.actualClass,params);
 				
 		//define-in(claveModulo,claveClaseContenedora)
@@ -200,7 +200,7 @@ public class JessFactsVisitor extends FactsVisitor {
 			for (int i=0;i<parameters.length;i++)
 				params += parameters[i].getQualifiedName() + "-";
 			
-			String calledMethod = packageName + "." + className+ "." + methodName + "." + params; 
+			String calledMethod = packageName + "/" + className+ "//" + methodName + "///" + params; 
 			//call(claveModuloLlamador,claveModuloLlamado)
 
 			Call c = new Call(this.actualMethod,calledMethod);
@@ -221,7 +221,7 @@ public class JessFactsVisitor extends FactsVisitor {
 	private void getCompilationType(TypeDeclaration node){
 	
 		String className = node.getName().getFullyQualifiedName();
-		this.actualClass = this.actualPackage + "." + className;
+		this.actualClass = this.actualPackage + "/" + className;
 		Object o = null;
 		
 		if (node.isInterface()) {
@@ -273,7 +273,7 @@ public class JessFactsVisitor extends FactsVisitor {
 			
 			//Inherits(claveClaseHija,claveClaseMadre) claveClaseHija = nombrePaquete + nombreClase 
 
-			String extendedClass = pack + "." +((SimpleType)type).getName();
+			String extendedClass = pack + "/" +((SimpleType)type).getName();
 
 			Inherits inh = new Inherits(this.actualClass,extendedClass);
 			facts.add(inh);
@@ -307,7 +307,7 @@ public class JessFactsVisitor extends FactsVisitor {
 					if (typ.resolveBinding() != null)
 						interfacePackage = typ.resolveBinding().getPackage().getName(); //busco el paquete al que pertenece la inteface.
 					
-					String interfaceId = interfacePackage + "." +((SimpleType)typ).getName() ;  // nombre completo de la interface : paquete + nonbre
+					String interfaceId = interfacePackage + "/" +((SimpleType)typ).getName() ;  // nombre completo de la interface : paquete + nonbre
 					
 					if (node.isInterface()) // Interface extends Interface
 						//extends(claveInterfaceHija,claveInterfacePadre)

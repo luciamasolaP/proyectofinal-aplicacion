@@ -4,7 +4,8 @@ package aspectminingtool.views.UniqueMethods;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+
 
 
 public class SorterCallsUniqueMethodsView extends ViewerSorter {

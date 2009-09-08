@@ -38,9 +38,10 @@ import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
+import aspectminingtool.views.ViewFilterProject;
 
 
 /**
@@ -53,8 +54,8 @@ import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartUniqueMethods extends ViewPart {
-	public static final String ID_VIEW = "aspectminingtool.views.ViewPartUniqueMethods"; //$NON-NLS-1$
+public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject {
+	public static final String ID_VIEW = "aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods"; //$NON-NLS-1$
 	private SashForm sashForm1;
 	private TableColumn tableCallsColumn1;
 	private Table callsTable;
@@ -158,8 +159,8 @@ public class ViewPartUniqueMethods extends ViewPart {
 							
 							if (event.getSelection() instanceof IStructuredSelection) {
 								
-								Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-								openResource(fanInResult.getMetodo().getClass_id());
+								UniqueMethods_Result UniqueMethodResult = (UniqueMethods_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
+								openResource(UniqueMethodResult.getMetodo().getClass_id());
 							}
 						}
 						
@@ -266,7 +267,7 @@ public class ViewPartUniqueMethods extends ViewPart {
 	 */
 	public void setModel(IResultsModel model) {
 		this.model = model;
-		super.setPartName("Fan in Results - " + model.getId());
+		super.setPartName("Unique Methods Results - " + model.getId());
 		methodsTableViewer.setInput(model);
 	}
 
@@ -280,9 +281,9 @@ public class ViewPartUniqueMethods extends ViewPart {
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				Fan_in_Result metodo = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				UniqueMethods_Result metodo = (UniqueMethods_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				String key = metodo.getMetodo().getId();
-				List<Call_Counted> llamadas = ((FanInModel) model).getCalls().get(key);
+				List<Call_Counted> llamadas = ((UniqueMethodsModel) model).getCalls().get(key);
 				callsTableViewer.setInput(llamadas);
 
 			}
@@ -371,8 +372,8 @@ public class ViewPartUniqueMethods extends ViewPart {
 				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					Fan_in_Result fanInResult = (Fan_in_Result) iter.next();
-					String id = fanInResult.getMetodo().getClass_id();
+					UniqueMethods_Result uniqueMethodsResult = (UniqueMethods_Result) iter.next();
+					String id = uniqueMethodsResult.getMetodo().getClass_id();
 					openResource(id);
 
 			}

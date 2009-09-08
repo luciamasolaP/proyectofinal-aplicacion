@@ -1,16 +1,13 @@
 package aspectminingtool.views.UniqueMethods;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
+import java.util.List;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
+
 import org.eclipse.jface.viewers.Viewer;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+
 
 public class CallsContentProviderUniqueMethods implements IStructuredContentProvider {
 

@@ -4,8 +4,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+
+
 
 public class CallsLabelProviderUniqueMethods implements ITableLabelProvider {
 

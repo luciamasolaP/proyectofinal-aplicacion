@@ -4,7 +4,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
+
 
 public class UniqueMethodsLabelProvider implements ITableLabelProvider {
 
@@ -17,11 +18,11 @@ public class UniqueMethodsLabelProvider implements ITableLabelProvider {
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		
-		if (element instanceof Fan_in_Result){
+		if (element instanceof UniqueMethods_Result){
 			if (columnIndex == 0) 
-		    	return ((Fan_in_Result)element).toString();
+		    	return ((UniqueMethods_Result)element).toString();
 		    else if (columnIndex == 1)
-		    	return ((Fan_in_Result)element).getMetric();
+		    	return ((UniqueMethods_Result)element).getMetric();
 		}
 		 
 		return "";

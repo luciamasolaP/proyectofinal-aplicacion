@@ -1,17 +1,13 @@
 package aspectminingtool.popup.actions;
 
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.ProjectModel;
 import aspectminingtool.Algorithms.Algorithm;
 import aspectminingtool.Algorithms.FanInAlgorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.model.AspectMiningModel;
 import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 public class FanInPopUp extends AbstractPerformMiningPopup {

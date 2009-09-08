@@ -11,4 +11,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: jess,
  org.eclipse.jdt.core,
- org.eclipse.jdt.core.dom
+ org.eclipse.jdt.core.dom,
+ org.eclipse.ui.ide

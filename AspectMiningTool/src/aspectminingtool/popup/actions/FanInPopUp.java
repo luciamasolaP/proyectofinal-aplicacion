@@ -12,7 +12,7 @@ import aspectminingtool.Algorithms.FanInAlgorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.model.AspectMiningModel;
-import aspectminingtool.views.ViewPartFanIn;
+import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 public class FanInPopUp extends AbstractPerformMiningPopup {
 

@@ -4,17 +4,14 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import aspectminingtool.dialogs.SettingsDialogs;
-import aspectminingtool.views.ViewPartFanIn;
+import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 public class CommandShowProjectView extends AbstractHandler implements IHandler {
 

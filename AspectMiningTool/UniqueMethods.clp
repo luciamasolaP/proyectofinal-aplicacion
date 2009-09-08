@@ -1,8 +1,8 @@
-(import model.*)
+(import JessIntegrationModel.*)
 
 (deftemplate Interface (declare (from-class Interface)))
 (deftemplate Method    (declare (from-class Method)))
-(deftemplate Class       (declare (from-class model.Class)))
+(deftemplate Class       (declare (from-class JessIntegrationModel.Class)))
 (deftemplate Inherits    (declare (from-class Inherits)))
 (deftemplate Implements    (declare (from-class Implements)))
 (deftemplate Call    (declare (from-class Call)))
@@ -178,7 +178,6 @@
     (modify ?OldFanInMetricAcum (metric ?NewMetricAcum))
     )
 
-
 (defrule final_fan-in
 	"calcula el fan in total, esto es el propio más el acumulado"
 	(declare (salience -100))
@@ -192,6 +191,7 @@
 (defquery llamados
 	"comment"
 	(declare (variables ?ln))
+    (Method (id ?Method)(returnType ?*x*))
     (call_counted (caller_id ?Caller) (callee_id ?Method))
 	
     )
@@ -199,8 +199,10 @@
 (defquery UniqueMethods
 	"comment"
 	(declare (variables ?ln))
-    (Method (id ?mi) (class_id ?class)(returnType ?*x*))
+    (Method (id ?mi)(class_id ?class)(returnType ?*x*)(name ?name)(parametros ?parametros))
     (final_fan-in_metric(method_id ?mi)(metric ?m))
     
    
     )
+
+

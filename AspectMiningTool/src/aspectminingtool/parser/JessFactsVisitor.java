@@ -54,6 +54,8 @@ public class JessFactsVisitor extends FactsVisitor {
 	private String actualPackage;
 	private String actualClass;
 	private ArrayList facts;
+	private int precedence;
+	
 
 	
 	/**
@@ -116,6 +118,8 @@ public class JessFactsVisitor extends FactsVisitor {
 	 */
 	
 	public boolean visit(MethodDeclaration node) {
+		
+		precedence = 1;
 		
 		String moduleName = node.getName().getFullyQualifiedName();
 		
@@ -202,8 +206,10 @@ public class JessFactsVisitor extends FactsVisitor {
 			
 			String calledMethod = packageName + "/" + className+ "//" + methodName + "///" + params; 
 			//call(claveModuloLlamador,claveModuloLlamado)
-
-			Call c = new Call(this.actualMethod,calledMethod);
+			String prec = String.valueOf(precedence);
+			String id = actualMethod + calledMethod + prec;
+			Call c = new Call(this.actualMethod,calledMethod, prec , id);
+			precedence++;
 			facts.add(c);
 
 		}

@@ -69,6 +69,20 @@
             name="Seeds"
             restorable="true">
       </view>
+      <view
+            class="aspectminingtool.views.Seeds.ViewPartPrueba"
+            id="aspectminingtool.views.Seeds.ViewPartPrueba"
+            name="Prueba"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
+            id="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
+            name="Flow Graph Results"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

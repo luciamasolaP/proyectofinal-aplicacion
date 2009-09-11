@@ -189,7 +189,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 						tableCallsColumn1 = new TableColumn(callsTable,
 								SWT.NONE);
 						tableCallsColumn1.setText("Calls");
-						tableCallsColumn1.setWidth(150);
+						tableCallsColumn1.setWidth(300);
 						tableCallsColumn1
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 							public void widgetSelected(SelectionEvent event) {

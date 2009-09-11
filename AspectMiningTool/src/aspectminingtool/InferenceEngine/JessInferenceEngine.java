@@ -1,15 +1,12 @@
 package aspectminingtool.InferenceEngine;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import jess.JessException;
 import jess.Rete;
-
 import JessIntegrationModel.Interface;
 import aspectminingtool.Activator;
-import aspectminingtool.Algorithms.Algorithm;
 
 
 

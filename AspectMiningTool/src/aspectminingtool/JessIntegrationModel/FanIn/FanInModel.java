@@ -19,6 +19,7 @@ import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.model.Call_Counted;
 
 public class FanInModel implements IResultsModel{
 
@@ -48,6 +49,10 @@ public class FanInModel implements IResultsModel{
 		this.projectModel = null;
 		this.inferenceEngine = inferenceEngine;
 		contructModel(pm);
+	}
+
+	public List<Call_Counted> getCalls(String methodId){
+		return calls.get(methodId);
 	}
 	
 	public Map<String,final_fan_in_metric> getMetrics() {

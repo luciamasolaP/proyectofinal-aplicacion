@@ -4,7 +4,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+import aspectminingtool.model.Call_Counted;
+
 
 
 

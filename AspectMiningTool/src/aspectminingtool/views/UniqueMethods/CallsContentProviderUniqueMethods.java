@@ -2,11 +2,12 @@ package aspectminingtool.views.UniqueMethods;
 
 
 import java.util.List;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
+import aspectminingtool.model.Call_Counted;
+
 
 
 public class CallsContentProviderUniqueMethods implements IStructuredContentProvider {

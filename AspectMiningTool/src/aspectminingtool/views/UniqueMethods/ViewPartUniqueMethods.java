@@ -38,9 +38,9 @@ import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.UniqueMethods.Call_Counted;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
+import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.ViewFilterProject;
 
 

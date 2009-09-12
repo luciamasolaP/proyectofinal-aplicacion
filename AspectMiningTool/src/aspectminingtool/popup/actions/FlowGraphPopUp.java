@@ -5,12 +5,9 @@ import org.eclipse.ui.PlatformUI;
 
 import JessIntegrationModel.IResultsModel;
 import aspectminingtool.Algorithms.Algorithm;
-import aspectminingtool.Algorithms.FanInAlgorithm;
 import aspectminingtool.Algorithms.FlowGraphAlgorithm;
 import aspectminingtool.InferenceEngine.InferenceEngine;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
-import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 public class FlowGraphPopUp extends AbstractPerformMiningPopup {
 
@@ -26,7 +23,10 @@ public class FlowGraphPopUp extends AbstractPerformMiningPopup {
 
 	@Override
 	protected void showResults(IResultsModel results) {
-		try {
+		
+		FlowGraphModel flowGraphResults = (FlowGraphModel)results;		
+		flowGraphResults.listResults();
+		/*try {
 
 //			ViewPartFanIn view = (ViewPartFanIn) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 //			.getActivePage().showView(ViewPartFanIn.ID_VIEW,results.getId() , IWorkbenchPage.VIEW_CREATE);
@@ -43,7 +43,7 @@ public class FlowGraphPopUp extends AbstractPerformMiningPopup {
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	@Override

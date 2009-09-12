@@ -62,21 +62,15 @@ public class ExampleLabelProvider
 	 */
 	public String getColumnText(Object element, int columnIndex) {
 		String result = "";
-		ExampleTask task = (ExampleTask) element;
+		MethodDescription task = (MethodDescription) element;
 		switch (columnIndex) {
-			case 0:  // COMPLETED_COLUMN
+			case 0 :
+				result = task.getMethod().toString();
 				break;
 			case 1 :
 				result = task.getDescription();
 				break;
-			case 2 :
-				result = task.getOwner();
-				break;
-			case 3 :
-				result = task.getPercentComplete() + "";
-				break;
-			default :
-				break; 	
+	
 		}
 		return result;
 	}

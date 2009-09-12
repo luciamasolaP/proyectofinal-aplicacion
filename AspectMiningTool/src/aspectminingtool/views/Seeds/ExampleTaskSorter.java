@@ -52,8 +52,8 @@ public class ExampleTaskSorter extends ViewerSorter {
 	 */
 	public int compare(Viewer viewer, Object o1, Object o2) {
 
-		ExampleTask task1 = (ExampleTask) o1;
-		ExampleTask task2 = (ExampleTask) o2;
+		MethodDescription task1 = (MethodDescription) o1;
+		MethodDescription task2 = (MethodDescription) o2;
 
 		switch (criteria) {
 			case DESCRIPTION :
@@ -78,8 +78,8 @@ public class ExampleTaskSorter extends ViewerSorter {
 	 *  equal to the second element; and a positive number if the first
 	 *  element is greater than the second element
 	 */
-	private int comparePercentComplete(ExampleTask task1, ExampleTask task2) {
-		int result = task1.getPercentComplete() - task2.getPercentComplete();
+	private int comparePercentComplete(MethodDescription task1, MethodDescription task2) {
+//		int result = task1.getPercentComplete() - task2.getPercentComplete();
 		result = result < 0 ? -1 : (result > 0) ? 1 : 0;  
 		return result;
 	}
@@ -95,7 +95,7 @@ public class ExampleTaskSorter extends ViewerSorter {
 	 *  equal to the second element; and a positive number if the first
 	 *  element is greater than the second element
 	 */
-	protected int compareDescriptions(ExampleTask task1, ExampleTask task2) {
+	protected int compareDescriptions(MethodDescription task1, MethodDescription task2) {
 		return collator.compare(task1.getDescription(), task2.getDescription());
 	}
 
@@ -110,7 +110,7 @@ public class ExampleTaskSorter extends ViewerSorter {
 	 *  equal to the second element; and a positive number if the first
 	 *  element is greater than the second element
 	 */
-	protected int compareOwners(ExampleTask task1, ExampleTask task2) {
+	protected int compareOwners(MethodDescription task1, MethodDescription task2) {
 		return collator.compare(task1.getOwner(), task2.getOwner());
 	}
 

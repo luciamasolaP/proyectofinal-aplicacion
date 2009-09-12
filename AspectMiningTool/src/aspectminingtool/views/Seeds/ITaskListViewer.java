@@ -14,7 +14,7 @@ public interface ITaskListViewer {
 	 * 
 	 * @param task
 	 */
-	public void addTask(ExampleTask task);
+	public void addTask(MethodDescription task);
 	
 	/**
 	 * Update the view to reflect the fact that a task was removed 
@@ -22,7 +22,7 @@ public interface ITaskListViewer {
 	 * 
 	 * @param task
 	 */
-	public void removeTask(ExampleTask task);
+	public void removeTask(MethodDescription task);
 	
 	/**
 	 * Update the view to reflect the fact that one of the tasks
@@ -30,5 +30,5 @@ public interface ITaskListViewer {
 	 * 
 	 * @param task
 	 */
-	public void updateTask(ExampleTask task);
+	public void updateTask(MethodDescription task);
 }

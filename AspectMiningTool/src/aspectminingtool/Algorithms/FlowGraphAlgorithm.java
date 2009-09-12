@@ -9,7 +9,7 @@ public class FlowGraphAlgorithm extends Algorithm{
 	
 	public FlowGraphAlgorithm() {
 
-		archive = "Fan-In.clp";
+		archive = "FlowGraph.clp";
 
 	}
 	

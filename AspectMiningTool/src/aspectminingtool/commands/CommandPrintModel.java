@@ -1,7 +1,7 @@
 package aspectminingtool.commands;
 
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -9,8 +9,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import aspectminingtool.views.Seeds.ExampleTask;
-import aspectminingtool.views.Seeds.ExampleTaskList;
+import aspectminingtool.views.Seeds.MethodDescription;
+import aspectminingtool.views.Seeds.ModelSeedsFanIn;
 import aspectminingtool.views.Seeds.ViewPartSeeds;
 
 
@@ -23,13 +23,13 @@ public class CommandPrintModel extends AbstractHandler implements IHandler {
 		ViewPartSeeds view = (ViewPartSeeds)HandlerUtil.getActivePart(event);
 		
 		if (view.getModel() != null){
-			ExampleTaskList model = (ExampleTaskList)view.getModel(); //TODO obtener java project del modelo de la vista
+			ModelSeedsFanIn model = (ModelSeedsFanIn)view.getModel(); //TODO obtener java project del modelo de la vista
 		
 			System.out.println("En CommandPrintModel.java");
-			Vector tasks = model.getTasks();
+			List tasks = model.getTasks();
 			for (Iterator i= tasks.iterator() ; i.hasNext() ;){
-				ExampleTask et = (ExampleTask)i.next();
-				System.out.println("task: "+ et.getDescription() + ", " + et.getOwner() + ", " + et.getPercentComplete());
+				MethodDescription et = (MethodDescription)i.next();
+				System.out.println("task: "+ et.getDescription());
 			}
 		}
 		

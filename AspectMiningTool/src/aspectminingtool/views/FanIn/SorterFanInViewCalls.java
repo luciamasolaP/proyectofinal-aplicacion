@@ -4,7 +4,7 @@ package aspectminingtool.views.FanIn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
+import aspectminingtool.model.Call_Counted;
 
 
 public class SorterFanInViewCalls extends ViewerSorter {

@@ -4,8 +4,8 @@ package aspectminingtool.views.FanIn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.model.Call_Counted;
 
 public class SorterFanInViewFanIn extends ViewerSorter {
 	private static final int ASCENDING = 0;

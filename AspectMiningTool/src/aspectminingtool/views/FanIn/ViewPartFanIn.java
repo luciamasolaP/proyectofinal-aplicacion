@@ -36,11 +36,13 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.Seeds.ViewPartSeeds;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -380,7 +382,15 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 		selectAsSeedAction = new Action("Select As a Seed") {
 			public void run() {
-				selectAsSeedOperation();
+				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+				Iterator iter = sel.iterator();
+				while (iter.hasNext()) {
+					Fan_in_Result method = (Fan_in_Result) iter.next();
+					selectAsSeedOperation(method.getMetodo());
+
+			}
+
+				
 			}
 		};
 
@@ -437,8 +447,19 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 	}
 
-	protected void selectAsSeedOperation() {
+	protected void selectAsSeedOperation(Method method) {
 
+		try {
+			ViewPartSeeds view = (ViewPartSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+			.getActivePage().showView(ViewPartSeeds.ID_VIEW );
+			
+			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()));
+			
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		System.out.println("selected as a seed");
 		
 	}

@@ -1,534 +1,361 @@
 package aspectminingtool.views.Seeds;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.ui.part.ViewPart;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.ViewPart;
-
-import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
-import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
-import aspectminingtool.JessIntegrationModel.Seeds.Description;
-import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
-import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
-import aspectminingtool.views.FanIn.CallsLabelProviderFanIn;
-import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.SWT;
 
 
-
-/**
-* This code was edited or generated using CloudGarden's Jigloo
-* SWT/Swing GUI Builder, which is free for non-commercial
-* use. If Jigloo is being used commercially (ie, by a corporation,
-* company or business for any purpose whatever) then you
-* should purchase a license for each developer using Jigloo.
-* Please visit www.cloudgarden.com for details.
-* Use of Jigloo implies acceptance of these licensing terms.
-* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
-* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
-* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
-*/
 public class ViewPartSeeds extends ViewPart {
     public static final String ID_VIEW =
         "aspectminingtool.views.Seeds.ViewPartSeeds"; //$NON-NLS-1$
 
-    private SashForm sashForm1;
-	private TableColumn tableCallsColumn1;
-	private Table callsTable;
-	private TableViewer callsTableViewer;
-	private Composite composite2;
-	private TableViewer methodsTableViewer;
-	private Table methodsTable = null;
-	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
+    Composite composite1;
+    
 
-	private IResultsModel model;
-	Composite composite1;
+	private Table table;
+	private TableViewer tableViewer;
+	private Button closeButton;
+    
 	
+	// Create a ExampleTaskList and assign it to an instance variable 
+	private ExampleTaskList taskList = new ExampleTaskList(); 
+
 	// Set the table column property names
-	 public static final String METHOD 			= "Method";
-	 public static final String DESCRIPTION 	= "Description";
+	private final String COMPLETED_COLUMN 		= "completed";
+	private final String DESCRIPTION_COLUMN 	= "description";
+	private final String OWNER_COLUMN 			= "owner";
+	private final String PERCENT_COLUMN 		= "percent";
 
 	// Set column names
 	private String[] columnNames = new String[] { 
-			METHOD, 
-			DESCRIPTION
+			COMPLETED_COLUMN, 
+			DESCRIPTION_COLUMN,
+			OWNER_COLUMN,
+			PERCENT_COLUMN
 			};
-
-
-	/**
+	
+    /**
      * 
      */
-	public ViewPartSeeds() {
-		super();
-	}
+    public ViewPartSeeds() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets
-	 * .Composite)
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    public void createPartControl(Composite parent) {
+        
+    	composite1 = new Composite(parent, SWT.NULL);
+        composite1.setLayout(new GridLayout(4, false));
+        this.addChildControls(composite1);
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#setFocus()
+     */
+    public void setFocus() {
+        // TODO Auto-generated method stub
+    }
+    
+    /**
+     * Cleans up all resources created by this ViewPart.
+     */
+    public void dispose() {
+        super.dispose();
+    }
+    
+	private void addChildControls(Composite composite) {
+
+		// Create a composite to hold the children
+		GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_BOTH);
+		composite.setLayoutData (gridData);
+
+		// Set numColumns to 3 for the buttons 
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginWidth = 4;
+		composite.setLayout (layout);
+
+		// Create the table 
+		createTable(composite);
+		
+		// Create and setup the TableViewer
+		createTableViewer();
+		tableViewer.setContentProvider(new ExampleContentProvider());
+		tableViewer.setLabelProvider(new ExampleLabelProvider());
+		// The input for the table viewer is the instance of ExampleTaskList
+		taskList = new ExampleTaskList();
+		tableViewer.setInput(taskList);
+
+		// Add the buttons
+		createButtons(composite);
+	}
+	
+	/**
+	 * Create the Table
 	 */
-	public void createPartControl(Composite parent) {
-		FillLayout parentLayout = new FillLayout(org.eclipse.swt.SWT.HORIZONTAL);
-		parent.setLayout(parentLayout);
-		{
-			sashForm1 = new SashForm(parent, SWT.NONE);
-			sashForm1.setSize(60, 30);
-			{
-				composite1 = new Composite(sashForm1, SWT.NULL);
-				FillLayout composite1Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
-				composite1.setLayout(composite1Layout);
-				composite1.setBounds(-483, -25, 461, 81);
-				
-				methodsTable = new Table(composite1, SWT.BORDER | SWT.MULTI);
-				methodsTableViewer = new TableViewer(methodsTable);
+	private void createTable(Composite parent) {
+		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | 
+					SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
-				// Set the sorter
-//				ViewerSorter sorter = new SorterFanInViewFanIn();
-//				methodsTableViewer.setSorter(sorter);
+		final int NUMBER_COLUMNS = 4;
 
-				// Set the content and label providers
-				methodsTableViewer
-						.setContentProvider(new SeedsContentProvider());
-				methodsTableViewer.setLabelProvider(new SeedsLabelProvider());
-								
+		table = new Table(parent, style);
+		
+		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalSpan = 3;
+		table.setLayoutData(gridData);		
+					
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
 
-				// Set up the table, each column has a listener for the click
-				// that calls
-				// the sorter and refreshes the tree.
-				// Column 1
-				final TableColumn tc1 = new TableColumn(methodsTable, SWT.LEFT);
-				tc1.setText(METHOD);
-				tc1.setWidth(498);
-//				tc1
-//						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//							public void widgetSelected(SelectionEvent event) {
-//								((SorterFanInViewFanIn) methodsTableViewer
-//										.getSorter()).doSort(0);
-//								methodsTableViewer.refresh();
-//							}
-//						});
-
-				// Column 2
-				TableColumn tc2 = new TableColumn(methodsTable, SWT.LEFT);
-				tc2.setText(DESCRIPTION);
-				tc2.setWidth(50);
-//				tc2
-//						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//							public void widgetSelected(SelectionEvent event) {
-//								((SorterFanInViewFanIn) methodsTableViewer
-//										.getSorter()).doSort(1);
-//								methodsTableViewer.refresh();
-//							}
-//						});
-
-				// Turn on the header and the lines
-				methodsTable.setHeaderVisible(true);
-				methodsTable.setLinesVisible(true);
-
-//				methodsTableViewer
-//						.addSelectionChangedListener(new ISelectionChangedListener() {
-//							public void selectionChanged(
-//									SelectionChangedEvent event) {
-//								selectionItem(event);
-//
-//							}
-//
-//						});
-				
-//				methodsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
-//
-//					@Override
-//					public void doubleClick(DoubleClickEvent event) {
-//						if (!event.getSelection().isEmpty()) {
-//							
-//							if (event.getSelection() instanceof IStructuredSelection) {
-//								
-//								Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-//								openResource(fanInResult.getMetodo().getClass_id());
-//							}
-//						}
-//						
-//					}
-//					
-//				});
-//				
-				createCellEditable();
-
+		// 1st column with image/checkboxes - NOTE: The SWT.CENTER has no effect!!
+		TableColumn column = new TableColumn(table, SWT.CENTER, 0);		
+		column.setText("!");
+		column.setWidth(20);
+		
+		// 2nd column with task Description
+		column = new TableColumn(table, SWT.LEFT, 1);
+		column.setText("Description");
+		column.setWidth(400);
+		// Add listener to column so tasks are sorted by description when clicked 
+		column.addSelectionListener(new SelectionAdapter() {
+       	
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.setSorter(new ExampleTaskSorter(ExampleTaskSorter.DESCRIPTION));
 			}
-			{
-				composite2 = new Composite(sashForm1, SWT.NONE);
-				FillLayout composite2Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
-				composite2.setLayout(composite2Layout);
-				composite2.setBounds(0, 0, 77, 81);
-				{
-					callsTable = new Table(composite2, SWT.LEFT | SWT.MULTI);
-					callsTableViewer = new TableViewer(callsTable);
-					
-					// Set the sorter
-					ViewerSorter sorterCalls = new SorterFanInViewCalls();
-					callsTableViewer.setSorter(sorterCalls);
-					
-					// Set the content and label providers
-					callsTableViewer.setContentProvider(new CallsContentProviderFanIn());
-					callsTableViewer.setLabelProvider(new CallsLabelProviderFanIn());
-					
-					{
-						tableCallsColumn1 = new TableColumn(callsTable,
-								SWT.NONE);
-						tableCallsColumn1.setText("Calls");
-						tableCallsColumn1.setWidth(150);
-						tableCallsColumn1
-						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewCalls) callsTableViewer
-										.getSorter()).doSort(0);
-								callsTableViewer.refresh();
-							}
-						});
-					}
-	
+		});
 
-					callsTable.setHeaderVisible(true);
-					
-					callsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
-
-						@Override
-						public void doubleClick(DoubleClickEvent event) {
-							if (!event.getSelection().isEmpty()) {
-								
-								if (event.getSelection() instanceof IStructuredSelection) {
-									
-									Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
-									String name = callCounted.getCaller_id();
-									int index = name.indexOf("//");
-									name = name.substring(0, index);
-									openResource(name);
-								}
-							}
-							
-						}
-						
-					});
-
-
-				}
+		// 3rd column with task Owner
+		column = new TableColumn(table, SWT.LEFT, 2);
+		column.setText("Owner");
+		column.setWidth(100);
+		// Add listener to column so tasks are sorted by owner when clicked
+		column.addSelectionListener(new SelectionAdapter() {
+       	
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.setSorter(new ExampleTaskSorter(ExampleTaskSorter.OWNER));
 			}
-		}
-		
-		createActions();
-		createContextMenu();
-		hookGlobalActions();
-		setInputExample();
+		});
 
-
+		// 4th column with task PercentComplete 
+		column = new TableColumn(table, SWT.CENTER, 3);
+		column.setText("% Complete");
+		column.setWidth(80);
+		//  Add listener to column so tasks are sorted by percent when clicked
+		column.addSelectionListener(new SelectionAdapter() {
+       	
+			public void widgetSelected(SelectionEvent e) {
+				tableViewer.setSorter(new ExampleTaskSorter(ExampleTaskSorter.PERCENT_COMPLETE));
+			}
+		});
 	}
-	
-	private void setInputExample(){
-		Map<String,List<Call_Counted>> calls = new HashMap<String,List<Call_Counted>>();
-		Call_Counted cc = new Call_Counted("metodo1", "metodo2");
-		Call_Counted cc1 = new Call_Counted("metodo3", "metodo2");
-		Call_Counted cc2 = new Call_Counted("metodo4", "metodo2");
-		List<Call_Counted> list = new ArrayList<Call_Counted>();
-		list.add(cc);
-		list.add(cc1);
-		list.add(cc2);
-		calls.put("metodo2", list);
-
-		Method m = new Method("metodo1", "","", "", "");
-		Method m1 = new Method("metodo2", "","", "", "");
-		Method m2 = new Method("metodo3", "","", "", "");
-		Method m3 = new Method("metodo4", "","", "", "");
-		Description d = new Description(m,"");
-		Description d1 = new Description(m1,"");
-		Description d2= new Description(m2,"");
-		Description d3 = new Description(m3,"");
-		List<Description> description = new ArrayList<Description>();
-		description.add(d);
-		description.add(d1);
-		description.add(d2);
-		description.add(d3);
-		
-		SeedsModel seedsModel = new SeedsModel(calls,description,null);
-			
-		methodsTableViewer.setInput(seedsModel);
-	}
-
-	private void createCellEditable() {
-		
-		//methodsTableViewer
-  
-		methodsTableViewer.setUseHashlookup(true);
-        methodsTableViewer.setColumnProperties(columnNames);
    
-        // Create the cell editors
-        CellEditor[] editors = new CellEditor[columnNames.length];
-
-        // Column 1 : the column 1 it is not editable
-        editors[0] = null;
-
-        // Column 2 : Description of the Seed
-        TextCellEditor textEditor = new TextCellEditor(methodsTable);
-        editors[1] = textEditor;
-
-        // Assign the cell editors to the viewer 
-        methodsTableViewer.setCellEditors(editors);
-        // Set the cell modifier for the viewer
-        methodsTableViewer.setCellModifier(new SeedsCellModifier(methodsTableViewer));
-        // Set the default sorter for the viewer 
-//        methodsTableViewer.setSorter(
-//           new ExampleTaskSorter(ExampleTaskSorter.DESCRIPTION));
-
-		
-	}
-
-	private void hookGlobalActions() {
-		IActionBars bars = getViewSite().getActionBars();
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
-	
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-	 */
-	public void setFocus() {
-		// TODO Auto-generated method stub
-	}
-
 	/**
-	 * Cleans up all resources created by this ViewPart.
+	 * Create the TableViewer 
 	 */
-	public void dispose() {
-		super.dispose();
-	}
+	private void createTableViewer() {
 
-	/**
-	 * Update the view with the new model. It calls TreeViewer.setInput to fill
-	 * the tree with the new model.
-	 * 
-	 * @param model
-	 */
-	public void setModel(IResultsModel model) {
-		this.model = model;
-		super.setPartName("Fan in Results - " + model.getId());
-		methodsTableViewer.setInput(model);
-	}
-
-	public IResultsModel getModel() {
-		return model;
-	}
-
-
-	private void selectionItem(SelectionChangedEvent event) {
-
-		if (!event.getSelection().isEmpty()) {
-
-			if (event.getSelection() instanceof IStructuredSelection) {
-				Fan_in_Result metodo = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				String key = metodo.getMetodo().getId();
-				List<Call_Counted> llamadas = ((FanInModel) model).getCalls().get(key);
-				callsTableViewer.setInput(llamadas);
-
-			}
-
-		}
-
-	}
-	
-	private void openResource(String resourceName) {
+		tableViewer = new TableViewer(table);
+		tableViewer.setUseHashlookup(true);
 		
-			ProjectModel projectModel = model.getProjectModel();
-			IResource resource = projectModel.getAssociatedResource(resourceName);
-			if (resource != null){
-				IFile fileStore = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
-	            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	            try {
-					IDE.openEditor(page, fileStore,true);
-				} catch (PartInitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+		tableViewer.setColumnProperties(columnNames);
+
+		// Create the cell editors
+		CellEditor[] editors = new CellEditor[columnNames.length];
+
+		// Column 1 : Completed (Checkbox)
+		editors[0] = new CheckboxCellEditor(table);
+
+		// Column 2 : Description (Free text)
+		TextCellEditor textEditor = new TextCellEditor(table);
+		((Text) textEditor.getControl()).setTextLimit(60);
+		editors[1] = textEditor;
+
+		// Column 3 : Owner (Combo Box) 
+		editors[2] = new ComboBoxCellEditor(table, taskList.getOwners(), SWT.READ_ONLY);
+
+		// Column 4 : Percent complete (Text with digits only)
+		textEditor = new TextCellEditor(table);
+		((Text) textEditor.getControl()).addVerifyListener(
+		
+			new VerifyListener() {
+				public void verifyText(VerifyEvent e) {
+					// Here, we could use a RegExp such as the following 
+					// if using JRE1.4 such as  e.doit = e.text.matches("[\\-0-9]*");
+					e.doit = "0123456789".indexOf(e.text) >= 0 ;
 				}
+			});
+		editors[3] = textEditor;
+
+		// Assign the cell editors to the viewer 
+		tableViewer.setCellEditors(editors);
+		// Set the cell modifier for the viewer
+		tableViewer.setCellModifier(new ExampleCellModifier(this));
+		// Set the default sorter for the viewer 
+		tableViewer.setSorter(new ExampleTaskSorter(ExampleTaskSorter.DESCRIPTION));
+	}
+
+	/**
+	 * Add the "Add", "Delete" and "Close" buttons
+	 * @param parent the parent composite
+	 */
+	private void createButtons(Composite parent) {
+		
+		// Create and configure the "Add" button
+		Button add = new Button(parent, SWT.PUSH | SWT.CENTER);
+		add.setText("Add");
+		
+		GridData gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gridData.widthHint = 80;
+		add.setLayoutData(gridData);
+		add.addSelectionListener(new SelectionAdapter() {
+       	
+       		// Add a task to the ExampleTaskList and refresh the view
+			public void widgetSelected(SelectionEvent e) {
+				taskList.addTask();
 			}
-	
-	}
-	
-	
-	
-	 private void createContextMenu() {
-         // Create menu manager for methodsTableViewer
-		 MenuManager menuMgr = new MenuManager();
-         menuMgr.setRemoveAllWhenShown(true);
-         menuMgr.addMenuListener(new IMenuListener() {
-                 public void menuAboutToShow(IMenuManager mgr) {
-                         fillContextMenuMethodsTableViewer(mgr);
-                 }
+		});
 
-         });
-         // Create menu for methodsTableViewer
-         Menu menu = menuMgr.createContextMenu(methodsTableViewer.getControl());
-         methodsTableViewer.getControl().setMenu(menu);
-         
-         // Register menu for extension.
-         getSite().registerContextMenu(menuMgr, methodsTableViewer);
-         
-         
-      // Create menu manager for methodsTableViewer for callsTableViewer
-		 MenuManager menuMgr1 = new MenuManager();
-         menuMgr1.setRemoveAllWhenShown(true);
-         menuMgr1.addMenuListener(new IMenuListener() {
-                 public void menuAboutToShow(IMenuManager mgr) {
-                         fillContextMenuCallsTableViewer(mgr);
-                 }
+		//	Create and configure the "Delete" button
+		Button delete = new Button(parent, SWT.PUSH | SWT.CENTER);
+		delete.setText("Delete");
+		gridData = new GridData (GridData.HORIZONTAL_ALIGN_BEGINNING);
+		gridData.widthHint = 80; 
+		delete.setLayoutData(gridData); 
 
-         });
-         // Create menu for callsTableViewer
-         Menu menu1 = menuMgr1.createContextMenu(callsTableViewer.getControl());
-         callsTableViewer.getControl().setMenu(menu1);
-         
-         // Register menu for extension.
-         getSite().registerContextMenu(menuMgr1, callsTableViewer);
- }
-
-	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionCallsTable);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(new Separator());
-		mgr.add(selectAllActionCallsTable);
+		delete.addSelectionListener(new SelectionAdapter() {
+       	
+			//	Remove the selection and refresh the view
+			public void widgetSelected(SelectionEvent e) {
+				ExampleTask task = (ExampleTask) ((IStructuredSelection) 
+						tableViewer.getSelection()).getFirstElement();
+				if (task != null) {
+					taskList.removeTask(task);
+				} 				
+			}
+		});
 		
+		//	Create and configure the "Close" button
+		closeButton = new Button(parent, SWT.PUSH | SWT.CENTER);
+		closeButton.setText("Close");
+		gridData = new GridData (GridData.HORIZONTAL_ALIGN_END);
+		gridData.widthHint = 80; 
+		closeButton.setLayoutData(gridData); 		
 	}
 
-	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionMethodsTable);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(selectAsSeedAction);
-		mgr.add(new Separator());
-		mgr.add(selectAllActionMethodsTable);
-		
+	/**
+	 * Return the column names in a collection
+	 * 
+	 * @return List  containing column names
+	 */
+	public java.util.List getColumnNames() {
+		return Arrays.asList(columnNames);
+	}
+
+	/**
+	 * @return currently selected item
+	 */
+	public ISelection getSelection() {
+		return tableViewer.getSelection();
+	}
+
+	/**
+	 * Return the ExampleTaskList
+	 */
+	public ExampleTaskList getTaskList() {
+		return taskList;	
+	}
+
+	/**
+	 * Return the parent composite
+	 */
+	public Control getControl() {
+		return table.getParent();
+	}
+
+	/**
+	 * Return the 'close' Button
+	 */
+	public Button getCloseButton() {
+		return closeButton;
 	}
 	
 	/**
-	 * Create the actions.
+	 * Return the array of choices for a multiple choice cell
 	 */
-	public void createActions() {
-		openItemActionMethodsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Fan_in_Result fanInResult = (Fan_in_Result) iter.next();
-					String id = fanInResult.getMetodo().getClass_id();
-					openResource(id);
+	public String[] getChoices(String property) {
+		if (OWNER_COLUMN.equals(property))
+			return taskList.getOwners();  // The ExampleTaskList knows about the choice of owners
+		else
+			return new String[]{};
+	}
 
-			}
-			}
-		};
-		
-		selectAsSeedAction = new Action("Select As a Seed") {
-			public void run() {
-				selectAsSeedOperation();
-			}
-		};
-
-		selectAllActionMethodsTable = new Action("Select All") {
-			public void run() {
-				selectAll(methodsTableViewer);
-			}
-		};
-		
-		openItemActionCallsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)callsTableViewer.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Call_Counted callCounted = (Call_Counted) iter.next();
-					String name = callCounted.getCaller_id();
-					int index = name.indexOf("//");
-					name = name.substring(0, index);
-					openResource(name);
-
-			}
-			}
-		};
-		
-		selectAllActionCallsTable = new Action("Select All") {
-			public void run() {
-				selectAll(callsTableViewer);
-			}
-		};
-		
-		// Add selection listener.
-		methodsTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
-				openItemActionMethodsTable.setEnabled(sel.size() > 0);
-				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-				selectAsSeedAction.setEnabled(sel.size() > 0);
-			}
-		});
-		
-		callsTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
-				selectAllActionCallsTable.setEnabled(sel.size() > 0);
-				openItemActionCallsTable.setEnabled(sel.size() > 0);
-			}
-		});
-		
-		
+	public Object getModel() {
+		return taskList;
 	}
 	
-	protected void selectAll(TableViewer tableViewer) {
-		tableViewer.getTable().selectAll();
-		
-	}
+class ExampleContentProvider implements IStructuredContentProvider, ITaskListViewer {
+public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+	if (newInput != null)
+		((ExampleTaskList) newInput).addChangeListener(this);
+	if (oldInput != null)
+		((ExampleTaskList) oldInput).removeChangeListener(this);
+}
 
-	protected void selectAsSeedOperation() {
+public void dispose() {
+	taskList.removeChangeListener(this);
+}
 
-		System.out.println("selected as a seed");
-		
-	}
+// Return the tasks as an array of Objects
+public Object[] getElements(Object parent) {
+	return taskList.getTasks().toArray();
+}
+
+/* (non-Javadoc)
+ * @see ITaskListViewer#addTask(ExampleTask)
+ */
+public void addTask(ExampleTask task) {
+	tableViewer.add(task);
+}
+
+/* (non-Javadoc)
+ * @see ITaskListViewer#removeTask(ExampleTask)
+ */
+public void removeTask(ExampleTask task) {
+	tableViewer.remove(task);			
+}
+
+/* (non-Javadoc)
+ * @see ITaskListViewer#updateTask(ExampleTask)
+ */
+public void updateTask(ExampleTask task) {
+	tableViewer.update(task, null);	
+}
+}
 	
 }

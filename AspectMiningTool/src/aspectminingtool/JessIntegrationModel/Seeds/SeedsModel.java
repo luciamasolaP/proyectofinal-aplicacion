@@ -7,7 +7,7 @@ import java.util.Map;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
+import aspectminingtool.model.Call_Counted;
 
 public class SeedsModel implements IResultsModel{
 

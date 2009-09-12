@@ -28,7 +28,6 @@ public class Call {
 		this.callee_id = calle_id;
 		this.precedence = precedence;
 		this.id = id;
-		System.out.println("Call("+this.caller_id+","+this.callee_id+", "+precedence +", "+id+")");
     }
 	
     public String getCaller_id() {

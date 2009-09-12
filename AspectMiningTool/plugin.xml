@@ -83,6 +83,13 @@
             name="Flow Graph Results"
             restorable="true">
       </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.Seeds.SampleView"
+            id="aspectminingtool.views.Seeds.SampleView"
+            name="EditorView"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -102,6 +109,13 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.Seeds.ViewPartSeeds">
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -114,6 +128,11 @@
             defaultHandler="aspectminingtool.commands.CommandOpenResource"
             id="aspectminingtool.commands.CommandOpenResource"
             name="openResource">
+      </command>
+      <command
+            defaultHandler="aspectminingtool.commands.CommandPrintModel"
+            id="aspectminingtool.commands.CommandPrintModel"
+            name="printModel">
       </command>
    </extension>
 

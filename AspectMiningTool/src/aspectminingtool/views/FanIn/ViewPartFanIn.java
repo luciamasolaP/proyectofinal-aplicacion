@@ -453,14 +453,13 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 			ViewPartSeeds view = (ViewPartSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 			.getActivePage().showView(ViewPartSeeds.ID_VIEW );
 			
-			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()));
+			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
 			
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println("selected as a seed");
 		
 	}
 	

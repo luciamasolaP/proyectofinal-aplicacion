@@ -6,6 +6,7 @@
  */
 
 package aspectminingtool.views.Seeds;
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +17,9 @@ import java.util.Set;
 
 import aspectminingtool.model.Call_Counted;
 
+import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
+import JessIntegrationModel.ProjectModel;
 
 
 /**
@@ -25,12 +28,13 @@ import JessIntegrationModel.Method;
  * 
  */
 
-public class ModelSeedsFanIn {
+public class ModelSeedsFanIn implements IResultsModel{
 
 	private final int COUNT = 10;
 	private List methods = new ArrayList(COUNT);
 	private Set changeListeners = new HashSet();
 	private Map<String,List<Call_Counted>> calls = new HashMap<String,List<Call_Counted>>();
+	ProjectModel projectModel = null;
 
 	// Combo box choices
 	static final String[] OWNERS_ARRAY = { "?", "Nancy", "Larry", "Joe" };
@@ -81,7 +85,7 @@ public class ModelSeedsFanIn {
 		methods.add(methods.size(), task);
 		Iterator iterator = changeListeners.iterator();
 		while (iterator.hasNext())
-			((ITaskListViewer) iterator.next()).addTask(task);
+			((MethodDesccriptionListViewer) iterator.next()).addTask(task);
 	}
 
 	public void addMethodAsASeed(MethodDescription et, String methodId,List<Call_Counted> methodsCalls) {
@@ -91,7 +95,7 @@ public class ModelSeedsFanIn {
 			this.calls.put(methodId, methodsCalls);
 			Iterator iterator = changeListeners.iterator();
 			while (iterator.hasNext())
-				((ITaskListViewer) iterator.next()).addTask(et);
+				((MethodDesccriptionListViewer) iterator.next()).addTask(et);
 			
 		}
 		
@@ -107,22 +111,23 @@ public class ModelSeedsFanIn {
 	}
 
 	/**
-	 * @param task
+	 * @param methodDescription
 	 */
-	public void removeTask(MethodDescription task) {
-		methods.remove(task);
+	public void removeMethodDescription(MethodDescription methodDescription) {
+		methods.remove(methodDescription);
+		calls.remove(methodDescription.getMethod().getId());
 		Iterator iterator = changeListeners.iterator();
 		while (iterator.hasNext())
-			((ITaskListViewer) iterator.next()).removeTask(task);
+			((MethodDesccriptionListViewer) iterator.next()).removeTask(methodDescription);
 	}
 
 	/**
 	 * @param task
 	 */
-	public void taskChanged(MethodDescription task) {
+	public void descriptionChanged(MethodDescription task) {
 		Iterator iterator = changeListeners.iterator();
 		while (iterator.hasNext())
-			((ITaskListViewer) iterator.next()).updateTask(task);
+			((MethodDesccriptionListViewer) iterator.next()).updateTask(task);
 		for (Iterator i= methods.iterator() ; i.hasNext() ;){
 			MethodDescription et = (MethodDescription)i.next();
 
@@ -132,14 +137,14 @@ public class ModelSeedsFanIn {
 	/**
 	 * @param viewer
 	 */
-	public void removeChangeListener(ITaskListViewer viewer) {
+	public void removeChangeListener(MethodDesccriptionListViewer viewer) {
 		changeListeners.remove(viewer);
 	}
 
 	/**
 	 * @param viewer
 	 */
-	public void addChangeListener(ITaskListViewer viewer) {
+	public void addChangeListener(MethodDesccriptionListViewer viewer) {
 		changeListeners.add(viewer);
 	}
 
@@ -156,5 +161,28 @@ public class ModelSeedsFanIn {
 	public void setCalls(Map<String, List<Call_Counted>> calls) {
 		this.calls = calls;
 	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ProjectModel getProjectModel() {
+		return projectModel;
+	}
+
+	public void setProjectModel(ProjectModel projectModel) {
+		this.projectModel = projectModel;
+	}
+
+
+	@Override
+	public void generateArchive(BufferedWriter archive) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }

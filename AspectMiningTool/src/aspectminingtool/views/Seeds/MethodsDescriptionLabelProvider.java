@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @see org.eclipse.jface.viewers.LabelProvider 
  */
-public class ExampleLabelProvider 
+public class MethodsDescriptionLabelProvider 
 	extends LabelProvider
 	implements ITableLabelProvider {
 

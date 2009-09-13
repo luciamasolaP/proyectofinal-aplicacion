@@ -6,7 +6,7 @@ package aspectminingtool.views.Seeds;
  *
  */
 
-public interface ITaskListViewer {
+public interface MethodDesccriptionListViewer {
 	
 	/**
 	 * Update the view to reflect the fact that a task was added 

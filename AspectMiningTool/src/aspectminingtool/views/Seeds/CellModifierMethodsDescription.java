@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.TableItem;
  * tableViewer
  */
 
-public class ExampleCellModifier implements ICellModifier {
+public class CellModifierMethodsDescription implements ICellModifier {
 	private ViewPartSeeds viewPart;
 	private String[] columnNames;
 	
@@ -23,7 +23,7 @@ public class ExampleCellModifier implements ICellModifier {
 	 * Constructor 
 	 * @param TableViewerExample an instance of a TableViewerExample 
 	 */
-	public ExampleCellModifier(ViewPartSeeds viewPart) {
+	public CellModifierMethodsDescription(ViewPartSeeds viewPart) {
 		super();
 		this.viewPart = viewPart;
 	}
@@ -82,6 +82,6 @@ public class ExampleCellModifier implements ICellModifier {
 				break;
 			default :
 			}
-		viewPart.getTaskList().taskChanged(task);
+		((ModelSeedsFanIn) viewPart.getMethodsDescription()).descriptionChanged(task);
 	}
 }

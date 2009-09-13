@@ -6,7 +6,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 
-public class ExampleContentProvider implements IStructuredContentProvider, ITaskListViewer {
+public class ExampleContentProvider implements IStructuredContentProvider, MethodDesccriptionListViewer {
 	
 	private ModelSeedsFanIn taskList;
 	private TableViewer tableViewer;
@@ -51,7 +51,6 @@ public class ExampleContentProvider implements IStructuredContentProvider, ITask
 	 */
 	public void updateTask(MethodDescription task) {
 		tableViewer.update(task, null);	
-		System.out.println("en ExampleContentProvider.java");
 		for (Iterator i= taskList.getTasks().iterator() ; i.hasNext() ;){
 			MethodDescription et = (MethodDescription)i.next();
 			System.out.println("task: "+ et.getDescription());

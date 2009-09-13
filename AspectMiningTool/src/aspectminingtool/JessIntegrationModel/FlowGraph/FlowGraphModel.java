@@ -1,23 +1,18 @@
 package aspectminingtool.JessIntegrationModel.FlowGraph;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import jess.Filter;
 import jess.Rete;
-
+import JessIntegrationModel.Call;
+import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
+import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.JessIntegrationModel.FanIn.Call_Counted;
-import aspectminingtool.JessIntegrationModel.FanIn.final_fan_in_metric;
-import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.ProjectModel;
-
-import JessIntegrationModel.Call;
-import JessIntegrationModel.Method;
 
 public class FlowGraphModel implements IResultsModel {
 
@@ -169,6 +164,12 @@ public class FlowGraphModel implements IResultsModel {
 	
 	public void setProjectModel(ProjectModel projectModel) {
 		this.projectModel = projectModel;
+	}
+
+	@Override
+	public void generateArchive(BufferedWriter archive) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

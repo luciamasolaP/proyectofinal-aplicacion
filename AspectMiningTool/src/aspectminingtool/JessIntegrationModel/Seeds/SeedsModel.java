@@ -1,5 +1,6 @@
 package aspectminingtool.JessIntegrationModel.Seeds;
 
+import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,28 +76,13 @@ public class SeedsModel implements IResultsModel{
 	public void setProjectModel(ProjectModel projectModel) {
 		this.projectModel = projectModel;
 	}
+
+
+	@Override
+	public void generateArchive(BufferedWriter archive) {
+		// TODO Auto-generated method stub
+		
+	}
 	
-	
-//	private void contructModel(ProjectModel projectModel){
-//		
-//		setProjectModel(projectModel);
-//		
-//		//setDescriptions(constructDescription());
-//		setCalls(contructCalls());
-//
-//		
-//	}
-
-
-//	private Object constructDescription() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-//	private Map<String, List<Call_Counted>> contructCalls() {
-//		
-//		return calls;
-//	}
-
 	
 }

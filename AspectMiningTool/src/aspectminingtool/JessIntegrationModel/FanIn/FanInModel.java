@@ -256,6 +256,29 @@ public class FanInModel implements IResultsModel{
 		
 		return methods;
 	}
-	
+
+	@Override
+	public void generateArchive(BufferedWriter archive) {
+		//TODO
+		try 
+	    {
+	        
+	        
+	        for (Iterator i = methods.keySet().iterator(); i.hasNext() ; ){
+	        	String nombre = (String)i.next();
+	        	Method m = methods.get(nombre);
+	        	
+	        	archive.write(m.toString());
+	        	archive.newLine();       		
+	        		
+	        	}
+ 
+	        archive.close();
+	    }
+	    catch (IOException e)    {    }
+		
+	}
+
+
 	
 }

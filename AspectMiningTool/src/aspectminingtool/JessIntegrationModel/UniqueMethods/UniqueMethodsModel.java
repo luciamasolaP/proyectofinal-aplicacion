@@ -239,6 +239,13 @@ public class UniqueMethodsModel implements IResultsModel{
 	public void setResultadoFanIn(List<UniqueMethods_Result> resultadoFanIn) {
 		this.resultadoUniqueMethods = resultadoFanIn;
 	}
+
+
+	@Override
+	public void generateArchive(BufferedWriter archive) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

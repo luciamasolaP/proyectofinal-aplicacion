@@ -58,7 +58,6 @@ public class ProjectInspector implements IRunnableWithProgress{
 					
 					
 					if (monitor.isCanceled())
-						//System.out.println("cancel");
 						throw new InterruptedException("The long running operation was cancelled");
 				}
 

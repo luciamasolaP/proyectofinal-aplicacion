@@ -1,36 +1,59 @@
 package aspectminingtool.commands;
 
-import java.util.Iterator;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import aspectminingtool.views.Seeds.MethodDescription;
-import aspectminingtool.views.Seeds.ModelSeedsFanIn;
-import aspectminingtool.views.Seeds.ViewPartSeeds;
+import JessIntegrationModel.IResultsModel;
+import aspectminingtool.views.ViewFilterProject;
 
 
 public class CommandPrintModel extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
 		
-		ViewPartSeeds view = (ViewPartSeeds)HandlerUtil.getActivePart(event);
+		ViewFilterProject view = (ViewFilterProject)HandlerUtil.getActivePart(event);
+		IResultsModel model = view.getModel();
+		if (model != null){
 		
-		if (view.getModel() != null){
-			ModelSeedsFanIn model = (ModelSeedsFanIn)view.getModel(); //TODO obtener java project del modelo de la vista
-		
-			System.out.println("En CommandPrintModel.java");
-			List tasks = model.getTasks();
-			for (Iterator i= tasks.iterator() ; i.hasNext() ;){
-				MethodDescription et = (MethodDescription)i.next();
-				System.out.println("task: "+ et.getDescription());
+			Display display = Display.getDefault();
+			Shell shell = new Shell(display);
+			
+		    FileDialog dialog = new FileDialog(shell, SWT.SAVE);
+		    dialog
+		        .setFilterNames(new String[] { "TXT Files", "All Files (*.*)" });
+		    dialog.setFilterExtensions(new String[] { "*.txt", "*.*" }); // Windows
+		    dialog.setFilterPath("c:\\"); // Windows path
+		    dialog.setFileName("results.txt");
+
+		    String filePath = dialog.open();
+		    BufferedWriter outfile;
+			try {
+				outfile = new BufferedWriter(new FileWriter(filePath));
+				model.generateArchive(outfile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+		    
+
+		    while (!shell.isDisposed()) {
+		      if (!display.readAndDispatch())
+		        display.sleep();
+		    }
+		    display.dispose();
+			
 		}
 		
 		return null;

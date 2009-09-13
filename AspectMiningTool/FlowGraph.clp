@@ -31,8 +31,10 @@
     =>      
     (bind ?distance (- ?precedence_2 ?precedence_1))
     (if (= ?distance 1) then	    
-	    (assert (OutsideBeforeExecution (call_id ?call_1) (call_id2 ?call_2)))    
-	    (assert (OutsideAfterExecution (call_id ?call_2) (call_id2 ?call_1)))
+	    (bind ?relation_1 (new OutsideBeforeExecution ?call_1 ?call_2))
+        (bind ?relation_2 (new OutsideAfterExecution ?call_1 ?call_2))
+        (add ?relation_1)
+        (add ?relation_2)
     )    
  )
 
@@ -40,17 +42,19 @@
 	"Genero este tipo de relación u º p, si u es el primero del método p."
 	(Call (id ?call) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence))
     =>
-    (if (= ?precedence 1) then	    
-	    (assert (InsideFirstExecution (call_id ?call) (method_id ?method_X)))
+    (if (= ?precedence 1) then	  
+        (bind ?relation (new InsideFirstExecution ?call ?method_X))
+        (add ?relation)        
     )
 )
 
 (defrule init_InsideLastExecution_relations
-	"comment"
-    (Method (id ?method_X))
-    (Call (id ?call_1) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence))
+	"comment"    
+    (Call (id ?call) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence))
+    (not (InsideLastExecution (method_id ?method_X)))
 	=>
-    (assert (InsideLastExecution (call_id ?call_1) (method_id ?method_X)))
+    (bind ?relation (new InsideLastExecution ?call ?method_X))
+    (add ?relation)    
  )
 
 (defrule generate_InsideLastExecution_relations
@@ -61,7 +65,7 @@
 	=>
     (if (> ?precedence_1 ?precedence_2) then
     	(retract ?actualRelation)
-        (assert (InsideLastExecution (call_id ?call_1) (method_id ?method_X)))    
+        (bind ?newRelation (new InsideLastExecution ?call_1 ?method_X))
+    	(add ?newRelation)            
     )
 )
-	

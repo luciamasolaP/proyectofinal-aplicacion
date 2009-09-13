@@ -25,5 +25,9 @@ public class OutsideAfterExecution {
 	public void setCall_id2(String call_id2) {
 		this.call_id2 = call_id2;
 	}
+	
+	public String toString(){
+		return call_id + " <- " + call_id2;
+	}
 
 }

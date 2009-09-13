@@ -126,16 +126,35 @@ public class FlowGraphModel implements IResultsModel {
 	
 	public void listResults(){
 		
-		Rete jessEngine = ((JessInferenceEngine) this.inferenceEngine).getEngine();
-		Iterator facts = jessEngine.listDeffacts();
+		/*Rete jessEngine = ((JessInferenceEngine) this.inferenceEngine).getEngine();
+		Iterator facts = jessEngine.listFacts();
+		
 		for(;facts.hasNext();){			
-			System.out.print(facts.next().toString());
+			System.out.println(facts.next().toString());
 		}
-		/*
-		for(int i=0;i<outsideBeforeExecutionRelations.size();i++)
+		*/
+		System.out.println();
+		int i;
+		for(i=0;i<outsideBeforeExecutionRelations.size();i++)
 		{
-			System.out.print(outsideBeforeExecutionRelations.get(i).toString());
-		}		*/
+			System.out.println(outsideBeforeExecutionRelations.get(i).toString());
+		}
+		System.out.println();
+		for(i=0;i<outsideAfterExecutionRelations.size();i++)
+		{
+			System.out.println(outsideAfterExecutionRelations.get(i).toString());
+		}
+		System.out.println();
+		for(i=0;i<insideFirstExecutionRelations.size();i++)
+		{
+			System.out.println(insideFirstExecutionRelations.get(i).toString());
+		}
+		System.out.println();
+		for(i=0;i<insideLastExecutionRelations.size();i++)
+		{
+			System.out.println(insideLastExecutionRelations.get(i).toString());
+		}		
+		
 	}
 
 	@Override

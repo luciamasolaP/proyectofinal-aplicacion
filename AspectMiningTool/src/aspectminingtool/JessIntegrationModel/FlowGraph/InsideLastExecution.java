@@ -25,5 +25,9 @@ public class InsideLastExecution {
 	public void setMethod_id(String method_id) {
 		this.method_id = method_id;
 	}
+	
+	public String toString(){
+		return call_id + " insideLast " + method_id;
+	}
 
 }

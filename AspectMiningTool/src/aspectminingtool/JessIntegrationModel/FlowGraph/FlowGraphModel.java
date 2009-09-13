@@ -1,18 +1,22 @@
 package aspectminingtool.JessIntegrationModel.FlowGraph;
 
-import java.io.BufferedWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import jess.Filter;
 import jess.Rete;
-import JessIntegrationModel.Call;
-import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
-import JessIntegrationModel.ProjectModel;
+
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ProjectModel;
+
+import JessIntegrationModel.Call;
+import JessIntegrationModel.Method;
 
 public class FlowGraphModel implements IResultsModel {
 
@@ -21,14 +25,26 @@ public class FlowGraphModel implements IResultsModel {
 	List<InsideFirstExecution> insideFirstExecutionRelations = new ArrayList<InsideFirstExecution>();
 	List<InsideLastExecution> insideLastExecutionRelations = new ArrayList<InsideLastExecution>();
 	
-	List<Call> calls = new ArrayList<Call>();
-	List<Method> methods = new ArrayList<Method>();
+	List<OutsideBeforeExecutionMetric> flowGraphResult = new ArrayList<OutsideBeforeExecutionMetric>();
+	
+	public List<OutsideBeforeExecutionMetric> getFlowGraphResult() {
+		return flowGraphResult;
+	}
+
+	public void setFlowGraphResult(List<OutsideBeforeExecutionMetric> flowGraphResult) {
+		this.flowGraphResult = flowGraphResult;
+	}
+
+	Map<String,Call> calls;
+	Map<String,Method> methods;
 	
 	ProjectModel projectModel;	
 	InferenceEngine inferenceEngine = null;
 	
 	public FlowGraphModel(ProjectModel pm, InferenceEngine inferenceEngine) {
 		super();		
+		this.calls = new HashMap<String,Call>();
+		this.methods = new HashMap<String,Method>();
 		this.inferenceEngine = inferenceEngine;
 		contructModel(pm);
 	}
@@ -51,7 +67,7 @@ public class FlowGraphModel implements IResultsModel {
 		
 		for (;methodsResult.hasNext();){
 			Method m = (Method)methodsResult.next();
-			methods.add(m);
+			addMethod(m);			
 		}
 	}
 	
@@ -62,7 +78,7 @@ public class FlowGraphModel implements IResultsModel {
 		
 		for (;callsResult.hasNext();){
 			Call c = (Call)callsResult.next();
-			calls.add(c);
+			addCall(c);			
 		}
 	}
 	
@@ -127,7 +143,7 @@ public class FlowGraphModel implements IResultsModel {
 		for(;facts.hasNext();){			
 			System.out.println(facts.next().toString());
 		}
-		*/
+		
 		System.out.println();
 		int i;
 		for(i=0;i<outsideBeforeExecutionRelations.size();i++)
@@ -148,8 +164,135 @@ public class FlowGraphModel implements IResultsModel {
 		for(i=0;i<insideLastExecutionRelations.size();i++)
 		{
 			System.out.println(insideLastExecutionRelations.get(i).toString());
-		}		
+		}*/
 		
+		Method m = methods.get("/TestClass_2//method_2_1///");
+		if(m != null){
+			List<Method> result = this.getInsideFirstExecutionMethods(m);
+			System.out.println(m.getId());
+			System.out.println();
+			for(int i=0;i<result.size();i++){
+				System.out.println(result.get(i).getId());
+			}			
+		}
+		
+	}
+	
+	/*
+	 * Dado un método, devuelve una lista con los métodos que participan con este en relaciones 
+	 * de este tipo.
+	 */
+	public List<Method> getOutsideBeforeExecutionMethods(Method method){
+		
+		List<Method> result = new ArrayList<Method>();
+		
+		Call call_1;
+		Call call_2;
+		
+		for(int i=0;i<outsideBeforeExecutionRelations.size();i++){
+			call_1 = calls.get(outsideBeforeExecutionRelations.get(i).getCall_id());
+			if(call_1.getCallee_id().equals(method.getId())){
+				call_2 = calls.get(outsideBeforeExecutionRelations.get(i).getCall_id2());
+				result.add(methods.get(call_2.getCallee_id()));				
+			}
+		}				
+					
+		return result;
+		
+	}
+	
+	/*
+	 * Dado un método, devuelve una lista con los métodos que participan con este en relaciones
+	 * de este tipo.
+	 */
+	public List<Method> getOutsideAfterExecutionMethods(Method method){
+		
+		List<Method> result = new ArrayList<Method>();
+		
+		Call call_1;
+		Call call_2;
+		
+		for(int i=0;i<outsideAfterExecutionRelations.size();i++){
+			call_1 = calls.get(outsideAfterExecutionRelations.get(i).getCall_id());
+			if(call_1.getCallee_id().equals(method.getId())){
+				call_2 = calls.get(outsideAfterExecutionRelations.get(i).getCall_id2());
+				result.add(methods.get(call_2.getCallee_id()));				
+			}
+		}				
+					
+		return result;
+		
+	}
+	
+	/*
+	 * Dado un método, devuelve una lista con los métodos que participan con este en relaciones
+	 * de este tipo.
+	 */
+	public List<Method> getInsideFirstExecutionMethods(Method method){
+		
+		List<Method> result = new ArrayList<Method>();
+		
+		Call call_1;		
+		
+		for(int i=0;i<insideFirstExecutionRelations.size();i++){
+			call_1 = calls.get(insideFirstExecutionRelations.get(i).getCall_id());
+			if(call_1.getCallee_id().equals(method.getId())){
+				result.add(methods.get(insideFirstExecutionRelations.get(i).getMethod_id()));
+			}							
+			
+		}				
+					
+		return result;
+		
+	}
+	
+	/*
+	 * Dado un método, devuelve una lista con los métodos que participan con este en relaciones
+	 * de este tipo.
+	 */
+	public List<Method> getInsideLastExecutionMethods(Method method){
+		
+		List<Method> result = new ArrayList<Method>();
+		
+		Call call_1;		
+		
+		for(int i=0;i<insideLastExecutionRelations.size();i++){
+			call_1 = calls.get(insideLastExecutionRelations.get(i).getCall_id());
+			if(call_1.getCallee_id().equals(method.getId())){
+				result.add(methods.get(insideLastExecutionRelations.get(i).getMethod_id()));
+			}							
+			
+		}				
+					
+		return result;
+		
+	}	
+	
+	public void calculateFlowGraphMetric(){
+		List<Method> resultMethods;
+		for(int i=0;i<methods.size();i++){
+			resultMethods = getOutsideBeforeExecutionMethods(methods.get(i));
+			List<String> relatedMethods = new ArrayList();
+			for(int j=0;j<resultMethods.size();j++){
+				relatedMethods.add(resultMethods.get(j).getId());				
+			}	
+			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(methods.get(i),resultMethods.size());
+			element.setRelatedMethods(relatedMethods);
+			flowGraphResult.add(element);
+		}	
+		//para ver qué devuelve
+		System.out.println("Lalala");
+		for(int k=0;k<flowGraphResult.size();k++){
+			System.out.println(flowGraphResult.get(k).getMethod().getId()+ " ::: "+flowGraphResult.get(k).getMetric());			
+		}
+	}
+	
+	public void addMethod(Method m){
+		this.methods.put(m.getId(),m);
+	}
+	
+	public void addCall(Call c){
+		this.calls.put(c.getId(),c);
 	}
 
 	@Override
@@ -164,12 +307,6 @@ public class FlowGraphModel implements IResultsModel {
 	
 	public void setProjectModel(ProjectModel projectModel) {
 		this.projectModel = projectModel;
-	}
-
-	@Override
-	public void generateArchive(BufferedWriter archive) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

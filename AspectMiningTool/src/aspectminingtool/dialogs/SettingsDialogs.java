@@ -282,8 +282,6 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 						okButton.setText("OK");
 						okButton.addSelectionListener(new SelectionAdapter() {
 							public void widgetSelected(SelectionEvent evt) {
-								System.out.println("okButton.widgetSelected, event="
-										+ evt);
 								//leer seleccion de árbol
 								//leer los checkboxs
 								//mandar a hacer filtrados

@@ -149,9 +149,9 @@ public class ViewPartFlowGraph extends ViewPart {
 
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-//				tableViewerLeft
-//						.setContentProvider(new FanInContentProvider());
-//				tableViewerLeft.setLabelProvider(new FanInLabelProvider());
+				tableViewerLeft
+						.setContentProvider(new FlowGraphContentProvider());
+				tableViewerLeft.setLabelProvider(new FlowGraphLabelProvider());
 
 				// Set up the table, each column has a listener for the click
 				// that calls

@@ -1,18 +1,36 @@
 package aspectminingtool.views.FanIn;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import aspectminingtool.Activator;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 
 public class CallsLabelProviderFanIn implements ITableLabelProvider {
 
+	private Map imageCache = new HashMap(11);
+	
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		// TODO 
-		return null;
+		ImageDescriptor descriptor = Activator.getImageDescriptor("images/samples.gif");
+		if (descriptor == null){
+			   return null;
+		   } else{
+			   //obtain the cached image corresponding to the descriptor
+			   Image image = (Image)imageCache.get(descriptor);
+			   if (image == null) {
+			       image = descriptor.createImage();
+			       imageCache.put(descriptor, image);
+			   }
+			   return image;
+		   }
 	}
 
 	@Override
@@ -28,7 +46,10 @@ public class CallsLabelProviderFanIn implements ITableLabelProvider {
 
 	@Override
 	public void dispose() {
-		// TODO 
+		 for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
+				((Image) i.next()).dispose();
+			}
+			imageCache.clear();
 		
 	}
 

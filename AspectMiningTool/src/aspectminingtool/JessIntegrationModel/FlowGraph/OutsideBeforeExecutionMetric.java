@@ -14,7 +14,7 @@ public class OutsideBeforeExecutionMetric {
 	public OutsideBeforeExecutionMetric(Method method, int metric){
 		this.method = method;
 		this.metric = metric;
-		this.relatedMethods = new ArrayList();
+		this.relatedMethods = new ArrayList(); 
 	}
 
 	public Method getMethod() {

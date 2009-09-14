@@ -24,7 +24,7 @@ public class FlowGraphLabelProvider implements ITableLabelProvider {
 		    	return String.valueOf(((OutsideBeforeExecutionMetric)element).getMetric());
 		}
 		 
-		return "";
+		return ""; 
 	}
 
 	

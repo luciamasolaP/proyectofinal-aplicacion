@@ -54,7 +54,7 @@ public class FlowGraphContentProvider implements IStructuredContentProvider {
 	public Object[] getElements(Object inputElement) {
 		flowGraphModel = (FlowGraphModel)inputElement;
 		flowGraphModel.calculateFlowGraphMetric();
-		return flowGraphModel.getFlowGraphResult().toArray();		
+		return flowGraphModel.getFlowGraphResult().toArray();	 	
 
 	}
 

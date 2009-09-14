@@ -28,7 +28,7 @@ public class Fan_in_Result {
 	}
 	
 	public String toString(){
-		return metodo.toString() + " FanIn Metric " + metric + ")";
+		return metodo.toString();
 	}
 	
 }

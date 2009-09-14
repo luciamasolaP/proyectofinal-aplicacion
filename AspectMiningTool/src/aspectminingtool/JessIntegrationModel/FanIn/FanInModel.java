@@ -262,17 +262,25 @@ public class FanInModel implements IResultsModel{
 		//TODO
 		try 
 	    {
-	        
-	        
-	        for (Iterator i = methods.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	Method m = methods.get(nombre);
-	        	
-	        	archive.write(m.toString());
-	        	archive.newLine();       		
-	        		
-	        	}
- 
+			for (Iterator<Fan_in_Result> i = resultadoFanIn.iterator(); i.hasNext() ;){
+				Fan_in_Result fir = i.next(); 
+				Method m = fir.getMetodo();
+				String metric = fir.getMetric();
+				archive.write("Método: " + m.toString() + "    FanIn: "+ metric);
+				archive.newLine();
+				if (!metric.equals("0")){
+					archive.write("         Llamadas:");
+					archive.newLine();
+					List<Call_Counted> list = calls.get(m.getId());
+					for (Iterator<Call_Counted> ii = list.iterator() ; ii.hasNext() ;){
+						archive.write("                 " + ii.next().toString());
+						archive.newLine();
+					}
+				}
+				archive.newLine();
+					
+			}
+
 	        archive.close();
 	    }
 	    catch (IOException e)    {    }

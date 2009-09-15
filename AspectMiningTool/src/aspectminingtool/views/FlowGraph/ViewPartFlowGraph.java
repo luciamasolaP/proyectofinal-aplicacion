@@ -75,7 +75,7 @@ public class ViewPartFlowGraph extends ViewPart {
 		super.setPartName("FlowControl Results - " + model.getId());
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
 		tableViewerLeft.setInput(model);
-		tableViewerLeftTab2.setInput(model);
+		//tableViewerLeftTab2.setInput(model);
 	}
 
     /* (non-Javadoc)
@@ -159,7 +159,7 @@ public class ViewPartFlowGraph extends ViewPart {
 				// Column 1
 				final TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
 				tc1.setText("Method");
-				tc1.setWidth(498);
+				tc1.setWidth(398);
 
 
 				// Column 2
@@ -248,7 +248,7 @@ public class ViewPartFlowGraph extends ViewPart {
 				// Column 1
 				final TableColumn tc21 = new TableColumn(tableLeftTab2, SWT.LEFT);
 				tc21.setText("Method");
-				tc21.setWidth(498);
+				tc21.setWidth(398);
 
 
 				// Column 2

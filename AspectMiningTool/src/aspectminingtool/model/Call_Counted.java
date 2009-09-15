@@ -1,5 +1,7 @@
 package aspectminingtool.model;
 
+import aspectminingtool.util.MethodFormater;
+
 public class Call_Counted {
 
 	private String caller_id;
@@ -28,7 +30,24 @@ public class Call_Counted {
 	}
 	
 	public String toString(){
-		return "Call_counted(" + calle_id + ", " + caller_id + ")";
+		
+		String paquete = MethodFormater.formatPackage(caller_id);
+		//class_id.substring(0, index);
+		String clase = MethodFormater.formatClass(caller_id); 
+		String parameters = caller_id.substring(caller_id.indexOf("///")+3); 
+		parameters = MethodFormater.formatParameters(parameters);
+		String name = MethodFormater.formatMethodName(caller_id);
+		return name + "(" + parameters + "):" +"  Clase: "+clase+"   Paquete: "+ paquete;
+
+//		int index = class_id.indexOf("/");
+//		String paquete = class_id.substring(0, index);
+//		String clase = class_id.substring(index+1, class_id.length());
+//		String p = MethodFormater.formatParameters(parametros);
+//		String rt = MethodFormater.formatParameters(parametros);
+//		String st = this.name+"("+p+")"+":"+ rt +   "  Clase: "+clase+"   Paquete: "+ paquete;
+//		return st;
+		
+		//return "Call_counted(" + calle_id + ", " + caller_id + ")";
 	}
 	
 }

@@ -1,5 +1,7 @@
 package JessIntegrationModel;
 
+import aspectminingtool.util.MethodFormater;
+
 public class Method {
 	
 	private String id;
@@ -43,36 +45,17 @@ public class Method {
 	
 	public String toString(){
 
-		int index = class_id.indexOf("/");
-		String paquete = class_id.substring(0, index);
-		String clase = class_id.substring(index+1, class_id.length());
-		String p = formatParameters(parametros);
-		String rt = formatParameters(returnType);
+		//int index = class_id.indexOf("/");
+		String paquete = MethodFormater.formatPackage(class_id);
+		//class_id.substring(0, index);
+		String clase =MethodFormater.formatClass(class_id); 
+			//class_id.substring(index+1, class_id.length());
+		String p = MethodFormater.formatParameters(parametros);
+		String rt = MethodFormater.formatParameters(returnType);
 		String st = this.name+"("+p+")"+":"+ rt +   "  Clase: "+clase+"   Paquete: "+ paquete;
 		return st;
 	}
 
-	private String formatParameters(String param) {
-		String resul = "";
-		String aux = param;
-		while (aux.length() > 0 ){
-			int index = aux.indexOf("-");
-			String aux1;
-			if (index > 0)
-				aux1 = aux.substring(0, index);
-			else
-				aux1 = aux;
-				
-			String p1 = aux1.substring(aux1.lastIndexOf(".")+1);
-			resul = resul + "," + p1;
-			if (index > 0)
-				aux = aux.substring(index+1);
-			else
-				aux = "";
-		}
-		resul = resul.replaceFirst(",", "");
-		return resul;
-	}
 
 	public String getClass_id() {
 		return class_id;

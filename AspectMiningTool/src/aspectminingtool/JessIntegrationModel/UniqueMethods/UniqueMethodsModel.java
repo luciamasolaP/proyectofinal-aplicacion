@@ -19,6 +19,7 @@ import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 
 
@@ -243,7 +244,30 @@ public class UniqueMethodsModel implements IResultsModel{
 
 	@Override
 	public void generateArchive(BufferedWriter archive) {
-		// TODO Auto-generated method stub
+		try 
+	    {
+			for (Iterator<UniqueMethods_Result> i = resultadoUniqueMethods.iterator(); i.hasNext() ;){
+				UniqueMethods_Result umr = i.next(); 
+				Method m = umr.getMetodo();
+				String metric = umr.getMetric();
+				archive.write("Método: " + m.toString() + "    FanIn: "+ metric);
+				archive.newLine();
+				if (!metric.equals("0")){
+					archive.write("         Llamadas:");
+					archive.newLine();
+					List<Call_Counted> list = calls.get(m.getId());
+					for (Iterator<Call_Counted> ii = list.iterator() ; ii.hasNext() ;){
+						archive.write("                 " + ii.next().toString());
+						archive.newLine();
+					}
+				}
+				archive.newLine();
+					
+			}
+
+	        archive.close();
+	    }
+	    catch (IOException e)    {    }
 		
 	}
 	

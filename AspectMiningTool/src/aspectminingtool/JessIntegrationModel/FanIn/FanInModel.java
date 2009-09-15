@@ -259,7 +259,7 @@ public class FanInModel implements IResultsModel{
 
 	@Override
 	public void generateArchive(BufferedWriter archive) {
-		//TODO
+
 		try 
 	    {
 			for (Iterator<Fan_in_Result> i = resultadoFanIn.iterator(); i.hasNext() ;){

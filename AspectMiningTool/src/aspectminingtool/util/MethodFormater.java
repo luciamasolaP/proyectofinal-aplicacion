@@ -28,8 +28,9 @@ package aspectminingtool.util;
 	public static String formatClass(String class_id){
 		
 		int index = class_id.indexOf("/");
-		if (index >=0)
-			return class_id.substring(0, index);
+		int index2 = class_id.indexOf("//");
+		if (index >=0 && index2 >= 0)
+			return class_id.substring(index+1, index2);
 		return "";
 		
 		
@@ -38,9 +39,9 @@ package aspectminingtool.util;
 
 	public static String formatPackage(String class_id){
 		int index = class_id.indexOf("/");
-		int index2 = class_id.indexOf("//");
-		if (index >= 0 && index2 >= 0)
-			return class_id.substring(index+1, index2);
+		//int index2 = class_id.indexOf("//");
+		if (index >= 0)
+			return class_id.substring(0,index);
 		return "";
 		
 	}

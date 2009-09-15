@@ -126,7 +126,7 @@ public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject
 
 				// Column 2
 				TableColumn tc2 = new TableColumn(methodsTable, SWT.LEFT);
-				tc2.setText("Unique Methods");
+				tc2.setText("Fan In");
 				tc2.setWidth(50);
 				tc2
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {

@@ -114,7 +114,7 @@ public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject
 				// Column 1
 				final TableColumn tc1 = new TableColumn(methodsTable, SWT.LEFT);
 				tc1.setText("Method");
-				tc1.setWidth(498);
+				tc1.setWidth(398);
 				tc1
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 							public void widgetSelected(SelectionEvent event) {
@@ -440,7 +440,7 @@ public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject
 	}
 
 	protected void selectAsSeedOperation() {
-
+//TODO
 		System.out.println("selected as a seed");
 		
 	}

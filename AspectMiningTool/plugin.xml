@@ -113,6 +113,11 @@
                icon="images/configure.gif"
                style="push">
          </command>
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:aspectminingtool.views.Seeds.ViewPartSeeds">

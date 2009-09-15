@@ -27,14 +27,14 @@ import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 public class FanInLabelProvider implements ITableLabelProvider {
 
 	
-	private Map imageCache = new HashMap(11);
+	private Map imageCache = new HashMap(2);
 	
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		
 		  ImageDescriptor descriptor = null;
 		   if (columnIndex == 0 ) {
-			   descriptor = Activator.getImageDescriptor("images/mi_standby.gif");
+			   descriptor = Activator.getImageDescriptor("images/method.gif");
 		   } else if (columnIndex ==  1) {
 			   descriptor = null; 
 		   } 

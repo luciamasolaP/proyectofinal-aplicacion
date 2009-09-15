@@ -19,7 +19,7 @@ public class CallsLabelProviderFanIn implements ITableLabelProvider {
 	
 	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
-		ImageDescriptor descriptor = Activator.getImageDescriptor("images/samples.gif");
+		ImageDescriptor descriptor = Activator.getImageDescriptor("images/call.gif");
 		if (descriptor == null){
 			   return null;
 		   } else{

@@ -64,13 +64,13 @@
       </view>
       <view
             category="AspectMiningTool.category1"
-            class="aspectminingtool.views.Seeds.ViewPartSeeds"
+            class="aspectminingtool.views.FanInSeeds.ViewPartSeeds"
             id="aspectminingtool.views.Seeds.ViewPartSeeds"
             name="Fan In Seeds"
             restorable="true">
       </view>
       <view
-            class="aspectminingtool.views.Seeds.ViewPartPrueba"
+            class="aspectminingtool.views.FanInSeeds.ViewPartPrueba"
             id="aspectminingtool.views.Seeds.ViewPartPrueba"
             name="Prueba"
             restorable="true">
@@ -85,7 +85,7 @@
       </view>
       <view
             category="AspectMiningTool.category1"
-            class="aspectminingtool.views.Seeds.SampleView"
+            class="aspectminingtool.views.FanInSeeds.SampleView"
             id="aspectminingtool.views.Seeds.SampleView"
             name="EditorView"
             restorable="true">

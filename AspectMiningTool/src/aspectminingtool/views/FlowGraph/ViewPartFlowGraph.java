@@ -29,6 +29,7 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
 import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
+import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetric;
 
 
 /**
@@ -91,7 +92,7 @@ public class ViewPartFlowGraph extends ViewPart {
 		//tableViewerRight.setInput(model);
 	}
 	
-	private void selectionItem(SelectionChangedEvent event) {
+	private void selectionItemTab1(SelectionChangedEvent event) {
 
 		if (!event.getSelection().isEmpty()) {
 
@@ -99,6 +100,18 @@ public class ViewPartFlowGraph extends ViewPart {
 				OutsideBeforeExecutionMetric relation = (OutsideBeforeExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMethod());
 				tableViewerRight.setInput(relatedMethos);
+			}
+		}
+	}
+	
+	private void selectionItemTab2(SelectionChangedEvent event) {
+
+		if (!event.getSelection().isEmpty()) {
+
+			if (event.getSelection() instanceof IStructuredSelection) {
+				OutsideAfterExecutionMetric relation = (OutsideAfterExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideAfterExecutionMethods(relation.getMethod());
+				tableViewerRightTab2.setInput(relatedMethos);
 			}
 		}
 	}
@@ -201,7 +214,7 @@ public class ViewPartFlowGraph extends ViewPart {
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							SelectionChangedEvent event) {
-						selectionItem(event);
+						selectionItemTab1(event);
 
 					}
 
@@ -221,8 +234,8 @@ public class ViewPartFlowGraph extends ViewPart {
 					tableViewerRight = new TableViewer(tableRight);
 					
 					// Set the sorter
-					ViewerSorter sorterCalls = new SorterFanInViewCalls();
-					tableViewerRight.setSorter(sorterCalls);
+//					ViewerSorter sorterCalls = new SorterFanInViewCalls();
+//					tableViewerRight.setSorter(sorterCalls);
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
 					tableViewerRight.setContentProvider(new FlowGraphContentProviderOBCalls());
@@ -295,6 +308,16 @@ public class ViewPartFlowGraph extends ViewPart {
 				// Turn on the header and the lines
 				tableLeftTab2.setHeaderVisible(true);
 				tableLeftTab2.setLinesVisible(true);
+				
+				tableViewerLeftTab2
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							SelectionChangedEvent event) {
+						selectionItemTab2(event);
+
+					}
+
+				});
 
 
 
@@ -311,8 +334,8 @@ public class ViewPartFlowGraph extends ViewPart {
 					
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-//					tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
-//					tableViewerRight.setLabelProvider(new CallsLabelProviderFanIn());
+					tableViewerRightTab2.setContentProvider(new FlowGraphContentProviderOBCalls());
+					tableViewerRightTab2.setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightTab2Column1 = new TableColumn(tableRightTab2,

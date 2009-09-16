@@ -35,7 +35,7 @@
     (bind ?distance (- ?precedence_2 ?precedence_1))
     (if (= ?distance 1) then	    
 	    (bind ?relation_1 (new OutsideBeforeExecution ?call_1 ?call_2))
-        (bind ?relation_2 (new OutsideAfterExecution ?call_1 ?call_2))
+        (bind ?relation_2 (new OutsideAfterExecution ?call_2 ?call_1))
         (add ?relation_1)
         (add ?relation_2)
     )    

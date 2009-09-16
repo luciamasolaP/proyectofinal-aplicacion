@@ -24,7 +24,7 @@ private Map imageCache = new HashMap(2);
 		
 		  ImageDescriptor descriptor = null;
 		   if (columnIndex == 0 ) {
-			   descriptor = Activator.getImageDescriptor("images/method.gif");
+			   descriptor = Activator.getImageDescriptor("images/call.gif");
 		   } else if (columnIndex ==  1) {
 			   descriptor = null; 
 		   } 

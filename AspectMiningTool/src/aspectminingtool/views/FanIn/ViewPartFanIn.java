@@ -452,7 +452,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		try {
 			ViewPartSeeds view = (ViewPartSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 			.getActivePage().showView(ViewPartSeeds.ID_VIEW );
-			
+
 			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
 			
 		} catch (PartInitException e) {
@@ -462,5 +462,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 		
 	}
+
+
 	
 }

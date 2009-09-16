@@ -1,4 +1,4 @@
-package model;
+package aspectminingtool.JessIntegrationModel;
 
 public class Define_In {
 

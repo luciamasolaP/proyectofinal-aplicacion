@@ -135,11 +135,6 @@
             name="showProjectView">
       </command>
       <command
-            defaultHandler="aspectminingtool.commands.CommandOpenResource"
-            id="aspectminingtool.commands.CommandOpenResource"
-            name="openResource">
-      </command>
-      <command
             defaultHandler="aspectminingtool.commands.CommandPrintModel"
             id="aspectminingtool.commands.CommandPrintModel"
             name="printModel">

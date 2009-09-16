@@ -16,8 +16,8 @@ import java.util.Map;
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.views.Seeds.CallDescriptionListViewer;
-import aspectminingtool.views.Seeds.MethodDescriptionListViewer;
+import aspectminingtool.views.FanInSeeds.CallDescriptionListViewer;
+import aspectminingtool.views.FanInSeeds.MethodDescriptionListViewer;
 
 
 /**

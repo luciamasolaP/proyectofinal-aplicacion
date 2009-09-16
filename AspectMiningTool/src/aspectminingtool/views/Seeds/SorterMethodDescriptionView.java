@@ -3,6 +3,8 @@ package aspectminingtool.views.Seeds;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
+import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
+
 
 public class SorterMethodDescriptionView extends ViewerSorter {
 

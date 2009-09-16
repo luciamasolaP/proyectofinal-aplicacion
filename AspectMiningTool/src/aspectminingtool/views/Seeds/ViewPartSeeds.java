@@ -1,5 +1,6 @@
 package aspectminingtool.views.Seeds;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,7 +30,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -49,12 +51,11 @@ import org.eclipse.ui.part.ViewPart;
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.Seeds.CallDescription;
+import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
+import aspectminingtool.JessIntegrationModel.Seeds.ModelSeedsFanIn;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
-import aspectminingtool.views.FanIn.CallsLabelProviderFanIn;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
-import aspectminingtool.views.FanIn.SorterFanInViewFanIn;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -77,7 +78,6 @@ public class ViewPartSeeds extends ViewPart {
 	private TableViewer tableViewerMethod;
 	private Button closeButton;
 
-	private TableColumn tableCallsColumn1;
 	private Table callsTable;
 	private TableViewer callsTableViewer;
 	private Action openItemActionMethodsTable, openItemActionCallsTable,
@@ -87,13 +87,21 @@ public class ViewPartSeeds extends ViewPart {
 	// Create a ExampleTaskList and assign it to an instance variable
 	private IResultsModel model = new ModelSeedsFanIn();
 
-	// Set the table column property names
-	private final String METHOD_COLUMN = "Method";
-	private final String DESCRIPTION_COLUMN = "description";
+	// Set the table column property names for tableViewerMethod
+	private final String METHOD_NAME_COLUMN = "Method";
+	private final String METHOD_DESCRIPTION_COLUMN = "description";
 
+	// Set the table column property names for callsTableViewer
+	private final String CALL_SELECTED_COLUMN = "";
+	private final String CALL_NAME_COLUMN = "Caller Method";
+	private final String CALL_DESCRIPTION_COLUMN = "Description";
+	
 	// Set column names
-	private String[] columnNames = new String[] { METHOD_COLUMN,
-			DESCRIPTION_COLUMN };
+	private String[] columnNamesMethodsTable = new String[] { METHOD_NAME_COLUMN,
+			METHOD_DESCRIPTION_COLUMN };
+	
+	private String[] columnNamesCallsTable = new String[] { CALL_SELECTED_COLUMN, CALL_NAME_COLUMN,
+			CALL_DESCRIPTION_COLUMN };
 
 	/**
      * 
@@ -102,14 +110,34 @@ public class ViewPartSeeds extends ViewPart {
 		super();
 	}
 
+	public void setName(){
+		super.setPartName("Fan in Seeds - " + model.getId());
+	}
+	
 	public void addMethodToModel(Method method, List<Call_Counted> list,
 			ProjectModel projectModel) {
 
-		MethodDescription et = new MethodDescription("");
+		
+		MethodDescription et = new MethodDescription();
 		et.setMethod(method);
 		((ModelSeedsFanIn) model).setProjectModel(projectModel);
-		((ModelSeedsFanIn) model).addMethodAsASeed(et, method.getId(), list);
+		setName();
+		((ModelSeedsFanIn) model).addMethodAsASeed(et, method.getId(), createMethodsDescriptions(list));
 
+	}
+
+	private List<CallDescription> createMethodsDescriptions(
+			List<Call_Counted> list) {
+		List<CallDescription> resultList = new ArrayList<CallDescription>();
+		if (list != null){	
+			for (Iterator<Call_Counted> iterator = list.iterator() ; iterator.hasNext() ; ){
+			
+				CallDescription cd = new CallDescription(iterator.next());
+				resultList.add(cd);
+			
+			}
+		}
+		return resultList;
 	}
 
 	/*
@@ -131,7 +159,7 @@ public class ViewPartSeeds extends ViewPart {
 						org.eclipse.swt.SWT.HORIZONTAL);
 				composite1.setLayout(composite1Layout);
 				composite1.setBounds(-483, -25, 461, 81);
-				this.addChildControls(composite1);
+				this.createTableLeft(composite1);
 			}
 			{
 
@@ -140,7 +168,7 @@ public class ViewPartSeeds extends ViewPart {
 						org.eclipse.swt.SWT.HORIZONTAL);
 				composite2.setLayout(composite2Layout);
 				composite2.setBounds(0, 0, 77, 81);
-				this.addCallsView(composite2);
+				this.createTableRight(composite2);
 			}
 		}
 
@@ -149,75 +177,8 @@ public class ViewPartSeeds extends ViewPart {
 		hookGlobalActions();
 
 	}
-
-	private void addCallsView(Composite composite2) {
-
-		callsTable = new Table(composite2, SWT.LEFT | SWT.MULTI);
-		callsTableViewer = new TableViewer(callsTable);
-
-		// Set the sorter
-		ViewerSorter sorterCalls = new SorterFanInViewCalls();
-		callsTableViewer.setSorter(sorterCalls);
-
-		// Set the content and label providers
-		callsTableViewer.setContentProvider(new CallsContentProviderFanIn());
-		callsTableViewer.setLabelProvider(new CallsLabelProviderFanIn());
-
-		{
-			tableCallsColumn1 = new TableColumn(callsTable, SWT.NONE);
-			tableCallsColumn1.setText("Calls");
-			tableCallsColumn1.setWidth(300);
-			tableCallsColumn1
-					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-						public void widgetSelected(SelectionEvent event) {
-							((SorterFanInViewCalls) callsTableViewer
-									.getSorter()).doSort(0);
-							callsTableViewer.refresh();
-						}
-					});
-		}
-
-		callsTable.setHeaderVisible(true);
-
-		callsTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-
-					if (event.getSelection() instanceof IStructuredSelection) {
-
-						Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event
-								.getSelection()).getFirstElement();
-						String name = callCounted.getCaller_id();
-						int index = name.indexOf("//");
-						name = name.substring(0, index);
-						// openResource(name);
-					}
-				}
-
-			}
-
-		});
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
-	 */
-	public void setFocus() {
-	}
-
-	/**
-	 * Cleans up all resources created by this ViewPart.
-	 */
-	public void dispose() {
-		super.dispose();
-	}
-
-	private void addChildControls(Composite composite1) {
+	
+	private void createTableLeft(Composite composite1) {
 
 		// Set numColumns to 3 for the buttons
 		GridLayout layout = new GridLayout(3, false);
@@ -225,11 +186,11 @@ public class ViewPartSeeds extends ViewPart {
 		composite1.setLayout(layout);
 
 		// Create the table
-		createTable(composite1);
+		createMethodsTable(composite1);
 
 		// Create and setup the TableViewer
-		createTableViewer();
-		tableViewerMethod.setContentProvider(new ExampleContentProvider());
+		createMethodsTableViewer();
+		tableViewerMethod.setContentProvider(new ContentProviderSeedsFanIN());
 		tableViewerMethod
 				.setLabelProvider(new MethodsDescriptionLabelProvider());
 
@@ -239,12 +200,29 @@ public class ViewPartSeeds extends ViewPart {
 
 	}
 
+	private void createTableRight(Composite composite2){
+		
+		// Set numColumns to 3 for the buttons
+		GridLayout layout = new GridLayout(3, false);
+		layout.marginWidth = 4;
+		composite2.setLayout(layout);
+
+		// Create the table
+		createCallTable(composite2);
+
+		// Create and setup the TableViewer
+		createCallsTableViewer();
+		callsTableViewer.setContentProvider(new ContentProviderCallSeedsFanIN());
+		callsTableViewer
+				.setLabelProvider(new CallsDescriptionLabelProvider());
+
+		
+	}
+	
 	/**
 	 * Create the Methods Table
 	 */
-	private void createTable(Composite parent) {
-
-		final int NUMBER_COLUMNS = 4;
+	private void createMethodsTable(Composite parent) {
 
 		tableMethod = new Table(parent, SWT.BORDER | SWT.MULTI);
 
@@ -284,27 +262,73 @@ public class ViewPartSeeds extends ViewPart {
 		});
 
 	}
+	
+	private void createCallTable(Composite parent) {
 
+		callsTable = new Table(parent, SWT.BORDER | SWT.MULTI);
+
+		GridData gridData = new GridData(GridData.FILL_BOTH);
+		gridData.grabExcessVerticalSpace = true;
+		gridData.horizontalSpan = 3;
+		callsTable.setLayoutData(gridData);
+
+		callsTable.setLinesVisible(true);
+		callsTable.setHeaderVisible(true);
+
+		{
+
+			//Columna de la imágen
+			TableColumn tableCallsColumn0 = new TableColumn(callsTable, SWT.NONE);
+			tableCallsColumn0.setText("");
+			tableCallsColumn0.setWidth(40);
+
+			
+			//Columna del método
+			TableColumn tableCallsColumn1 = new TableColumn(callsTable, SWT.NONE);
+			tableCallsColumn1.setText("Caller Method");
+			tableCallsColumn1.setWidth(300);
+			tableCallsColumn1
+					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+						public void widgetSelected(SelectionEvent event) {
+							((SorterFanInViewCalls) callsTableViewer
+									.getSorter()).doSort(0);
+							callsTableViewer.refresh();
+						}
+					});
+			//Columna de la descripcion
+			TableColumn tableCallsColumn2 = new TableColumn(callsTable, SWT.NONE);
+			tableCallsColumn2.setText("Description");
+			tableCallsColumn2.setWidth(300);
+			tableCallsColumn2
+					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+						public void widgetSelected(SelectionEvent event) {
+							((SorterFanInViewCalls) callsTableViewer
+									.getSorter()).doSort(0);
+							callsTableViewer.refresh();
+						}
+					});
+		}
+
+
+	}
+	
 	/**
 	 * Create the Methods TableViewer
 	 */
-	private void createTableViewer() {
+	private void createMethodsTableViewer() {
 
 		tableViewerMethod = new TableViewer(tableMethod);
 		tableViewerMethod.setUseHashlookup(true);
 
-		tableViewerMethod.setColumnProperties(columnNames);
+		tableViewerMethod.setColumnProperties(columnNamesMethodsTable);
 
 		// Set the sorter
 		ViewerSorter sorter = new SorterMethodDescriptionView();
 		tableViewerMethod.setSorter(sorter);
-		
 		// Create the cell editors
-		CellEditor[] editors = new CellEditor[columnNames.length];
-
-		// Column 1 : Completed (Checkbox)
+		CellEditor[] editors = new CellEditor[columnNamesMethodsTable.length];
+		// Column 1 :
 		editors[0] = null;
-
 		// Column 2 : Description (Free text)
 		TextCellEditor textEditor = new TextCellEditor(tableMethod);
 		editors[1] = textEditor;
@@ -346,6 +370,59 @@ public class ViewPartSeeds extends ViewPart {
 		// ExampleTaskSorter(ExampleTaskSorter.DESCRIPTION));
 	}
 
+	
+	private void createCallsTableViewer(){
+		
+		callsTableViewer = new TableViewer(callsTable);
+		callsTableViewer.setUseHashlookup(true);
+
+		callsTableViewer.setColumnProperties(columnNamesCallsTable);
+
+		// Set the sorter
+//		ViewerSorter sorter = new SorterMethodDescriptionView();
+//		callsTableViewer.setSorter(sorter);
+		
+		
+		// Create the cell editors
+		CellEditor[] editors = new CellEditor[columnNamesCallsTable.length];
+		// Column 0 : Imagen
+		String[] s = new String[2];
+		s[0] = "yes";
+		s[1] = "no";
+		editors[0] = new ComboBoxCellEditor(callsTable, s , SWT.READ_ONLY);
+		// Column 1 : Call
+		editors[1] = null;
+		// Column 2 : Description (Free text)
+		TextCellEditor textEditor = new TextCellEditor(callsTable);
+		editors[2] = textEditor;
+
+		// Assign the cell editors to the viewer
+		callsTableViewer.setCellEditors(editors);
+		// Set the cell modifier for the viewer
+		callsTableViewer.setCellModifier(new CellModifierCallsDescription(
+				this));
+		
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
+	 */
+	public void setFocus() {
+	}
+
+	/**
+	 * Cleans up all resources created by this ViewPart.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
+
+	
+
+
+	
 	protected void selectionItem(SelectionChangedEvent event) {
 
 		if (!event.getSelection().isEmpty()) {
@@ -354,9 +431,7 @@ public class ViewPartSeeds extends ViewPart {
 				MethodDescription metodo = (MethodDescription) ((IStructuredSelection) event
 						.getSelection()).getFirstElement();
 				String key = metodo.getMethod().getId();
-				List<Call_Counted> llamadas = ((ModelSeedsFanIn) model)
-						.getCalls(key);
-				callsTableViewer.setInput(llamadas);
+				callsTableViewer.setInput(key);
 
 			}
 
@@ -369,10 +444,20 @@ public class ViewPartSeeds extends ViewPart {
 	 * 
 	 * @return List containing column names
 	 */
-	public java.util.List getColumnNames() {
-		return Arrays.asList(columnNames);
+	public java.util.List getColumnNamesMethods() {
+		return Arrays.asList(columnNamesMethodsTable);
 	}
 
+	/**
+	 * Return the column names in a collection
+	 * 
+	 * @return List containing column names
+	 */
+	public java.util.List getColumnNamesCalls() {
+		return Arrays.asList(columnNamesCallsTable);
+	}
+
+	
 	/**
 	 * @return currently selected item
 	 */
@@ -383,7 +468,7 @@ public class ViewPartSeeds extends ViewPart {
 	/**
 	 * Return the ExampleTaskList
 	 */
-	public IResultsModel getMethodsDescription() {
+	public IResultsModel getModel() {
 		return model;
 	}
 
@@ -401,9 +486,6 @@ public class ViewPartSeeds extends ViewPart {
 		return closeButton;
 	}
 
-	public Object getModel() {
-		return model;
-	}
 
 	private void createContextMenu() {
 		// Create menu manager for methodsTableViewer
@@ -570,29 +652,39 @@ public class ViewPartSeeds extends ViewPart {
 			try {
 				IDE.openEditor(page, fileStore, true);
 			} catch (PartInitException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
 	}
 
-	class ExampleContentProvider implements IStructuredContentProvider,
-			MethodDesccriptionListViewer {
+	/**
+	 * InnerClass that acts as a proxy for the methodDescriptionListViewer 
+     * providing content for the Table. It implements the MethodDescriptionListViewer 
+     * interface since it must register changeListeners with the 
+     * methodDescriptionListViewer
+	 * 
+	 *
+	 */
+	class ContentProviderSeedsFanIN implements IStructuredContentProvider,
+			MethodDescriptionListViewer {
+		/**
+		 * It register itself as a listener to the domain object changes so it can notify the tree viewer of any changes. 
+		 */
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			if (newInput != null)
-				((ModelSeedsFanIn) newInput).addChangeListener(this);
+				((ModelSeedsFanIn) newInput).addChangeListenerMethodDescription(this);
 			if (oldInput != null)
-				((ModelSeedsFanIn) oldInput).removeChangeListener(this);
+				((ModelSeedsFanIn) oldInput).removeChangeListenerMethodDescription(this);
 		}
 
 		public void dispose() {
-			((ModelSeedsFanIn) model).removeChangeListener(this);
+			((ModelSeedsFanIn) model).removeChangeListenerMethodDescription(this);
 		}
 
-		// Return the tasks as an array of Objects
+		// Return the methodsDescriptions as an array of Objects
 		public Object[] getElements(Object parent) {
-			return ((ModelSeedsFanIn) model).getTasks().toArray();
+			return ((ModelSeedsFanIn) model).getMethodsDescriptions().toArray();
 		}
 
 		/*
@@ -600,8 +692,8 @@ public class ViewPartSeeds extends ViewPart {
 		 * 
 		 * @see ITaskListViewer#addTask(ExampleTask)
 		 */
-		public void addTask(MethodDescription task) {
-			tableViewerMethod.add(task);
+		public void addMethodDescription(MethodDescription methodDescription) {
+			tableViewerMethod.add(methodDescription);
 		}
 
 		/*
@@ -609,8 +701,8 @@ public class ViewPartSeeds extends ViewPart {
 		 * 
 		 * @see ITaskListViewer#removeTask(ExampleTask)
 		 */
-		public void removeTask(MethodDescription task) {
-			tableViewerMethod.remove(task);
+		public void removeMethodDescription(MethodDescription methodDescription) {
+			tableViewerMethod.remove(methodDescription);
 		}
 
 		/*
@@ -618,9 +710,62 @@ public class ViewPartSeeds extends ViewPart {
 		 * 
 		 * @see ITaskListViewer#updateTask(ExampleTask)
 		 */
-		public void updateTask(MethodDescription task) {
-			tableViewerMethod.update(task, null);
+		public void updateMethodDEscription(MethodDescription methodDescription) {
+			tableViewerMethod.update(methodDescription, null);
 		}
 	}
 
+	/**
+	 * InnerClass that acts as a proxy for the methodDescriptionListViewer 
+     * providing content for the Table. It implements the MethodDescriptionListViewer 
+     * interface since it must register changeListeners with the 
+     * methodDescriptionListViewer
+	 * 
+	 *
+	 */
+	class ContentProviderCallSeedsFanIN implements IStructuredContentProvider,
+	CallDescriptionListViewer {
+		/**
+		 * It register itself as a listener to the domain object changes so it can notify the tree viewer of any changes. 
+		 */
+		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
+			if (newInput != null)
+				((ModelSeedsFanIn) model).addChangeListenerCallDescription(this);
+			if (oldInput != null)
+				((ModelSeedsFanIn) model).removeChangeListenerCallDescription(this);
+		}
+
+		public void dispose() {
+			((ModelSeedsFanIn) model).removeChangeListenerCallDescription(this);
+		}
+
+		// Returns the callDescriptions of a given method_id
+		public Object[] getElements(Object inputElement) {
+			String method_id = (String)inputElement;
+			return (((ModelSeedsFanIn)model).getCallsDescriptions(method_id)).toArray();
+
+		}
+
+		@Override
+		public void addCallDescription(CallDescription callDescription) {
+			callsTableViewer.add(callDescription);
+			
+		}
+
+		@Override
+		public void removeCallDescription(CallDescription callDescription) {
+			callsTableViewer.remove(callDescription);
+			
+		}
+
+		@Override
+		public void updateCallDEscription(CallDescription callDescription) {
+			callsTableViewer.update(callDescription, null);
+			
+		}
+
+
+
+	}
+	
 }

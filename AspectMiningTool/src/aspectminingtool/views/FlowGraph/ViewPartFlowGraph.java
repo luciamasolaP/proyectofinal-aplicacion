@@ -1,5 +1,10 @@
 package aspectminingtool.views.FlowGraph;
 
+import java.util.List;
+
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
@@ -16,7 +21,14 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
+import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+
+import JessIntegrationModel.Method;
+import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
+import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
 
 
 /**
@@ -75,7 +87,20 @@ public class ViewPartFlowGraph extends ViewPart {
 		super.setPartName("FlowControl Results - " + model.getId());
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
 		tableViewerLeft.setInput(model);
-		//tableViewerLeftTab2.setInput(model);
+		tableViewerLeftTab2.setInput(model);
+		//tableViewerRight.setInput(model);
+	}
+	
+	private void selectionItem(SelectionChangedEvent event) {
+
+		if (!event.getSelection().isEmpty()) {
+
+			if (event.getSelection() instanceof IStructuredSelection) {
+				OutsideBeforeExecutionMetric relation = (OutsideBeforeExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMethod());
+				tableViewerRight.setInput(relatedMethos);
+			}
+		}
 	}
 
     /* (non-Javadoc)
@@ -150,8 +175,8 @@ public class ViewPartFlowGraph extends ViewPart {
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
 				tableViewerLeft
-						.setContentProvider(new FlowGraphContentProvider());
-				tableViewerLeft.setLabelProvider(new FlowGraphLabelProvider());
+						.setContentProvider(new FlowGraphContentProviderOB());
+				tableViewerLeft.setLabelProvider(new FlowGraphLabelProviderOB());
 
 				// Set up the table, each column has a listener for the click
 				// that calls
@@ -171,6 +196,16 @@ public class ViewPartFlowGraph extends ViewPart {
 				// Turn on the header and the lines
 				tableLeft.setHeaderVisible(true);
 				tableLeft.setLinesVisible(true);
+				
+				tableViewerLeft
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							SelectionChangedEvent event) {
+						selectionItem(event);
+
+					}
+
+				});
 
 
 
@@ -190,8 +225,8 @@ public class ViewPartFlowGraph extends ViewPart {
 					tableViewerRight.setSorter(sorterCalls);
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-//					tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
-//					tableViewerRight.setLabelProvider(new CallsLabelProviderFanIn());
+					tableViewerRight.setContentProvider(new FlowGraphContentProviderOBCalls());
+					tableViewerRight.setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightColumn1 = new TableColumn(tableRight,
@@ -238,9 +273,9 @@ public class ViewPartFlowGraph extends ViewPart {
 				
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-//				tableViewerLeftTab2
-//						.setContentProvider(new FanInContentProvider());
-//				tableViewerLeftTab2.setLabelProvider(new FanInLabelProvider());
+				tableViewerLeftTab2
+						.setContentProvider(new FlowGraphContentProviderOA());
+				tableViewerLeftTab2.setLabelProvider(new FlowGraphLabelProviderOA());
 
 				// Set up the table, each column has a listener for the click
 				// that calls

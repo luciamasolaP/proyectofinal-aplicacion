@@ -25,8 +25,8 @@ public class FlowGraphPopUp extends AbstractPerformMiningPopup {
 	@Override
 	protected void showResults(IResultsModel results) {
 		
-		FlowGraphModel flowGraphResults = (FlowGraphModel)results;		
-		flowGraphResults.listResults();
+//		FlowGraphModel flowGraphResults = (FlowGraphModel)results;		
+//		flowGraphResults.listResults();
 		try {
 
 //			ViewPartFanIn view = (ViewPartFanIn) PlatformUI.getWorkbench().getActiveWorkbenchWindow()

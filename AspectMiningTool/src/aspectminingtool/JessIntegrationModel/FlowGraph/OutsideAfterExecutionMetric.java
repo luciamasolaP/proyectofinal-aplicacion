@@ -5,13 +5,13 @@ import java.util.ArrayList;
 
 import JessIntegrationModel.Method;
 
-public class OutsideBeforeExecutionMetric {
+public class OutsideAfterExecutionMetric {
 	
 	private Method method;
 	private int metric;
 	private List<String> relatedMethods;
 	
-	public OutsideBeforeExecutionMetric(Method method, int metric){
+	public OutsideAfterExecutionMetric(Method method, int metric){
 		this.method = method;
 		this.metric = metric;
 		this.relatedMethods = new ArrayList();

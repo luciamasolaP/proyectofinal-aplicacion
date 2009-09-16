@@ -2,16 +2,20 @@ package aspectminingtool.views.FlowGraph;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
+import JessIntegrationModel.Method;
 
-public class FlowGraphContentProvider implements IStructuredContentProvider {
+import aspectminingtool.model.Call_Counted;
 
-	private FlowGraphModel flowGraphModel = null;
+public class FlowGraphContentProviderOBCalls implements IStructuredContentProvider {
+
+	private List<Method> calls = null;
 	
 //	@Override
 //	public Object[] getChildren(Object parentElement) {
@@ -52,9 +56,9 @@ public class FlowGraphContentProvider implements IStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		flowGraphModel = (FlowGraphModel)inputElement;
-		flowGraphModel.calculateFlowGraphMetric();
-		return flowGraphModel.getFlowGraphResult().toArray();	 	
+		
+		calls = (List<Method>)inputElement;
+		return calls.toArray(); 	
 
 	}
 

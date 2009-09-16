@@ -42,7 +42,7 @@ import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.ViewFilterProject;
-import aspectminingtool.views.Seeds.ViewPartSeeds;
+import aspectminingtool.views.FanInSeeds.ViewPartSeeds;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI

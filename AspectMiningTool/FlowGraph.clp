@@ -26,8 +26,11 @@
 
 (defrule generate_OutsideExecution_relations
 	"comment"
-    (Call (id ?call_1) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence_1))
+   	(Call (id ?call_1) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence_1))
     (Call (id ?call_2) (caller_id ?method_X) (callee_id ?method_Z) (precedence ?precedence_2))
+    (Method (id ?method_X))
+    (Method (id ?method_Y))
+    (Method (id ?method_Z))
     =>      
     (bind ?distance (- ?precedence_2 ?precedence_1))
     (if (= ?distance 1) then	    

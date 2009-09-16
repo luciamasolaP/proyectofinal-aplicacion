@@ -6,6 +6,10 @@
 
 package aspectminingtool.views.Seeds;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -13,6 +17,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import aspectminingtool.Activator;
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
 
 
@@ -25,39 +30,33 @@ public class MethodsDescriptionLabelProvider
 	extends LabelProvider
 	implements ITableLabelProvider {
 
-	// Names of images used to represent checkboxes
-	public static final String CHECKED_IMAGE 	= "checked";
-	public static final String UNCHECKED_IMAGE  = "unchecked";
 
-	// For the checkbox images
-	private static ImageRegistry imageRegistry = new ImageRegistry();
+	private Map imageCache = new HashMap(2);
+	
+	@Override
+	public Image getColumnImage(Object element, int columnIndex) {
+		
+		  ImageDescriptor descriptor = null;
+		   if (columnIndex == 0 ) {
+			   descriptor = Activator.getImageDescriptor("images/method.gif");
+		   } else if (columnIndex ==  1) {
+			   descriptor = null; 
+		   } 
+		  
+		   if (descriptor == null){
+			   return null;
+		   } else{
+			   //obtain the cached image corresponding to the descriptor
+			   Image image = (Image)imageCache.get(descriptor);
+			   if (image == null) {
+			       image = descriptor.createImage();
+			       imageCache.put(descriptor, image);
+			   }
+			   return image;
+		   }
 
-	/**
-	 * Note: An image registry owns all of the image objects registered with it,
-	 * and automatically disposes of them the SWT Display is disposed.
-	 */ 
-	static {
-		String iconPath = "icons/"; 
-		imageRegistry.put(CHECKED_IMAGE, ImageDescriptor.createFromFile(
-				ViewPartSeeds.class, 
-				iconPath + CHECKED_IMAGE + ".gif"
-				)
-			);
-		imageRegistry.put(UNCHECKED_IMAGE, ImageDescriptor.createFromFile(
-				ViewPartSeeds.class, 
-				iconPath + UNCHECKED_IMAGE + ".gif"
-				)
-			);	
 	}
 	
-	/**
-	 * Returns the image with the given key, or <code>null</code> if not found.
-	 */
-	private Image getImage(boolean isSelected) {
-//		String key = isSelected ? CHECKED_IMAGE : UNCHECKED_IMAGE;
-//		return  imageRegistry.get(key);
-		return null;
-	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
@@ -77,14 +76,13 @@ public class MethodsDescriptionLabelProvider
 		return result;
 	}
 
-	/**
-	 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
-	 */
-	public Image getColumnImage(Object element, int columnIndex) {
-//		return (columnIndex == 0) ?   // COMPLETED_COLUMN?
-//			getImage(((ExampleTask) element).isCompleted()) :
-//			null;
-		return null;
+	@Override
+	public void dispose() {
+		  for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
+				((Image) i.next()).dispose();
+			}
+			imageCache.clear();
+		
 	}
 
 }

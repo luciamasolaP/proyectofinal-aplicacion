@@ -7,6 +7,7 @@
 
 package aspectminingtool.JessIntegrationModel.Seeds;
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +17,6 @@ import java.util.Map;
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.views.FanInSeeds.CallDescriptionListViewer;
-import aspectminingtool.views.FanInSeeds.MethodDescriptionListViewer;
 
 
 /**
@@ -26,7 +25,7 @@ import aspectminingtool.views.FanInSeeds.MethodDescriptionListViewer;
  * 
  */
 
-public class ModelSeedsFanIn implements IResultsModel{
+public class SeedsModel implements IResultsModel{
 
 	private List methodsDescriptionList = new ArrayList();
 	private List changeListenersMethodDescription = new ArrayList();
@@ -40,7 +39,7 @@ public class ModelSeedsFanIn implements IResultsModel{
 	/**
 	 * Constructor
 	 */
-	public ModelSeedsFanIn() {
+	public SeedsModel() {
 		super();
 	//	this.initData();
 		
@@ -197,7 +196,33 @@ public class ModelSeedsFanIn implements IResultsModel{
 
 	@Override
 	public void generateArchive(BufferedWriter archive) {
-		// TODO Auto-generated method stub
+		
+		try 
+	    {
+			for (Iterator<MethodDescription> methodIterator = methodsDescriptionList.iterator(); methodIterator.hasNext() ;){
+				MethodDescription md = methodIterator.next(); 
+				Method m = md.getMethod();
+				archive.write(md.toString());
+				archive.newLine();
+				String key = m.getId();
+				if (callDescriptionList.containsKey(key)){
+					
+					List<CallDescription> list = callDescriptionList.get(key);
+					for (Iterator<CallDescription> callIterator=list.iterator();callIterator.hasNext();){
+						archive.write("                 " + callIterator.next().toString());
+						archive.newLine();
+					}
+					
+				}
+
+				archive.newLine();
+					
+			}
+
+	        archive.close();
+	    }
+	    catch (IOException e)    {    }
+		
 		
 	}
 	

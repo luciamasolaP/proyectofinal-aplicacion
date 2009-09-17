@@ -1,6 +1,7 @@
 package aspectminingtool.JessIntegrationModel.Seeds;
 
 import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.MethodFormater;
 
 public class CallDescription {
 
@@ -48,5 +49,11 @@ public class CallDescription {
 		selected = "yes";
 	}
 	
+
+	public String toString(){
+		
+		return callCounted.toString() + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
+		
+	}
 	
 }

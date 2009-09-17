@@ -41,5 +41,9 @@ public class MethodDescription {
 	public void setMethod(Method method) {
 		this.method = method;
 	}
+	
+	public String toString(){
+		return method.toString() + "          Descripción: " + description;
+	}
 
 }

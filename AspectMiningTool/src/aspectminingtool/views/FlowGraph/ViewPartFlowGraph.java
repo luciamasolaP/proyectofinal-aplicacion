@@ -25,11 +25,14 @@ import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+import aspectminingtool.views.FanIn.SorterFanInViewFanIn;
 
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
 import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
 import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetric;
+import aspectminingtool.JessIntegrationModel.FlowGraph.InsideFirstExecutionMetric;
+import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric;
 
 
 /**
@@ -47,32 +50,48 @@ import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetr
 public class ViewPartFlowGraph extends ViewPart {
     public static final String ID_VIEW =
         "aspectminingtool.views.FlowGraph.ViewPartFlowGraph"; //$NON-NLS-1$
-        private SashForm sashForm2;
+
         private CTabItem cTabItemInsideFirstExecution;
         private CTabItem cTabItemInsideLastExecution;
         private CTabItem cTabItemOutsideAfterExecution;
         private CTabItem cTabItemOutsideBeforeExecution;
         private CTabFolder cTabFolderFlowGraph;
         
-  
-    	private SashForm sashForm1;
+      	private SashForm sashForm1;
+        private SashForm sashForm2;
+        private SashForm sashForm3;
+        private SashForm sashForm4;        
+    	
+    	private Table tableLeft;
+    	private TableViewer tableViewerLeft;
     	private Table tableRight;
     	private TableViewer tableViewerRight;
-    	
-    	private TableViewer tableViewerLeft;
-    	private Table tableLeft = null;
 
     	private Table tableLeftTab2;
 		private TableViewer tableViewerLeftTab2;
 		private Table tableRightTab2;
 		private TableViewer tableViewerRightTab2;
+		
+		private Table tableLeftTab3;
+		private TableViewer tableViewerLeftTab3;
+		private Table tableRightTab3;
+		private TableViewer tableViewerRightTab3;
+		
+		private Table tableLeftTab4;
+		private TableViewer tableViewerLeftTab4;
+		private Table tableRightTab4;
+		private TableViewer tableViewerRightTab4;
 
     	private IResultsModel model;
-    	private Composite composite2;
+    	
     	private Composite composite1;
+    	private Composite composite2;
     	private Composite composite3;
     	private Composite composite4;
-
+    	private Composite composite5;
+    	private Composite composite6;
+    	private Composite composite7;
+    	private Composite composite8;
 
     
     /**
@@ -89,7 +108,8 @@ public class ViewPartFlowGraph extends ViewPart {
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
 		tableViewerLeft.setInput(model);
 		tableViewerLeftTab2.setInput(model);
-		//tableViewerRight.setInput(model);
+		tableViewerLeftTab3.setInput(model);
+		tableViewerLeftTab4.setInput(model);
 	}
 	
 	private void selectionItemTab1(SelectionChangedEvent event) {
@@ -112,6 +132,30 @@ public class ViewPartFlowGraph extends ViewPart {
 				OutsideAfterExecutionMetric relation = (OutsideAfterExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideAfterExecutionMethods(relation.getMethod());
 				tableViewerRightTab2.setInput(relatedMethos);
+			}
+		}
+	}
+	
+	private void selectionItemTab3(SelectionChangedEvent event) {
+
+		if (!event.getSelection().isEmpty()) {
+
+			if (event.getSelection() instanceof IStructuredSelection) {
+				InsideFirstExecutionMetric relation = (InsideFirstExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideFirstExecutionMethods(relation.getMethod());
+				tableViewerRightTab3.setInput(relatedMethos);
+			}
+		}
+	}
+	
+	private void selectionItemTab4(SelectionChangedEvent event) {
+
+		if (!event.getSelection().isEmpty()) {
+
+			if (event.getSelection() instanceof IStructuredSelection) {
+				InsideLastExecutionMetric relation = (InsideLastExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideLastExecutionMethods(relation.getMethod());
+				tableViewerRightTab4.setInput(relatedMethos);
 			}
 		}
 	}
@@ -144,10 +188,12 @@ public class ViewPartFlowGraph extends ViewPart {
         	{
         		cTabItemInsideFirstExecution = new CTabItem(cTabFolderFlowGraph, SWT.NONE);
         		cTabItemInsideFirstExecution.setText("Inside First Execution");
+        		createTab3();
         	}
         	{
         		cTabItemInsideLastExecution = new CTabItem(cTabFolderFlowGraph, SWT.NONE);
         		cTabItemInsideLastExecution.setText("Inside Last Execution");
+        		createTab4();
         	}
         	cTabFolderFlowGraph.setSelection(0);
         }
@@ -184,7 +230,10 @@ public class ViewPartFlowGraph extends ViewPart {
 				
 				tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
 				tableViewerLeft = new TableViewer(tableLeft);
-
+				
+				// Set the sorter
+				ViewerSorter sorter = new SorterFlowGraphTab1Left();
+				tableViewerLeft.setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
 				tableViewerLeft
@@ -198,12 +247,28 @@ public class ViewPartFlowGraph extends ViewPart {
 				final TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
 				tc1.setText("Method");
 				tc1.setWidth(398);
+				tc1
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab1Left) tableViewerLeft
+								.getSorter()).doSort(0);
+						tableViewerLeft.refresh();
+					}
+				});
 
 
 				// Column 2
 				TableColumn tc2 = new TableColumn(tableLeft, SWT.LEFT);
 				tc2.setText("Value");
 				tc2.setWidth(50);
+				tc2
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab1Left) tableViewerLeft
+								.getSorter()).doSort(1);
+						tableViewerLeft.refresh();
+					}
+				});
 
 
 				// Turn on the header and the lines
@@ -353,7 +418,198 @@ public class ViewPartFlowGraph extends ViewPart {
 				}
 			}
 		}
-    }
-    
+    }    
+}
+ 
+ public void createTab3(){
+ 	
+		{
+			sashForm3 = new SashForm(cTabFolderFlowGraph, SWT.NONE);
+			cTabItemInsideFirstExecution.setControl(sashForm3);
+			sashForm3.setSize(60, 30);
+			{
+				composite5 = new Composite(sashForm3, SWT.NULL);
+				FillLayout composite5Layout = new FillLayout(
+						org.eclipse.swt.SWT.HORIZONTAL);
+				composite5.setLayout(composite5Layout);
+				composite5.setBounds(-483, -25, 461, 81);
+				
+				tableLeftTab3 = new Table(composite5, SWT.BORDER | SWT.MULTI);
+				tableViewerLeftTab3 = new TableViewer(tableLeftTab3);
+
+
+				// Set the content and label providers ACA tienen que ir tus contentsProviders!
+				tableViewerLeftTab3
+						.setContentProvider(new FlowGraphContentProviderIF());
+				tableViewerLeftTab3.setLabelProvider(new FlowGraphLabelProviderIF());
+
+				// Set up the table, each column has a listener for the click
+				// that calls
+				// the sorter and refreshes the tree.
+				// Column 1
+				final TableColumn tc31 = new TableColumn(tableLeftTab3, SWT.LEFT);
+				tc31.setText("Method");
+				tc31.setWidth(398);
+
+
+				// Column 2
+				TableColumn tc32 = new TableColumn(tableLeftTab3, SWT.LEFT);
+				tc32.setText("Value");
+				tc32.setWidth(50);
+
+
+				// Turn on the header and the lines
+				tableLeftTab3.setHeaderVisible(true);
+				tableLeftTab3.setLinesVisible(true);
+				
+				tableViewerLeftTab3
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							SelectionChangedEvent event) {
+						selectionItemTab3(event);
+
+					}
+
+				});
+
+
+
+			}
+			{
+				composite6 = new Composite(sashForm3, SWT.NONE);
+				FillLayout composite6Layout = new FillLayout(
+						org.eclipse.swt.SWT.HORIZONTAL);
+				composite6.setLayout(composite6Layout);
+				composite6.setBounds(0, 0, 77, 81);
+				{
+					tableRightTab3 = new Table(composite6, SWT.LEFT | SWT.MULTI);
+					tableViewerRightTab3 = new TableViewer(tableRightTab3);
+					
+					// Set the sorter
+//					ViewerSorter sorterCalls = new SorterFanInViewCalls();
+//					tableViewerRight.setSorter(sorterCalls);
+					
+					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
+					tableViewerRightTab3.setContentProvider(new FlowGraphContentProviderOBCalls());
+					tableViewerRightTab3.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					
+					{
+						TableColumn tableRightColumn1 = new TableColumn(tableRightTab3,
+								SWT.NONE);
+						tableRightColumn1.setText("Calls");
+						tableRightColumn1.setWidth(300);
+						tableRightColumn1
+						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+							public void widgetSelected(SelectionEvent event) {
+								((SorterFanInViewCalls) tableViewerRightTab3
+										.getSorter()).doSort(0);
+								tableViewerRightTab3.refresh();
+							}
+						});
+					}
+	
+
+					tableRightTab3.setHeaderVisible(true);
+
+
+				}
+			}
+		}
+ }
+ 
+ public void createTab4(){
+	 	
+		{
+			sashForm4 = new SashForm(cTabFolderFlowGraph, SWT.NONE);
+			cTabItemInsideLastExecution.setControl(sashForm4);
+			sashForm4.setSize(60, 30);
+			{
+				composite7 = new Composite(sashForm4, SWT.NULL);
+				FillLayout composite7Layout = new FillLayout(
+						org.eclipse.swt.SWT.HORIZONTAL);
+				composite7.setLayout(composite7Layout);
+				composite7.setBounds(-483, -25, 461, 81);
+				
+				tableLeftTab4 = new Table(composite7, SWT.BORDER | SWT.MULTI);
+				tableViewerLeftTab4 = new TableViewer(tableLeftTab4);
+
+
+				// Set the content and label providers ACA tienen que ir tus contentsProviders!
+				tableViewerLeftTab4
+						.setContentProvider(new FlowGraphContentProviderIL());
+				tableViewerLeftTab4.setLabelProvider(new FlowGraphLabelProviderIL());
+
+				// Set up the table, each column has a listener for the click
+				// that calls
+				// the sorter and refreshes the tree.
+				// Column 1
+				final TableColumn tc31 = new TableColumn(tableLeftTab4, SWT.LEFT);
+				tc31.setText("Method");
+				tc31.setWidth(398);
+
+
+				// Column 2
+				TableColumn tc32 = new TableColumn(tableLeftTab4, SWT.LEFT);
+				tc32.setText("Value");
+				tc32.setWidth(50);
+
+
+				// Turn on the header and the lines
+				tableLeftTab4.setHeaderVisible(true);
+				tableLeftTab4.setLinesVisible(true);
+				
+				tableViewerLeftTab4
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+					public void selectionChanged(
+							SelectionChangedEvent event) {
+						selectionItemTab4(event);
+
+					}
+
+				});
+
+
+
+			}
+			{
+				composite8 = new Composite(sashForm4, SWT.NONE);
+				FillLayout composite8Layout = new FillLayout(
+						org.eclipse.swt.SWT.HORIZONTAL);
+				composite8.setLayout(composite8Layout);
+				composite8.setBounds(0, 0, 77, 81);
+				{
+					tableRightTab4 = new Table(composite8, SWT.LEFT | SWT.MULTI);
+					tableViewerRightTab4 = new TableViewer(tableRightTab4);
+					
+					// Set the sorter
+//					ViewerSorter sorterCalls = new SorterFanInViewCalls();
+//					tableViewerRight.setSorter(sorterCalls);
+					
+					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
+					tableViewerRightTab4.setContentProvider(new FlowGraphContentProviderOBCalls());
+					tableViewerRightTab4.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					
+					{
+						TableColumn tableRightColumn1 = new TableColumn(tableRightTab4,
+								SWT.NONE);
+						tableRightColumn1.setText("Calls");
+						tableRightColumn1.setWidth(300);
+						tableRightColumn1
+						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+							public void widgetSelected(SelectionEvent event) {
+								((SorterFanInViewCalls) tableViewerRightTab4
+										.getSorter()).doSort(0);
+								tableViewerRightTab4.refresh();
+							}
+						});
+					}
+	
+
+					tableRightTab4.setHeaderVisible(true);
+
+
+				}
+			}
+		}
 }
 }

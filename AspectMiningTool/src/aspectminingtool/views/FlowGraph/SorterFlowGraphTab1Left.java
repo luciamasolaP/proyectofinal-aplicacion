@@ -1,12 +1,12 @@
-package aspectminingtool.views.FanIn;
-
+package aspectminingtool.views.FlowGraph;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
 
-public class SorterFanInViewFanIn extends ViewerSorter {
+public class SorterFlowGraphTab1Left extends ViewerSorter {
+
 	private static final int ASCENDING = 0;
 	  private static final int DESCENDING = 1;
 	  private int column;
@@ -27,23 +27,22 @@ public class SorterFanInViewFanIn extends ViewerSorter {
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int rc = 0;
-			Fan_in_Result fir1 = (Fan_in_Result)e1;
-	    	Fan_in_Result fir2 = (Fan_in_Result)e2;
-		    switch (column) {
-		    case 0:
-		    	String name1 = fir1.getMetodo().getName();
-		    	String name2 = fir2.getMetodo().getName();
-		    	rc = name1.compareTo(name2);
-		      break;
-		    case 1:
-		    	int numero1 =Integer.parseInt(fir1.getMetric());
-		    	int numero2 =Integer.parseInt(fir2.getMetric());
-		    	Integer int1 = new Integer(numero1);
-		    	Integer int2 = new Integer(numero2);
-		    	rc = int1.compareTo(int2);
-			  break;
-		    }
-		    
+		OutsideBeforeExecutionMetric fir1 = (OutsideBeforeExecutionMetric)e1;
+		OutsideBeforeExecutionMetric fir2 = (OutsideBeforeExecutionMetric)e2;
+	    switch (column) {
+	    case 0:
+	    	String name1 = fir1.getMethod().getName();
+	    	String name2 = fir2.getMethod().getName();
+	    	rc = name1.compareTo(name2);
+	      break;
+	    case 1:
+	    	int numero1 = fir1.getMetric();
+	    	int numero2 = fir2.getMetric();
+	    	Integer int1 = new Integer(numero1);
+	    	Integer int2 = new Integer(numero2);
+	    	rc = int1.compareTo(int2);
+		  break;
+	    }		    
 
 		if (direction == DESCENDING)
 		      rc = -rc;
@@ -54,5 +53,5 @@ public class SorterFanInViewFanIn extends ViewerSorter {
 	public void sort(Viewer viewer, Object[] elements) {
 		super.sort(viewer, elements);
 	}
-
+	
 }

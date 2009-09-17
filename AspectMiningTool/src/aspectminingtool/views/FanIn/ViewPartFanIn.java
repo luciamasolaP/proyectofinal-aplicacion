@@ -41,8 +41,9 @@ import JessIntegrationModel.ProjectModel;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.ViewFilterProject;
-import aspectminingtool.views.FanInSeeds.ViewPartSeeds;
+import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -385,10 +386,12 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					Fan_in_Result method = (Fan_in_Result) iter.next();
-					selectAsSeedOperation(method.getMetodo());
+					Fan_in_Result fir = (Fan_in_Result) iter.next();
+					Method method = fir.getMetodo();
+					ViewPartUtil.selectAsSeed(method, ViewPartFanInSeeds.ID_VIEW, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
+					//selectAsSeedOperation(method.getMetodo());
 
-			}
+				}
 
 				
 			}
@@ -447,21 +450,22 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 	}
 
-	protected void selectAsSeedOperation(Method method) {
+//	protected void selectAsSeedOperation(Method method) {
+//
+//		try {
+//			ViewPartFanInSeeds view = (ViewPartFanInSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+//			.getActivePage().showView(ViewPartFanInSeeds.ID_VIEW );
+//
+//			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
+//			
+//		} catch (PartInitException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		
+//	}
 
-		try {
-			ViewPartSeeds view = (ViewPartSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-			.getActivePage().showView(ViewPartSeeds.ID_VIEW );
-
-			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
-			
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
 
 
 	

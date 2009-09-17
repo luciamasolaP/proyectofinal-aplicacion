@@ -15,7 +15,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -52,9 +51,13 @@ import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.JessIntegrationModel.Seeds.CallDescription;
+import aspectminingtool.JessIntegrationModel.Seeds.CallDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
-import aspectminingtool.JessIntegrationModel.Seeds.ModelSeedsFanIn;
+import aspectminingtool.JessIntegrationModel.Seeds.MethodDescriptionListViewer;
+import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
 import aspectminingtool.model.Call_Counted;
+import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.ViewSeedsInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 
 /**
@@ -67,8 +70,8 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartSeeds extends ViewPart {
-	public static final String ID_VIEW = "aspectminingtool.views.Seeds.ViewPartSeeds"; //$NON-NLS-1$
+public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,ViewSeedsInterface{
+	public static final String ID_VIEW = "aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"; //$NON-NLS-1$
 
 	private SashForm sashForm;
 	private Composite composite1;
@@ -85,7 +88,7 @@ public class ViewPartSeeds extends ViewPart {
 			selectAllActionCallsTable;
 
 	// Create a ExampleTaskList and assign it to an instance variable
-	private IResultsModel model = new ModelSeedsFanIn();
+	private IResultsModel model = new SeedsModel();
 
 	// Set the table column property names for tableViewerMethod
 	private final String METHOD_NAME_COLUMN = "Method";
@@ -106,7 +109,7 @@ public class ViewPartSeeds extends ViewPart {
 	/**
      * 
      */
-	public ViewPartSeeds() {
+	public ViewPartFanInSeeds() {
 		super();
 	}
 
@@ -120,9 +123,9 @@ public class ViewPartSeeds extends ViewPart {
 		
 		MethodDescription et = new MethodDescription();
 		et.setMethod(method);
-		((ModelSeedsFanIn) model).setProjectModel(projectModel);
+		((SeedsModel) model).setProjectModel(projectModel);
 		setName();
-		((ModelSeedsFanIn) model).addMethodAsASeed(et, method.getId(), createMethodsDescriptions(list));
+		((SeedsModel) model).addMethodAsASeed(et, method.getId(), createMethodsDescriptions(list));
 
 	}
 
@@ -195,7 +198,7 @@ public class ViewPartSeeds extends ViewPart {
 				.setLabelProvider(new MethodsDescriptionLabelProvider());
 
 		// The input for the table viewer is the instance of ExampleTaskList
-		model = new ModelSeedsFanIn();
+		model = new SeedsModel();
 		tableViewerMethod.setInput(model);
 
 	}
@@ -574,7 +577,7 @@ public class ViewPartSeeds extends ViewPart {
 					MethodDescription methodDescription = (MethodDescription) iter
 							.next();
 					if (methodDescription != null) {
-						((ModelSeedsFanIn) model)
+						((SeedsModel) model)
 								.removeMethodDescription(methodDescription);
 					}
 
@@ -673,18 +676,18 @@ public class ViewPartSeeds extends ViewPart {
 		 */
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			if (newInput != null)
-				((ModelSeedsFanIn) newInput).addChangeListenerMethodDescription(this);
+				((SeedsModel) newInput).addChangeListenerMethodDescription(this);
 			if (oldInput != null)
-				((ModelSeedsFanIn) oldInput).removeChangeListenerMethodDescription(this);
+				((SeedsModel) oldInput).removeChangeListenerMethodDescription(this);
 		}
 
 		public void dispose() {
-			((ModelSeedsFanIn) model).removeChangeListenerMethodDescription(this);
+			((SeedsModel) model).removeChangeListenerMethodDescription(this);
 		}
 
 		// Return the methodsDescriptions as an array of Objects
 		public Object[] getElements(Object parent) {
-			return ((ModelSeedsFanIn) model).getMethodsDescriptions().toArray();
+			return ((SeedsModel) model).getMethodsDescriptions().toArray();
 		}
 
 		/*
@@ -730,19 +733,19 @@ public class ViewPartSeeds extends ViewPart {
 		 */
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			if (newInput != null)
-				((ModelSeedsFanIn) model).addChangeListenerCallDescription(this);
+				((SeedsModel) model).addChangeListenerCallDescription(this);
 			if (oldInput != null)
-				((ModelSeedsFanIn) model).removeChangeListenerCallDescription(this);
+				((SeedsModel) model).removeChangeListenerCallDescription(this);
 		}
 
 		public void dispose() {
-			((ModelSeedsFanIn) model).removeChangeListenerCallDescription(this);
+			((SeedsModel) model).removeChangeListenerCallDescription(this);
 		}
 
 		// Returns the callDescriptions of a given method_id
 		public Object[] getElements(Object inputElement) {
 			String method_id = (String)inputElement;
-			return (((ModelSeedsFanIn)model).getCallsDescriptions(method_id)).toArray();
+			return (((SeedsModel)model).getCallsDescriptions(method_id)).toArray();
 
 		}
 

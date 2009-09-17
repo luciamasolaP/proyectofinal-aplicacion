@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
-import aspectminingtool.JessIntegrationModel.Seeds.ModelSeedsFanIn;
+import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
 
 /**
  * This class implements an ICellModifier
@@ -19,14 +19,14 @@ import aspectminingtool.JessIntegrationModel.Seeds.ModelSeedsFanIn;
  */
 
 public class CellModifierMethodsDescription implements ICellModifier {
-	private ViewPartSeeds viewPart;
+	private ViewPartFanInSeeds viewPart;
 	private String[] columnNames;
 	
 	/**
 	 * Constructor 
 	 * @param TableViewerExample an instance of a TableViewerExample 
 	 */
-	public CellModifierMethodsDescription(ViewPartSeeds viewPart) {
+	public CellModifierMethodsDescription(ViewPartFanInSeeds viewPart) {
 		super();
 		this.viewPart = viewPart;
 	}
@@ -85,6 +85,6 @@ public class CellModifierMethodsDescription implements ICellModifier {
 				break;
 			default :
 			}
-		((ModelSeedsFanIn) viewPart.getModel()).methodDescriptionChanged(task);
+		((SeedsModel) viewPart.getModel()).methodDescriptionChanged(task);
 	}
 }

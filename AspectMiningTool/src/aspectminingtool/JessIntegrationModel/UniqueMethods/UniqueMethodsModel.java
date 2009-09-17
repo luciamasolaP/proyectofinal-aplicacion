@@ -73,6 +73,10 @@ public class UniqueMethodsModel implements IResultsModel{
 		return calls;
 	}
 
+	public List<Call_Counted> getCalls(String methodId){
+		return calls.get(methodId);
+	}
+	
 	public void setCalls(Map<String,List<Call_Counted>> calls) {
 		this.calls = calls;
 	}

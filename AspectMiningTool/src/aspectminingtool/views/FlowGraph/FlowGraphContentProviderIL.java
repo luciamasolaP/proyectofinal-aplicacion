@@ -52,8 +52,7 @@ public class FlowGraphContentProviderIL implements IStructuredContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		flowGraphModel = (FlowGraphModel)inputElement;
-		flowGraphModel.calculateInsideLastExecutionMetric();
+		flowGraphModel = (FlowGraphModel)inputElement;		
 		return flowGraphModel.getInsideLastExecutionResult().toArray();	 	
 
 	}

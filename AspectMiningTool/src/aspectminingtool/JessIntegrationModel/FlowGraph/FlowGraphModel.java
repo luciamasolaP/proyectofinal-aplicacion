@@ -78,10 +78,13 @@ public class FlowGraphModel implements IResultsModel {
 	private void constructExecutionRelations(InferenceEngine engine) {
 		
 		constructOutsideBeforeExecutionRelations(engine);
+		calculateOutsideBeforeExecutionMetric();
 		constructOutsideAfterExecutionRelations(engine);		
+		calculateOutsideAfterExecutionMetric();
 		constructInsideFirstExecutionRelations(engine);
+		calculateInsideFirstExecutionMetric();
 		constructInsideLastExecutionRelations(engine);
-		
+		calculateInsideLastExecutionMetric();
 	}
 	
 	private void constructOutsideBeforeExecutionRelations(InferenceEngine engine) {
@@ -274,25 +277,11 @@ public class FlowGraphModel implements IResultsModel {
 			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(mm,resultMethods.size());
 			element.setRelatedMethods(relatedMethods);
 			outsideBeforeExecutionResult.add(element);
-		}
-		/*for(int i=0;i<methods.size();i++){
-			resultMethods = getOutsideBeforeExecutionMethods(methods.get(i));
-			List<String> relatedMethods = new ArrayList();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}	
-			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(methods.get(i),resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
-			flowGraphResult.add(element);
-		}	*/
-		//para ver qué devuelve
-		System.out.println("Lalala");
-		for(int k=0;k<outsideBeforeExecutionResult.size();k++){
-			System.out.println(outsideBeforeExecutionResult.get(k).getMethod().getId()+ " ::: "+outsideBeforeExecutionResult.get(k).getMetric());			
-		}
+		}		
 	}
 	
 	public void calculateOutsideAfterExecutionMetric(){
+		outsideAfterExecutionResult.clear();
 		List<Method> resultMethods;
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
 			Method mm = methods.get(i.next());
@@ -304,25 +293,11 @@ public class FlowGraphModel implements IResultsModel {
 			OutsideAfterExecutionMetric element = new OutsideAfterExecutionMetric(mm,resultMethods.size());
 			element.setRelatedMethods(relatedMethods);
 			outsideAfterExecutionResult.add(element);
-		}
-		/*for(int i=0;i<methods.size();i++){
-			resultMethods = getOutsideBeforeExecutionMethods(methods.get(i));
-			List<String> relatedMethods = new ArrayList();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}	
-			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(methods.get(i),resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
-			flowGraphResult.add(element);
-		}	*/
-		//para ver qué devuelve
-		System.out.println("Lalala");
-		for(int k=0;k<outsideAfterExecutionResult.size();k++){
-			System.out.println(outsideAfterExecutionResult.get(k).getMethod().getId()+ " ::: "+outsideAfterExecutionResult.get(k).getMetric());			
-		}
+		}		
 	}
 	
 	public void calculateInsideFirstExecutionMetric(){
+		insideFirstExecutionResult.clear();
 		List<Method> resultMethods;
 		
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
@@ -339,6 +314,7 @@ public class FlowGraphModel implements IResultsModel {
 	}
 	
 	public void calculateInsideLastExecutionMetric(){
+		insideLastExecutionResult.clear();
 		List<Method> resultMethods;
 		
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){

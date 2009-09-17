@@ -37,11 +37,17 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
+import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
 import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
+import aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds;
 
 
 /**
@@ -382,7 +388,16 @@ public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject
 		
 		selectAsSeedAction = new Action("Select As a Seed") {
 			public void run() {
-				selectAsSeedOperation();
+
+					IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+					Iterator iter = sel.iterator();
+					while (iter.hasNext()) {
+						UniqueMethods_Result umr = (UniqueMethods_Result) iter.next();
+						Method method = umr.getMetodo();
+						ViewPartUtil.selectAsSeed(method, ViewPartUniqueMethodsSeeds.ID_VIEW, ((UniqueMethodsModel)model).getCalls(method.getId()), ((UniqueMethodsModel)model).getProjectModel());
+
+					}
+
 			}
 		};
 
@@ -439,10 +454,5 @@ public class ViewPartUniqueMethods extends ViewPart implements ViewFilterProject
 		
 	}
 
-	protected void selectAsSeedOperation() {
-//TODO
-		System.out.println("selected as a seed");
-		
-	}
 	
 }

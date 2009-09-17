@@ -64,8 +64,8 @@
       </view>
       <view
             category="AspectMiningTool.category1"
-            class="aspectminingtool.views.FanInSeeds.ViewPartSeeds"
-            id="aspectminingtool.views.Seeds.ViewPartSeeds"
+            class="aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"
+            id="aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"
             name="Fan In Seeds"
             restorable="true">
       </view>
@@ -88,6 +88,13 @@
             class="aspectminingtool.views.FanInSeeds.SampleView"
             id="aspectminingtool.views.Seeds.SampleView"
             name="EditorView"
+            restorable="true">
+      </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
+            id="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
+            name="Unique Methods Seeds"
             restorable="true">
       </view>
    </extension>
@@ -120,9 +127,18 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:aspectminingtool.views.Seeds.ViewPartSeeds">
+            locationURI="toolbar:aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds">
          <command
                commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds">
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
                style="push">
          </command>
       </menuContribution>

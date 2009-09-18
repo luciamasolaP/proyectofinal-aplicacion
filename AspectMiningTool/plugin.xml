@@ -70,12 +70,6 @@
             restorable="true">
       </view>
       <view
-            class="aspectminingtool.views.FanInSeeds.ViewPartPrueba"
-            id="aspectminingtool.views.Seeds.ViewPartPrueba"
-            name="Prueba"
-            restorable="true">
-      </view>
-      <view
             allowMultiple="false"
             category="AspectMiningTool.category1"
             class="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
@@ -95,6 +89,13 @@
             class="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
             id="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
             name="Unique Methods Seeds"
+            restorable="true">
+      </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"
+            id="aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"
+            name="Redirector Finder Results"
             restorable="true">
       </view>
    </extension>

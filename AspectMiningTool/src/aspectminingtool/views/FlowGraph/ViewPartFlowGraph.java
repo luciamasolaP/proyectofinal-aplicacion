@@ -348,7 +348,9 @@ public class ViewPartFlowGraph extends ViewPart {
 				tableLeftTab2 = new Table(composite3, SWT.BORDER | SWT.MULTI);
 				tableViewerLeftTab2 = new TableViewer(tableLeftTab2);
 
-				
+				// Set the sorter
+				ViewerSorter sorter = new SorterFlowGraphTab2Left();
+				tableViewerLeftTab2.setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
 				tableViewerLeftTab2
@@ -362,12 +364,28 @@ public class ViewPartFlowGraph extends ViewPart {
 				final TableColumn tc21 = new TableColumn(tableLeftTab2, SWT.LEFT);
 				tc21.setText("Method");
 				tc21.setWidth(398);
+				tc21
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab2Left) tableViewerLeftTab2
+								.getSorter()).doSort(0);
+						tableViewerLeftTab2.refresh();
+					}
+				});
 
 
 				// Column 2
 				TableColumn tc22 = new TableColumn(tableLeftTab2, SWT.LEFT);
 				tc22.setText("Value");
 				tc22.setWidth(50);
+				tc22
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab2Left) tableViewerLeftTab2
+								.getSorter()).doSort(1);
+						tableViewerLeftTab2.refresh();
+					}
+				});
 
 
 				// Turn on the header and the lines
@@ -437,7 +455,10 @@ public class ViewPartFlowGraph extends ViewPart {
 				tableLeftTab3 = new Table(composite5, SWT.BORDER | SWT.MULTI);
 				tableViewerLeftTab3 = new TableViewer(tableLeftTab3);
 
-
+				// Set the sorter
+				ViewerSorter sorter = new SorterFlowGraphTab3Left();
+				tableViewerLeftTab3.setSorter(sorter);
+				
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
 				tableViewerLeftTab3
 						.setContentProvider(new FlowGraphContentProviderIF());
@@ -450,12 +471,28 @@ public class ViewPartFlowGraph extends ViewPart {
 				final TableColumn tc31 = new TableColumn(tableLeftTab3, SWT.LEFT);
 				tc31.setText("Method");
 				tc31.setWidth(398);
+				tc31
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab3Left) tableViewerLeftTab3
+								.getSorter()).doSort(0);
+						tableViewerLeftTab3.refresh();
+					}
+				});
 
 
 				// Column 2
 				TableColumn tc32 = new TableColumn(tableLeftTab3, SWT.LEFT);
 				tc32.setText("Value");
 				tc32.setWidth(50);
+				tc32
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab3Left) tableViewerLeftTab3
+								.getSorter()).doSort(1);
+						tableViewerLeftTab3.refresh();
+					}
+				});
 
 
 				// Turn on the header and the lines
@@ -533,6 +570,9 @@ public class ViewPartFlowGraph extends ViewPart {
 				tableLeftTab4 = new Table(composite7, SWT.BORDER | SWT.MULTI);
 				tableViewerLeftTab4 = new TableViewer(tableLeftTab4);
 
+				// Set the sorter
+				ViewerSorter sorter = new SorterFlowGraphTab4Left();
+				tableViewerLeftTab4.setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
 				tableViewerLeftTab4
@@ -546,12 +586,28 @@ public class ViewPartFlowGraph extends ViewPart {
 				final TableColumn tc31 = new TableColumn(tableLeftTab4, SWT.LEFT);
 				tc31.setText("Method");
 				tc31.setWidth(398);
+				tc31
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab4Left) tableViewerLeftTab4
+								.getSorter()).doSort(0);
+						tableViewerLeftTab4.refresh();
+					}
+				});
 
 
 				// Column 2
 				TableColumn tc32 = new TableColumn(tableLeftTab4, SWT.LEFT);
 				tc32.setText("Value");
 				tc32.setWidth(50);
+				tc32
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFlowGraphTab4Left) tableViewerLeftTab4
+								.getSorter()).doSort(1);
+						tableViewerLeftTab4.refresh();
+					}
+				});
 
 
 				// Turn on the header and the lines

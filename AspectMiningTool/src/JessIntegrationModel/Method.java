@@ -51,7 +51,11 @@ public class Method {
 		String clase =MethodFormater.formatClass(id); 
 			//class_id.substring(index+1, class_id.length());
 		String p = MethodFormater.formatParameters(parametros);
-		String rt = MethodFormater.formatParameters(returnType);
+		String rt;
+		if (returnType != null)
+			rt = MethodFormater.formatParameters(returnType);
+		else
+			rt = "";
 		String st = this.name+"("+p+")"+":"+ rt +   "  Clase: "+clase+"   Paquete: "+ paquete;
 		return st;
 	}

@@ -9,12 +9,12 @@ public class InsideLastExecutionMetric {
 	
 	private Method method;
 	private int metric;
-	private List<String> relatedMethods;
+	//private List<String> relatedMethods;
 	
 	public InsideLastExecutionMetric(Method method, int metric){
 		this.method = method;
 		this.metric = metric;
-		this.relatedMethods = new ArrayList();
+		//this.relatedMethods = new ArrayList();
 	}
 
 	public Method getMethod() {
@@ -33,12 +33,12 @@ public class InsideLastExecutionMetric {
 		this.metric = metric;
 	}
 
-	public List<String> getRelatedMethods() {
-		return relatedMethods;
-	}
-
-	public void setRelatedMethods(List<String> relatedMethods) {
-		this.relatedMethods = relatedMethods;
-	}
+//	public List<String> getRelatedMethods() {
+//		return relatedMethods;
+//	}
+//
+//	public void setRelatedMethods(List<String> relatedMethods) {
+//		this.relatedMethods = relatedMethods;
+//	}
 
 }

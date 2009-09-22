@@ -28,9 +28,7 @@
 	"comment"
    	(Call (id ?call_1) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence_1))
     (Call (id ?call_2) (caller_id ?method_X) (callee_id ?method_Z) (precedence ?precedence_2))
-    (Method (id ?method_X))
-    (Method (id ?method_Y))
-    (Method (id ?method_Z))
+    (not (OutsideBeforeExecution (call_id ?call_1) (call_id2 ?call_2))) ;para ver si ya no la conté.
     =>      
     (bind ?distance (- ?precedence_2 ?precedence_1))
     (if (= ?distance 1) then	    
@@ -44,6 +42,7 @@
 (defrule generate_InsideFirstExecution_relations
 	"Genero este tipo de relación u º p, si u es el primero del método p."
 	(Call (id ?call) (caller_id ?method_X) (callee_id ?method_Y) (precedence ?precedence))
+    (not (InsideFirstExecution (call_id ?call_1) (method_id ?method_X))) ;para ver si ya no la conté.
     =>
     (if (= ?precedence 1) then	  
         (bind ?relation (new InsideFirstExecution ?call ?method_X))

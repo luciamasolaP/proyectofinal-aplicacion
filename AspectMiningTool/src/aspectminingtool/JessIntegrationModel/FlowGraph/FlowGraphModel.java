@@ -189,7 +189,8 @@ public class FlowGraphModel implements IResultsModel {
 			call_1 = calls.get(outsideBeforeExecutionRelations.get(i).getCall_id());
 			if(call_1.getCallee_id().equals(method.getId())){
 				call_2 = calls.get(outsideBeforeExecutionRelations.get(i).getCall_id2());
-				result.add(methods.get(call_2.getCallee_id()));				
+				if(methods.get(call_2.getCallee_id()) != null)
+					result.add(methods.get(call_2.getCallee_id()));				
 			}
 		}				
 					
@@ -212,7 +213,8 @@ public class FlowGraphModel implements IResultsModel {
 			call_1 = calls.get(outsideAfterExecutionRelations.get(i).getCall_id());
 			if(call_1.getCallee_id().equals(method.getId())){
 				call_2 = calls.get(outsideAfterExecutionRelations.get(i).getCall_id2());
-				result.add(methods.get(call_2.getCallee_id()));				
+				if(methods.get(call_2.getCallee_id()) != null)
+					result.add(methods.get(call_2.getCallee_id()));				
 			}
 		}				
 					
@@ -270,12 +272,12 @@ public class FlowGraphModel implements IResultsModel {
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
 			Method mm = methods.get(i.next());
 			resultMethods = getOutsideBeforeExecutionMethods(mm);
-			List<String> relatedMethods = new ArrayList<String>();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}	
+//			List<String> relatedMethods = new ArrayList<String>();
+//			for(int j=0;j<resultMethods.size();j++){
+//				relatedMethods.add(resultMethods.get(j).getId());				
+//			}	
 			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(mm,resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
+			//element.setRelatedMethods(relatedMethods);
 			outsideBeforeExecutionResult.add(element);
 		}		
 	}
@@ -286,12 +288,12 @@ public class FlowGraphModel implements IResultsModel {
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
 			Method mm = methods.get(i.next());
 			resultMethods = getOutsideAfterExecutionMethods(mm);
-			List<String> relatedMethods = new ArrayList<String>();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}	
+//			List<String> relatedMethods = new ArrayList<String>();
+//			for(int j=0;j<resultMethods.size();j++){
+//				relatedMethods.add(resultMethods.get(j).getId());				
+//			}	
 			OutsideAfterExecutionMetric element = new OutsideAfterExecutionMetric(mm,resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
+			//element.setRelatedMethods(relatedMethods);
 			outsideAfterExecutionResult.add(element);
 		}		
 	}
@@ -303,12 +305,12 @@ public class FlowGraphModel implements IResultsModel {
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
 			Method mm = methods.get(i.next());
 			resultMethods = getInsideFirstExecutionMethods(mm);
-			List<String> relatedMethods = new ArrayList<String>();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}
+//			List<String> relatedMethods = new ArrayList<String>();
+//			for(int j=0;j<resultMethods.size();j++){
+//				relatedMethods.add(resultMethods.get(j).getId());				
+//			}
 			InsideFirstExecutionMetric element = new InsideFirstExecutionMetric(mm,resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
+			//element.setRelatedMethods(relatedMethods);
 			insideFirstExecutionResult.add(element);
 		}
 	}
@@ -320,12 +322,12 @@ public class FlowGraphModel implements IResultsModel {
 		for (Iterator<String> i = methods.keySet().iterator() ; i.hasNext() ; ){
 			Method mm = methods.get(i.next());
 			resultMethods = getInsideLastExecutionMethods(mm);
-			List<String> relatedMethods = new ArrayList<String>();
-			for(int j=0;j<resultMethods.size();j++){
-				relatedMethods.add(resultMethods.get(j).getId());				
-			}
+//			List<String> relatedMethods = new ArrayList<String>();
+//			for(int j=0;j<resultMethods.size();j++){
+//				relatedMethods.add(resultMethods.get(j).getId());				
+//			}
 			InsideLastExecutionMetric element = new InsideLastExecutionMetric(mm,resultMethods.size());
-			element.setRelatedMethods(relatedMethods);
+			//element.setRelatedMethods(relatedMethods);
 			insideLastExecutionResult.add(element);
 		}
 	}

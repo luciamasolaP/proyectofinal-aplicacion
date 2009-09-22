@@ -74,7 +74,6 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
      */
 	public ViewPartFanIn() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/*

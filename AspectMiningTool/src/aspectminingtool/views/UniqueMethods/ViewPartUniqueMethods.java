@@ -39,14 +39,11 @@ import org.eclipse.ui.part.ViewPart;
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.ViewFilterProject;
-import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 import aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds;
 
 

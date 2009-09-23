@@ -1,6 +1,7 @@
 package aspectminingtool.InferenceEngine;
 
 
+import java.util.Iterator;
 import java.util.List;
 
 import jess.JessException;
@@ -55,7 +56,11 @@ public class JessInferenceEngine extends InferenceEngine {
 	@Override
 	protected void persistFacts(List facts) {
 		try {
-			engine.addAll(facts);
+			for (Iterator i = facts.iterator() ; i.hasNext() ; ){
+				Object o = i.next();
+				if (!algorithm.filerFact(o))
+					engine.add(o);
+			}
 		} catch (JessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

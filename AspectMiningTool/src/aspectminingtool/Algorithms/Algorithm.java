@@ -13,4 +13,6 @@ public abstract class Algorithm {
 		
 	}
 	
+	public abstract boolean filerFact(Object fact);
+	
 }

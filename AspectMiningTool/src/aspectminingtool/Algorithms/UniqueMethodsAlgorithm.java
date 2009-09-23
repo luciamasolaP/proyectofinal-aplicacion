@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 
+import JessIntegrationModel.Call;
+import JessIntegrationModel.Implements;
+import JessIntegrationModel.Inherits;
+import JessIntegrationModel.Method;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 
 import jess.Fact;
@@ -58,6 +62,13 @@ public class UniqueMethodsAlgorithm extends Algorithm {
 	    catch (IOException e)    {    }
 		
 
+	}
+	
+	@Override
+	public boolean filerFact(Object fact) {
+		if (fact instanceof Method || fact instanceof JessIntegrationModel.Class || fact instanceof Inherits || fact instanceof Implements || fact instanceof Call ) 
+			return false;
+		return true;
 	}
 
 }

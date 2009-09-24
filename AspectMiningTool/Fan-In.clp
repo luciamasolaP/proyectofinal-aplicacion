@@ -1,8 +1,8 @@
 (import JessIntegrationModel.*)
 
-(deftemplate Interface (declare (from-class Interface)))
+;(deftemplate Interface (declare (from-class Interface)))
 (deftemplate Method    (declare (from-class Method)))
-(deftemplate Class       (declare (from-class JessIntegrationModel.Class)))
+;(deftemplate Class       (declare (from-class JessIntegrationModel.Class)))
 (deftemplate Inherits    (declare (from-class Inherits)))
 (deftemplate Implements    (declare (from-class Implements)))
 (deftemplate Call    (declare (from-class Call)))

@@ -39,6 +39,13 @@
                label="Flow Graph"
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
+         <action
+               class="aspectminingtool.popup.actions.RedirectionFinderPopUp"
+               icon="AspectMiningTool.menu1/group1"
+               id="aspectminingtool.popup.actions.RedirectionFinderPopUp"
+               label="Redirector Finder"
+               menubarPath="AspectMiningTool.menu1/group1">
+         </action>
       </objectContribution>
    </extension>
    <extension

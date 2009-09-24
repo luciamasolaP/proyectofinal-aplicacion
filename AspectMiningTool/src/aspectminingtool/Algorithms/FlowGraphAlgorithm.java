@@ -18,5 +18,11 @@ public class FlowGraphAlgorithm extends Algorithm{
 		return this.archive;
 		
 	}
+
+	@Override
+	public boolean filerFact(Object fact) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }

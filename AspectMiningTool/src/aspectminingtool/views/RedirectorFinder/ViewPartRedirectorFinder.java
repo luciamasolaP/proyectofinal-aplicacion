@@ -126,10 +126,10 @@ public class ViewPartRedirectorFinder extends ViewPart {
 //		ViewerSorter sorter = new SorterFanInViewFanIn();
 //		tableViewerLeft.setSorter(sorter);
 
-//		// Set the content and label providers
-//		tableViewerLeft
-//				.setContentProvider(new FanInContentProvider());
-//		tableViewerLeft.setLabelProvider(new FanInLabelProvider());
+		// Set the content and label providers
+		tableViewerLeft
+				.setContentProvider(new RedirectorFinderContentProvider());
+		tableViewerLeft.setLabelProvider(new RedirectorFinderLabelProvider());
 		
 		
 //		tableViewerLeft
@@ -251,7 +251,7 @@ public class ViewPartRedirectorFinder extends ViewPart {
 	public void setModel(IResultsModel model) {
 		this.model = model;
 		super.setPartName("Redirector Finder Results - " + model.getId());
-		//tableViewerLeft.setInput(model);
+		tableViewerLeft.setInput(model);
 	}
 	
 	public IResultsModel getModel() {

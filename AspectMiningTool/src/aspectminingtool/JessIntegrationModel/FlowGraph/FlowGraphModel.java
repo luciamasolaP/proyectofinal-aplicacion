@@ -8,13 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 import jess.Filter;
+import jess.JessException;
+import jess.QueryResult;
 import jess.Rete;
+import jess.ValueVector;
 import JessIntegrationModel.Call;
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.FanIn.final_fan_in_metric;
 
 public class FlowGraphModel implements IResultsModel {
 
@@ -78,13 +82,17 @@ public class FlowGraphModel implements IResultsModel {
 	private void constructExecutionRelations(InferenceEngine engine) {
 		
 		constructOutsideBeforeExecutionRelations(engine);
-		calculateOutsideBeforeExecutionMetric();
-		constructOutsideAfterExecutionRelations(engine);		
-		calculateOutsideAfterExecutionMetric();
+		queryOutsideBeforeExecutionMetric(engine);
+		//calculateOutsideBeforeExecutionMetric();
+		constructOutsideAfterExecutionRelations(engine);
+		queryOutsideAfterExecutionMetric(engine);
+		//calculateOutsideAfterExecutionMetric();
 		constructInsideFirstExecutionRelations(engine);
-		calculateInsideFirstExecutionMetric();
+		queryInsideFirstExecutionMetric(engine);
+		//calculateInsideFirstExecutionMetric();
 		constructInsideLastExecutionRelations(engine);
-		calculateInsideLastExecutionMetric();
+		queryInsideLastExecutionMetric(engine);
+		//calculateInsideLastExecutionMetric();
 	}
 	
 	private void constructOutsideBeforeExecutionRelations(InferenceEngine engine) {
@@ -331,6 +339,70 @@ public class FlowGraphModel implements IResultsModel {
 			insideLastExecutionResult.add(element);
 		}
 	}
+	
+	public void queryOutsideBeforeExecutionMetric(InferenceEngine engine){
+		
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		QueryResult result;
+		try {
+			result = jessEngine.runQueryStar("get_OutsideBeforeExecution_Metric", new ValueVector().add(""));
+			 while (result.next()) {
+				 OutsideBeforeExecutionMetric metricRelation = new OutsideBeforeExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 outsideBeforeExecutionResult.add(metricRelation);
+		        }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void queryOutsideAfterExecutionMetric(InferenceEngine engine){
+		
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		QueryResult result;
+		try {
+			result = jessEngine.runQueryStar("get_OutsideAfterExecution_Metric", new ValueVector().add(""));
+			 while (result.next()) {
+				 OutsideAfterExecutionMetric metricRelation = new OutsideAfterExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 outsideAfterExecutionResult.add(metricRelation);
+		        }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void queryInsideFirstExecutionMetric(InferenceEngine engine){
+		
+		Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+		QueryResult result;
+		try {
+			result = jessEngine.runQueryStar("get_InsideFirstExecution_Metric", new ValueVector().add(""));
+			 while (result.next()) {
+				 InsideFirstExecutionMetric metricRelation = new InsideFirstExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 insideFirstExecutionResult.add(metricRelation);
+		        }
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void queryInsideLastExecutionMetric(InferenceEngine engine){
+	
+	Rete jessEngine = ((JessInferenceEngine) engine).getEngine();
+	QueryResult result;
+	try {
+		result = jessEngine.runQueryStar("get_InsideLastExecution_Metric", new ValueVector().add(""));
+		 while (result.next()) {
+			 InsideLastExecutionMetric metricRelation = new InsideLastExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+			 insideLastExecutionResult.add(metricRelation);
+	        }
+	} catch (JessException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
 	
 	public void addMethod(Method m){
 		this.methods.put(m.getId(),m);

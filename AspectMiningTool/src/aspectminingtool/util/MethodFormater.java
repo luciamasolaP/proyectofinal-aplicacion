@@ -54,6 +54,11 @@ package aspectminingtool.util;
 		return "";
 		
 	}
+	
+	public static String formatMethodId(String methodId){
+		//TODO
+		return methodId;
+	}
 }
 
 	

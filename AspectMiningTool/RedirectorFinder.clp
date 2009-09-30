@@ -33,8 +33,6 @@
     (slot cant)
     )
 
-
-
 (deftemplate caller_counted
     (slot caller_id)
     (slot callee_id)
@@ -126,7 +124,6 @@
    (assert (cantMetodosPorClase (idClase ?idClass) (cantMet 0)))
 )
 
-
 (defrule calculaCantidadMetodosClase
     "Calcula la cantidad de métodos de cada clase"
     (declare (salience 100000))
@@ -153,7 +150,6 @@
     (modify ?OldCantMetodos (cantMet ?NewMetric))
     )
 
-"los dos siguientes traen problemas para hacer los facts, si los sacas se pueden hacer assert, pero se va en memoria en el execute"
 (defrule callerMethods
     "Defino la cantidad de métodos que llama un método"
     (declare (salience 10000))
@@ -189,10 +185,13 @@
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
     (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?cant1))
     (test (= ?cant1 1))
-    (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?cant2))
-    (test (= ?cant2 1))
+;    (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?cant2))
+;    (test (= ?cant2 1))
 	(Method (id ?MetodoLlamador)(class_id ?classIdLlamador))
 	(Method (id ?MetodoLlamado)(class_id ?classIdLlamada))
+    (Method (id ?otroMetodo)(class_id ?classIdLlamador))
+    (test (<> ?MetodoLlamador ?otroMetodo))
+    (not (Call (callee_id ?otroMetodo)(caller_id ?MetodoLlamado)))
     =>
     (assert (redirectMethod	(metodoBase ?MetodoLlamador)(claseBase ?classIdLlamador)(metodoRedireccionado ?MetodoLlamado) (claseRedireccionada ?classIdLlamada)))
         

@@ -1,10 +1,8 @@
 (import JessIntegrationModel.*)
 
-;(deftemplate Interface (declare (from-class Interface)))
+
 (deftemplate Method    (declare (from-class Method)))
 (deftemplate Class       (declare (from-class JessIntegrationModel.Class)))
-;(deftemplate Inherits    (declare (from-class Inherits)))
-;(deftemplate Implements    (declare (from-class Implements)))
 (deftemplate Call    (declare (from-class Call)))
 (deftemplate Abstract (declare (from-class Abstract)))
 
@@ -67,6 +65,45 @@
     (slot claseRedireccionada))
 
 
+
+;(assert (Class (id A)))
+;(assert (Class (id B)))
+;(assert (Class (id C)))
+;(assert (Class (id D)))
+;
+;
+;(assert(Method (id Aa1)(name a1)(class_id A)))
+;(assert(Method (id Aa2)(name a2)(class_id A)))
+;(assert(Method (id Aa3)(name a3)(class_id A)))
+;(assert(Method (id Aa4)(name a4)(class_id A)))
+;
+;(assert(Method (id Bb1)(name b1)(class_id B)))
+;(assert(Method (id Bb2)(name b2)(class_id B)))
+;(assert(Method (id Bb3)(name b3)(class_id B)))
+;(assert(Method (id Bb4)(name b4)(class_id B)))
+;(assert(Method (id Bb5)(name b5)(class_id B)))
+;
+;(assert(Method (id Cc1)(name c1)(class_id C)))
+;(assert(Method (id Cc2)(name c2)(class_id C)))
+;(assert(Method (id Cc3)(name c3)(class_id C)))
+;
+;(assert(Method (id Dd1)(name d1)(class_id D)))
+;(assert(Method (id Dd2)(name d2)(class_id D)))
+;
+;
+;(assert(Call (caller_id Aa1)(callee_id Dd1)))
+;
+;(assert(Call (caller_id Bb1)(callee_id Aa1)))
+;(assert(Call (caller_id Bb2)(callee_id Aa2)))
+;(assert(Call (caller_id Bb3)(callee_id Aa3)))
+;(assert(Call (caller_id Bb3)(callee_id Dd2)))
+;(assert(Call (caller_id Bb5)(callee_id Cc2)))
+;
+;(assert(Call (caller_id Cc1)(callee_id Bb4)))
+;(assert(Call (caller_id Cc3)(callee_id Dd2)))
+;
+;(assert(Call (caller_id Dd1)(callee_id Bb4)))
+
 (defrule initData1
     (declare (salience 1000000))
     (Method (id ?method))
@@ -120,10 +157,10 @@
 (defrule callerMethods
     "Defino la cantidad de métodos que llama un método"
     (declare (salience 10000))
-    (Method (id ?MetodoLlamador))
-    (Method (id ?MetodoLlamado))
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
     (not (caller_counted (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado)))
+    (Method (id ?MetodoLlamador))
+    (Method (id ?MetodoLlamado))
     ?OldCantMetodosLlamados <- (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?Cant))
     =>
     (assert (caller_counted (caller_id ?MetodoLlamador)(callee_id ?MetodoLlamado)))
@@ -134,10 +171,10 @@
 (defrule calleeMethods
     "Defino la cantidad de métodos que llaman a un método"
     (declare (salience 10000))
-    (Method (id ?MetodoLlamador))
-    (Method (id ?MetodoLlamado))
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
     (not (callee_counted (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado)))
+    (Method (id ?MetodoLlamador))
+    (Method (id ?MetodoLlamado))
     ?OldCantMetodosLlamados <- (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?Cant))
     =>
     (assert (callee_counted (caller_id ?MetodoLlamador)(callee_id ?MetodoLlamado)))
@@ -149,17 +186,18 @@
 "el siguiente método da error al hacer el execute, es el que hace que se vaya de memoria"
 (defrule redirectorMethod
     (declare (salience 1000))
-    (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?cant1))
-    (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?cant2))
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
+    (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?cant1))
+    (test (= ?cant1 1))
+    (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?cant2))
+    (test (= ?cant2 1))
 	(Method (id ?MetodoLlamador)(class_id ?classIdLlamador))
 	(Method (id ?MetodoLlamado)(class_id ?classIdLlamada))
     =>
-    (if (and (= ?cant1 1)(= ?cant2 1)) then
-        (assert (redirectMethod	(metodoBase ?MetodoLlamador)(claseBase ?classIdLlamador)(metodoRedireccionado ?MetodoLlamado) (claseRedireccionada ?classIdLlamada)))
+    (assert (redirectMethod	(metodoBase ?MetodoLlamador)(claseBase ?classIdLlamador)(metodoRedireccionado ?MetodoLlamado) (claseRedireccionada ?classIdLlamada)))
         
-        )
-    )
+)
+
 
 
 (defrule initRedirectorDataClass
@@ -197,4 +235,5 @@
     (cantRedirecPorClase (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)(cant ?Cant))
 	)
 
-
+;(run)
+;(facts)

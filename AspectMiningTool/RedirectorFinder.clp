@@ -183,15 +183,13 @@
 (defrule redirectorMethod
     (declare (salience 1000))
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
-    (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?cant1))
-    (test (= ?cant1 1))
-;    (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?cant2))
-;    (test (= ?cant2 1))
+
 	(Method (id ?MetodoLlamador)(class_id ?classIdLlamador))
 	(Method (id ?MetodoLlamado)(class_id ?classIdLlamada))
-    (Method (id ?otroMetodo)(class_id ?classIdLlamador))
-    (test (<> ?MetodoLlamador ?otroMetodo))
-    (not (Call (callee_id ?otroMetodo)(caller_id ?MetodoLlamado)))
+
+    (not (and (Call (caller_id ?otroMetodoClaseLlamadora) (callee_id ?MetodoLlamado))(Method (id ?otroMetodoClaseLlamadora&~?MetodoLlamador)(class_id ?classIdLlamador))))    
+    (not (and  (Call (caller_id ?MetodoLlamador)(callee_id ?otroMetodoClaseLlamada))(Method (id ?otroMetodoClaseLlamada&~?MetodoLlamado)(class_id ?classIdLlamada))))
+    
     =>
     (assert (redirectMethod	(metodoBase ?MetodoLlamador)(claseBase ?classIdLlamador)(metodoRedireccionado ?MetodoLlamado) (claseRedireccionada ?classIdLlamada)))
         

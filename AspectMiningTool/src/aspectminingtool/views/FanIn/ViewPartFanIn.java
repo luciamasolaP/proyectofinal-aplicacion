@@ -1,13 +1,12 @@
 package aspectminingtool.views.FanIn;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -29,18 +28,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
-import JessIntegrationModel.ProjectModel;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.ViewFilterProject;
 import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
@@ -96,77 +91,9 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 				composite1.setLayout(composite1Layout);
 				composite1.setBounds(-483, -25, 461, 81);
 				
-				methodsTable = new Table(composite1, SWT.BORDER | SWT.MULTI);
-				methodsTableViewer = new TableViewer(methodsTable);
-
-				// Set the sorter
-				ViewerSorter sorter = new SorterFanInViewFanIn();
-				methodsTableViewer.setSorter(sorter);
-
-				// Set the content and label providers
-				methodsTableViewer
-						.setContentProvider(new FanInContentProvider());
-				methodsTableViewer.setLabelProvider(new FanInLabelProvider());
-
-				// Set up the table, each column has a listener for the click
-				// that calls
-				// the sorter and refreshes the tree.
-				// Column 1
-				final TableColumn tc1 = new TableColumn(methodsTable, SWT.LEFT);
-				tc1.setText("Method");
-				tc1.setWidth(398);
-				tc1
-						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewFanIn) methodsTableViewer
-										.getSorter()).doSort(0);
-								methodsTableViewer.refresh();
-							}
-						});
-
-				// Column 2
-				TableColumn tc2 = new TableColumn(methodsTable, SWT.LEFT);
-				tc2.setText("Fan in");
-				tc2.setWidth(50);
-				tc2
-						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewFanIn) methodsTableViewer
-										.getSorter()).doSort(1);
-								methodsTableViewer.refresh();
-							}
-						});
-
-				// Turn on the header and the lines
-				methodsTable.setHeaderVisible(true);
-				methodsTable.setLinesVisible(true);
-
-				methodsTableViewer
-						.addSelectionChangedListener(new ISelectionChangedListener() {
-							public void selectionChanged(
-									SelectionChangedEvent event) {
-								selectionItem(event);
-
-							}
-
-						});
+				createMethodsTable();
 				
-				methodsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
-
-					@Override
-					public void doubleClick(DoubleClickEvent event) {
-						if (!event.getSelection().isEmpty()) {
-							
-							if (event.getSelection() instanceof IStructuredSelection) {
-								
-								Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-								openResource(fanInResult.getMetodo().getClass_id());
-							}
-						}
-						
-					}
-					
-				});
+				
 
 			}
 			{
@@ -175,58 +102,9 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 						org.eclipse.swt.SWT.HORIZONTAL);
 				composite2.setLayout(composite2Layout);
 				composite2.setBounds(0, 0, 77, 81);
-				{
-					callsTable = new Table(composite2, SWT.LEFT | SWT.MULTI);
-					callsTableViewer = new TableViewer(callsTable);
-					
-					// Set the sorter
-					ViewerSorter sorterCalls = new SorterFanInViewCalls();
-					callsTableViewer.setSorter(sorterCalls);
-					
-					// Set the content and label providers
-					callsTableViewer.setContentProvider(new CallsContentProviderFanIn());
-					callsTableViewer.setLabelProvider(new CallsLabelProviderFanIn());
-					
-					{
-						tableCallsColumn1 = new TableColumn(callsTable,
-								SWT.NONE);
-						tableCallsColumn1.setText("Calls");
-						tableCallsColumn1.setWidth(300);
-						tableCallsColumn1
-						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewCalls) callsTableViewer
-										.getSorter()).doSort(0);
-								callsTableViewer.refresh();
-							}
-						});
-					}
-	
-
-					callsTable.setHeaderVisible(true);
-					
-					callsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
-
-						@Override
-						public void doubleClick(DoubleClickEvent event) {
-							if (!event.getSelection().isEmpty()) {
-								
-								if (event.getSelection() instanceof IStructuredSelection) {
-									
-									Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
-									String name = callCounted.getCaller_id();
-									int index = name.indexOf("//");
-									name = name.substring(0, index);
-									openResource(name);
-								}
-							}
-							
-						}
-						
-					});
-
-
-				}
+				
+				createCallsTable();
+			
 			}
 		}
 		
@@ -237,6 +115,149 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 	}
 
+	private void createMethodsTable(){
+		
+		methodsTable = new Table(composite1, SWT.BORDER | SWT.MULTI);
+		
+		// Set up the table, each column has a listener for the click
+		// that calls
+		// the sorter and refreshes the tree.
+		// Column 1
+		final TableColumn tc1 = new TableColumn(methodsTable, SWT.LEFT);
+		tc1.setText("Method");
+		tc1.setWidth(398);
+		tc1
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFanInViewFanIn) methodsTableViewer
+								.getSorter()).doSort(0);
+						methodsTableViewer.refresh();
+					}
+				});
+
+		// Column 2
+		TableColumn tc2 = new TableColumn(methodsTable, SWT.LEFT);
+		tc2.setText("Fan in");
+		tc2.setWidth(50);
+		tc2
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterFanInViewFanIn) methodsTableViewer
+								.getSorter()).doSort(1);
+						methodsTableViewer.refresh();
+					}
+				});
+
+		// Turn on the header and the lines
+		methodsTable.setHeaderVisible(true);
+		methodsTable.setLinesVisible(true);
+	
+		createMethodsTableViewer();
+		
+	}
+	
+	private void createMethodsTableViewer() {
+		
+		methodsTableViewer = new TableViewer(methodsTable);
+
+		// Set the sorter
+		ViewerSorter sorter = new SorterFanInViewFanIn();
+		methodsTableViewer.setSorter(sorter);
+
+		// Set the content and label providers
+		methodsTableViewer
+				.setContentProvider(new FanInContentProvider());
+		methodsTableViewer.setLabelProvider(new FanInLabelProvider());
+
+		methodsTableViewer
+		.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(
+					SelectionChangedEvent event) {
+				selectionItem(event);
+
+			}
+
+		});
+
+		methodsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
+		
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				if (!event.getSelection().isEmpty()) {
+					
+					if (event.getSelection() instanceof IStructuredSelection) {
+						
+						Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
+						ViewPartUtil.openResource(fanInResult.getMetodo().getClass_id(),model.getProjectModel());
+					}
+				}
+				
+			}
+			
+		});
+		
+	}
+
+	private void createCallsTable(){
+		
+		callsTable = new Table(composite2, SWT.LEFT | SWT.MULTI);
+			
+		{
+			tableCallsColumn1 = new TableColumn(callsTable,
+					SWT.NONE);
+			tableCallsColumn1.setText("Calls");
+			tableCallsColumn1.setWidth(300);
+			tableCallsColumn1
+			.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					((SorterFanInViewCalls) callsTableViewer
+							.getSorter()).doSort(0);
+					callsTableViewer.refresh();
+				}
+			});
+		}
+
+
+		callsTable.setHeaderVisible(true);
+			
+		createCallsTableViewer();
+		
+	}
+	
+	private void createCallsTableViewer(){
+		
+		callsTableViewer = new TableViewer(callsTable);
+		
+		// Set the sorter
+		ViewerSorter sorterCalls = new SorterFanInViewCalls();
+		callsTableViewer.setSorter(sorterCalls);
+		
+		// Set the content and label providers
+		callsTableViewer.setContentProvider(new CallsContentProviderFanIn());
+		callsTableViewer.setLabelProvider(new CallsLabelProviderFanIn());
+		
+		callsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
+
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				if (!event.getSelection().isEmpty()) {
+					
+					if (event.getSelection() instanceof IStructuredSelection) {
+						
+						Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
+						String name = callCounted.getCaller_id();
+						name = MethodFormater.getClassIdFromMethodId(name);
+						ViewPartUtil.openResource(name,model.getProjectModel());
+					}
+				}
+				
+			}
+			
+		});
+		
+		
+	}
+	
 	private void hookGlobalActions() {
 		IActionBars bars = getViewSite().getActionBars();
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
@@ -292,58 +313,41 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 	}
 	
-	private void openResource(String resourceName) {
+	private void createContextMenu() {
+        
+		MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenuMethodsTableViewer(mgr);
+                }
+
+        });
+        // Create menu for methodsTableViewer
+        Menu menu = menuMgr.createContextMenu(methodsTableViewer.getControl());
+        methodsTableViewer.getControl().setMenu(menu);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, methodsTableViewer);
 		
-			ProjectModel projectModel = model.getProjectModel();
-			IResource resource = projectModel.getAssociatedResource(resourceName);
-			if (resource != null){
-				IFile fileStore = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
-	            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	            try {
-					IDE.openEditor(page, fileStore,true);
-				} catch (PartInitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-	
-	}
-	
-	
-	
-	 private void createContextMenu() {
-         // Create menu manager for methodsTableViewer
-		 MenuManager menuMgr = new MenuManager();
-         menuMgr.setRemoveAllWhenShown(true);
-         menuMgr.addMenuListener(new IMenuListener() {
-                 public void menuAboutToShow(IMenuManager mgr) {
-                         fillContextMenuMethodsTableViewer(mgr);
-                 }
 
-         });
-         // Create menu for methodsTableViewer
-         Menu menu = menuMgr.createContextMenu(methodsTableViewer.getControl());
-         methodsTableViewer.getControl().setMenu(menu);
-         
-         // Register menu for extension.
-         getSite().registerContextMenu(menuMgr, methodsTableViewer);
-         
-         
-      // Create menu manager for methodsTableViewer for callsTableViewer
-		 MenuManager menuMgr1 = new MenuManager();
-         menuMgr1.setRemoveAllWhenShown(true);
-         menuMgr1.addMenuListener(new IMenuListener() {
-                 public void menuAboutToShow(IMenuManager mgr) {
-                         fillContextMenuCallsTableViewer(mgr);
-                 }
+        MenuManager menuMgr1 = new MenuManager();
+        menuMgr1.setRemoveAllWhenShown(true);
+        menuMgr1.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenuCallsTableViewer(mgr);
+                }
 
-         });
-         // Create menu for callsTableViewer
-         Menu menu1 = menuMgr1.createContextMenu(callsTableViewer.getControl());
-         callsTableViewer.getControl().setMenu(menu1);
+        });
+        // Create menu for methodsTableViewer
+        Menu menu1 = menuMgr.createContextMenu(callsTableViewer.getControl());
+        callsTableViewer.getControl().setMenu(menu1);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, methodsTableViewer);
+
          
-         // Register menu for extension.
-         getSite().registerContextMenu(menuMgr1, callsTableViewer);
+
  }
 
 	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
@@ -374,7 +378,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 				while (iter.hasNext()) {
 					Fan_in_Result fanInResult = (Fan_in_Result) iter.next();
 					String id = fanInResult.getMetodo().getClass_id();
-					openResource(id);
+					ViewPartUtil.openResource(id,model.getProjectModel());
 
 			}
 			}
@@ -409,9 +413,8 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 				while (iter.hasNext()) {
 					Call_Counted callCounted = (Call_Counted) iter.next();
 					String name = callCounted.getCaller_id();
-					int index = name.indexOf("//");
-					name = name.substring(0, index);
-					openResource(name);
+					name = MethodFormater.getClassIdFromMethodId(name);
+					ViewPartUtil.openResource(name,model.getProjectModel());
 
 			}
 			}

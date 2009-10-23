@@ -1,7 +1,7 @@
 package aspectminingtool.util;
 
 
-	public class MethodFormater {
+public class MethodFormater {
 	
 	public static String formatParameters(String param) {
 		String resul = "";
@@ -25,19 +25,17 @@ package aspectminingtool.util;
 		return resul;
 	}
 	
-	public static String formatClass(String class_id){
+	public static String formatClassFromMethodId(String class_id){
 		
 		int index = class_id.indexOf("/");
 		int index2 = class_id.indexOf("//");
 		if (index >=0 && index2 >= 0)
 			return class_id.substring(index+1, index2);
 		return "";
-		
-		
-		
+				
 	}
 
-	public static String formatPackage(String class_id){
+	public static String formatPackageFromMethodId(String class_id){
 		int index = class_id.indexOf("/");
 		//int index2 = class_id.indexOf("//");
 		if (index >= 0)
@@ -58,6 +56,36 @@ package aspectminingtool.util;
 	public static String formatMethodId(String methodId){
 		//TODO
 		return methodId;
+	}
+	
+	public static String getClassIdFromMethodId(String methodId){
+		int index = methodId.indexOf("//");
+		if (index > 0)
+			return methodId.substring(0, index);
+		return "";
+	}
+	
+	public static String formatMethodIdToString(String metodo){
+		
+		String paquete = MethodFormater.formatPackageFromMethodId(metodo);
+		//class_id.substring(0, index);
+		String clase = MethodFormater.formatClassFromMethodId(metodo); 
+		String parameters = metodo.substring(metodo.indexOf("///")+3); 
+		parameters = MethodFormater.formatParameters(parameters);
+		String name = MethodFormater.formatMethodName(metodo);
+		return name + "(" + parameters + "):" +"  Clase: "+clase+"   Paquete: "+ paquete;
+		
+	}
+	
+	public static String formatClassIdToString(String classId){
+		
+		int index = classId.indexOf("/");
+		if (index >= 0)
+			return "Clase: "+ classId.substring(index+1) + " Paquete: "+ classId.substring(0,index);
+		return "";
+		
+		
+		
 	}
 }
 

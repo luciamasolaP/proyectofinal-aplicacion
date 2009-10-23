@@ -31,23 +31,18 @@ public class Call_Counted {
 	
 	public String toString(){
 		
-		String paquete = MethodFormater.formatPackage(caller_id);
-		//class_id.substring(0, index);
-		String clase = MethodFormater.formatClass(caller_id); 
-		String parameters = caller_id.substring(caller_id.indexOf("///")+3); 
-		parameters = MethodFormater.formatParameters(parameters);
-		String name = MethodFormater.formatMethodName(caller_id);
-		return name + "(" + parameters + "):" +"  Clase: "+clase+"   Paquete: "+ paquete;
+		return MethodFormater.formatMethodIdToString(caller_id)+ " -> " + MethodFormater.formatMethodIdToString(calle_id);
 
-//		int index = class_id.indexOf("/");
-//		String paquete = class_id.substring(0, index);
-//		String clase = class_id.substring(index+1, class_id.length());
-//		String p = MethodFormater.formatParameters(parametros);
-//		String rt = MethodFormater.formatParameters(parametros);
-//		String st = this.name+"("+p+")"+":"+ rt +   "  Clase: "+clase+"   Paquete: "+ paquete;
-//		return st;
-		
-		//return "Call_counted(" + calle_id + ", " + caller_id + ")";
 	}
+	
+	public String callerToString(){
+		return MethodFormater.formatMethodIdToString(caller_id);
+	}
+	
+	public String calleeToString(){
+		return MethodFormater.formatMethodIdToString(calle_id);
+	}
+	
+
 	
 }

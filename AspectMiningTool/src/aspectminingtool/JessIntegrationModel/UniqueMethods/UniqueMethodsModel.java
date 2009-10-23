@@ -175,7 +175,7 @@ public class UniqueMethodsModel implements IResultsModel{
 	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
 	        		
 	        		Call_Counted ll = (Call_Counted)ii.next();
-	        		outfile1.write(ll.toString());
+	        		outfile1.write(ll.callerToString());
 					outfile1.newLine();       		
 	        		
 	        	}
@@ -220,7 +220,7 @@ public class UniqueMethodsModel implements IResultsModel{
 	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
 	        		
 	        		Call_Counted ll = (Call_Counted)ii.next();
-	        		outfile1.write(ll.toString());
+	        		outfile1.write(ll.callerToString());
 					outfile1.newLine();       		
 	        		
 	        	}
@@ -259,7 +259,7 @@ public class UniqueMethodsModel implements IResultsModel{
 					archive.newLine();
 					List<Call_Counted> list = calls.get(m.getId());
 					for (Iterator<Call_Counted> ii = list.iterator() ; ii.hasNext() ;){
-						archive.write("                 " + ii.next().toString());
+						archive.write("                 " + ii.next().callerToString());
 						archive.newLine();
 					}
 				}

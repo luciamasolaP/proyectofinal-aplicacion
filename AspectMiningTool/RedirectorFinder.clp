@@ -225,11 +225,16 @@
     (cantMetodosPorClase (idClase ?idClase)(cantMet ?cant))
 	)
 
-
 (defquery cantRedirectorMethods
 	"comment"
 	(declare (variables ?ln))
     (cantRedirecPorClase (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)(cant ?Cant))
+	)
+
+(defquery metodosRedirectorsPorClase
+	"comment"
+	(declare (variables ?claseLlamadora ?claseLlamada))
+    (redirectMethod	(claseBase ?claseLlamadora)(claseRedireccionada ?claseLlamada)(metodoBase ?MetodoLlamador)(metodoRedireccionado ?MetodoLlamado))
 	)
 
 ;(run)

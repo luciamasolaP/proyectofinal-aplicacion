@@ -1,15 +1,43 @@
 package aspectminingtool.views.RedirectorFinder;
 
+import java.util.Iterator;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
+import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
+import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.MethodFormater;
+import aspectminingtool.util.ViewPartUtil;
+import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
+import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 
 
 
@@ -25,7 +53,7 @@ import JessIntegrationModel.IResultsModel;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class ViewPartRedirectorFinder extends ViewPart {
+public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProject{
     public static final String ID_VIEW =
         "aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"; //$NON-NLS-1$
     
@@ -41,6 +69,7 @@ public class ViewPartRedirectorFinder extends ViewPart {
 	private Composite composite2;
 	private Table tableRight;
 	private TableViewer tableViewerRight;
+	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
 
     
     /**
@@ -61,6 +90,8 @@ public class ViewPartRedirectorFinder extends ViewPart {
 
 		createLeftTable();
 		createRightTable();
+		
+		createPopUpsMenus();
 
     }
 
@@ -72,6 +103,7 @@ public class ViewPartRedirectorFinder extends ViewPart {
 
 		tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
 		
+		
 		createLeftTableViewer();
 		
 		// Set up the table, each column has a listener for the click
@@ -81,35 +113,51 @@ public class ViewPartRedirectorFinder extends ViewPart {
 		TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
 		tc1.setText("Clase");
 		tc1.setWidth(200);
-//		tc1
-//				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//					public void widgetSelected(SelectionEvent event) {
-//						((SorterFanInViewFanIn) tableViewerLeft
-//								.getSorter()).doSort(0);
-//						tableViewerLeft.refresh();
-//					}
-//				});
+		tc1
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterRedFinderClasses) tableViewerLeft
+								.getSorter()).doSort(0);
+						tableViewerLeft.refresh();
+					}
+				});
 
 		// Column 2
 		TableColumn tc2 = new TableColumn(tableLeft, SWT.LEFT);
 		tc2.setText("Clase Redireccionada");
 		tc2.setWidth(200);
-//		tc2
-//				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//					public void widgetSelected(SelectionEvent event) {
-//						((SorterFanInViewFanIn) tableViewerLeft
-//								.getSorter()).doSort(1);
-//						tableViewerLeft.refresh();
-//					}
-//				});
+		tc2
+				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+					public void widgetSelected(SelectionEvent event) {
+						((SorterRedFinderClasses) tableViewerLeft
+								.getSorter()).doSort(1);
+						tableViewerLeft.refresh();
+					}
+				});
 		
 		TableColumn tc3 = new TableColumn(tableLeft, SWT.LEFT);
 		tc3.setText("Redirecciones");
 		tc3.setWidth(91);
+		tc3
+		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				((SorterRedFinderClasses) tableViewerLeft
+						.getSorter()).doSort(2);
+				tableViewerLeft.refresh();
+			}
+		});
 		
 		TableColumn tc4 = new TableColumn(tableLeft, SWT.LEFT);
 		tc4.setText("%");
 		tc4.setWidth(50);
+		tc4
+		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				((SorterRedFinderClasses) tableViewerLeft
+						.getSorter()).doSort(3);
+				tableViewerLeft.refresh();
+			}
+		});
 
 		// Turn on the header and the lines
 		tableLeft.setHeaderVisible(true);
@@ -123,41 +171,42 @@ public class ViewPartRedirectorFinder extends ViewPart {
 		tableViewerLeft = new TableViewer(tableLeft);
 
 		// Set the sorter
-//		ViewerSorter sorter = new SorterFanInViewFanIn();
-//		tableViewerLeft.setSorter(sorter);
+		ViewerSorter sorterCalls = new SorterRedFinderClasses();
+		tableViewerLeft.setSorter(sorterCalls);
 
 		// Set the content and label providers
 		tableViewerLeft
 				.setContentProvider(new RedirectorFinderContentProvider());
 		tableViewerLeft.setLabelProvider(new RedirectorFinderLabelProvider());
 		
+
+		tableViewerLeft
+		.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				selectionItem(event);
+				
+			}
+
+		});
+
+		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
 		
-//		tableViewerLeft
-//		.addSelectionChangedListener(new ISelectionChangedListener() {
-//			public void selectionChanged(
-//					SelectionChangedEvent event) {
-//				selectionItem(event);
-//
-//			}
-//
-//		});
-//
-//		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
-//		
-//			@Override
-//			public void doubleClick(DoubleClickEvent event) {
-//				if (!event.getSelection().isEmpty()) {
-//					
-//					if (event.getSelection() instanceof IStructuredSelection) {
-//						
-//						Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-//						openResource(fanInResult.getMetodo().getClass_id());
-//					}
-//				}
-//				
-//			}
-//			
-//		});
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				if (!event.getSelection().isEmpty()) {
+					
+					if (event.getSelection() instanceof IStructuredSelection) {
+						
+						RedirectorFinderResults redirFinderResult = (RedirectorFinderResults) ((IStructuredSelection) event.getSelection()).getFirstElement();
+						ViewPartUtil.openResource(redirFinderResult.getClaseLlamadora(),model.getProjectModel());
+					}
+				}
+				
+			}
+			
+		});
 	}
 	
 	 private void createRightTable() {
@@ -174,10 +223,15 @@ public class ViewPartRedirectorFinder extends ViewPart {
 				createTableViewerRight();
 				
 				{
-					TableColumn tableColumn = new TableColumn(tableRight,
+					TableColumn tableColumn1 = new TableColumn(tableRight,
 							SWT.NONE);
-					tableColumn.setText("Llamadas");
-					tableColumn.setWidth(300);
+					tableColumn1.setText("Metodo Llamador");
+					tableColumn1.setWidth(150);
+					
+					TableColumn tableColumn2 = new TableColumn(tableRight,
+							SWT.NONE);
+					tableColumn2.setText("Metodo Llamado");
+					tableColumn2.setWidth(150);
 //					tableColumn
 //					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 //						public void widgetSelected(SelectionEvent event) {
@@ -198,9 +252,12 @@ public class ViewPartRedirectorFinder extends ViewPart {
 		
 		tableViewerRight = new TableViewer(tableRight);
 		
-//		// Set the sorter
-//		ViewerSorter sorterCalls = new SorterFanInViewCalls();
-//		tableViewerRight.setSorter(sorterCalls);
+		// Set the content and label providers
+		tableViewerRight
+				.setContentProvider(new CallsContentProviderFanIn());
+		tableViewerRight.setLabelProvider(new CallsLabelProviderRedirMethod());
+		
+
 //		
 //		// Set the content and label providers
 //		tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
@@ -256,6 +313,170 @@ public class ViewPartRedirectorFinder extends ViewPart {
 	
 	public IResultsModel getModel() {
 		return model;
+	}
+	
+	private void selectionItem(SelectionChangedEvent event) {
+		
+		if (!event.getSelection().isEmpty()) {
+
+			if (event.getSelection() instanceof IStructuredSelection) {
+				RedirectorFinderResults redirectorFinderResult = (RedirectorFinderResults) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				tableViewerRight.setInput(redirectorFinderResult.getLlamados());
+
+			}
+
+		}
+		
+	}
+	
+	private void createPopUpsMenus(){
+		createActions();
+		createPopUps();
+		hookGlobalActions();
+	}
+
+	/**
+	 * Create the actions.
+	 */
+	public void createActions() {
+		openItemActionMethodsTable = new Action("Open") {
+			public void run() { 
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
+				Iterator iter = sel.iterator();
+				while (iter.hasNext()) {
+					RedirectorFinderResults redirFinderResul = (RedirectorFinderResults) iter.next();
+					String id = redirFinderResul.getClaseLlamadora();
+					ViewPartUtil.openResource(id,model.getProjectModel());
+
+			}
+			}
+		};
+		
+		selectAsSeedAction = new Action("Select As a Seed") {
+			public void run() {
+//				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
+//				Iterator iter = sel.iterator();
+//				while (iter.hasNext()) {
+//					RedirectorFinderResults redirFinderResul = (RedirectorFinderResults) iter.next();
+//					Method method = redirFinderResul.getMetodo();
+//					ViewPartUtil.selectAsSeed(method, ViewPartFanInSeeds.ID_VIEW, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
+//					//selectAsSeedOperation(method.getMetodo());
+//
+//				}
+
+				
+			}
+		};
+
+		selectAllActionMethodsTable = new Action("Select All") {
+			public void run() {
+				selectAll(tableViewerLeft);
+			}
+		};
+		
+		openItemActionCallsTable = new Action("Open") {
+			public void run() { 
+				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
+				Iterator iter = sel.iterator();
+				while (iter.hasNext()) {
+					Call_Counted callCounted = (Call_Counted) iter.next();
+					String name = callCounted.getCaller_id();
+					name = MethodFormater.getClassIdFromMethodId(name);
+					ViewPartUtil.openResource(name,model.getProjectModel());
+
+			}
+			}
+		};
+		
+		selectAllActionCallsTable = new Action("Select All") {
+			public void run() {
+				selectAll(tableViewerRight);
+			}
+		};
+		
+		// Add selection listener.
+		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
+				openItemActionMethodsTable.setEnabled(sel.size() > 0);
+				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
+				selectAsSeedAction.setEnabled(sel.size() > 0);
+			}
+		});
+		
+		tableViewerRight.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
+				selectAllActionCallsTable.setEnabled(sel.size() > 0);
+				openItemActionCallsTable.setEnabled(sel.size() > 0);
+			}
+		});
+		
+		
+	}
+	
+	protected void selectAll(TableViewer tableViewer) {
+		tableViewer.getTable().selectAll();
+		
+	}
+	
+	private void createPopUps() {
+
+		MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenutableViewerLeft(mgr);
+                }
+
+				private void fillContextMenutableViewerLeft(IMenuManager mgr) {
+					mgr.add(openItemActionMethodsTable);
+					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+					mgr.add(selectAsSeedAction);
+					mgr.add(new Separator());
+					mgr.add(selectAllActionMethodsTable);
+					
+				}
+
+        });
+        // Create menu for methodsTableViewer
+        Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
+        tableViewerLeft.getControl().setMenu(menu);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, tableViewerLeft);
+		
+
+        MenuManager menuMgr1 = new MenuManager();
+        menuMgr1.setRemoveAllWhenShown(true);
+        menuMgr1.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenutableViewerRight(mgr);
+                }
+
+				private void fillContextMenutableViewerRight(IMenuManager mgr) {
+					mgr.add(openItemActionCallsTable);
+					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+					mgr.add(new Separator());
+					mgr.add(selectAllActionCallsTable);
+					
+				}
+
+        });
+        // Create menu for methodsTableViewer
+        Menu menu1 = menuMgr.createContextMenu(tableViewerRight.getControl());
+        tableViewerRight.getControl().setMenu(menu1);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, tableViewerRight);
+
+		
+	}
+
+	private void hookGlobalActions() {
+		IActionBars bars = getViewSite().getActionBars();
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
+		
 	}
     
 }

@@ -31,7 +31,7 @@ public class ProjectModel {
 	
 	/**
 	 * Returns the resource associated with the parameter name
-	 * @param name
+	 * @param name :el nombre es el utilizado por los hechos paquete.paquete.../clase
 	 * @return
 	 */
 	public IResource getAssociatedResource(String name){

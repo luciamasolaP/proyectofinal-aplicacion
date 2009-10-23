@@ -52,7 +52,7 @@ public class CallDescription {
 
 	public String toString(){
 		
-		return callCounted.toString() + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
+		return callCounted.callerToString() + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
 		
 	}
 	

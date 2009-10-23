@@ -46,9 +46,9 @@ public class Method {
 	public String toString(){
 
 		//int index = class_id.indexOf("/");
-		String paquete = MethodFormater.formatPackage(id);
+		String paquete = MethodFormater.formatPackageFromMethodId(id);
 		//class_id.substring(0, index);
-		String clase =MethodFormater.formatClass(id); 
+		String clase =MethodFormater.formatClassFromMethodId(id); 
 			//class_id.substring(index+1, class_id.length());
 		String p = MethodFormater.formatParameters(parametros);
 		String rt;

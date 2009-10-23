@@ -273,7 +273,7 @@ public class FanInModel implements IResultsModel{
 					archive.newLine();
 					List<Call_Counted> list = calls.get(m.getId());
 					for (Iterator<Call_Counted> ii = list.iterator() ; ii.hasNext() ;){
-						archive.write("                 " + ii.next().toString());
+						archive.write("                 " + ii.next().callerToString());
 						archive.newLine();
 					}
 				}

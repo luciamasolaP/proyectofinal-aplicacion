@@ -16,12 +16,6 @@
             </separator>
          </menu>
          <action
-               class="aspectminingtool.popup.actions.ProjectFilter"
-               menubarPath="AspectMiningTool.menu1/group1"
-               id="AspectMiningTool.action2"
-               label="ProjectFilter">
-         </action>
-         <action
                class="aspectminingtool.popup.actions.FanInPopUp"
                id="AspectMiningTool.action1"
                menubarPath="AspectMiningTool.menu1/group1"
@@ -144,6 +138,14 @@
       </menuContribution>
       <menuContribution
             locationURI="toolbar:aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds">
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder">
          <command
                commandId="aspectminingtool.commands.CommandPrintModel"
                icon="images/save_edit.gif"

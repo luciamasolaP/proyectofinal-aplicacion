@@ -12,6 +12,7 @@ import org.eclipse.swt.graphics.Image;
 import aspectminingtool.Activator;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
+import aspectminingtool.util.MethodFormater;
 
 public class RedirectorFinderLabelProvider implements ITableLabelProvider {
 
@@ -47,9 +48,9 @@ public class RedirectorFinderLabelProvider implements ITableLabelProvider {
 		
 		if (element instanceof RedirectorFinderResults){
 			if (columnIndex == 0) 
-		    	return ((RedirectorFinderResults)element).getClaseLlamadora();
+		    	return MethodFormater.formatClassIdToString(((RedirectorFinderResults)element).getClaseLlamadora());
 		    else if (columnIndex == 1)
-		    		return ((RedirectorFinderResults)element).getClaseLlamada();
+		    		return MethodFormater.formatClassIdToString(((RedirectorFinderResults)element).getClaseLlamada());
 		    	else if (columnIndex == 2)
 		    			return ((RedirectorFinderResults)element).getCantidadRedireccionados();
 		    		else if (columnIndex == 3)

@@ -13,9 +13,13 @@ import jess.Rete;
 import jess.Value;
 import jess.ValueVector;
 import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.MethodFormater;
 
 public class RedirectionFinderModel implements IResultsModel{
 
@@ -56,18 +60,23 @@ public class RedirectionFinderModel implements IResultsModel{
 				 
 				 RedirectorFinderResults redirecMethod = new RedirectorFinderResults(classLlamadora,claseLlamada,cant);
 				 
-//				 ValueVector params = new ValueVector();
-//				 params.add(new Value(classLlamadora, RU.STRING));
-//				 params.add(new Value(claseLlamada, RU.STRING));
-//				 QueryResult result1 = jessEngine.runQueryStar("redirMethods", params);
-//				 
-//				 Map<String,String> llamados = new HashMap<String,String>();
-//				 
-//				 while (result1.next()){
-//					  
-//					 llamados.put(result1.getString("MetodoLlamador"), result1.getString("MetodoLlamado"));
-//				 }
-//				 redirecMethod.setLlamados(llamados);
+				 ValueVector params = new ValueVector();
+				 params.add(new Value(classLlamadora, RU.STRING));
+				 params.add(new Value(claseLlamada, RU.STRING));
+				 QueryResult result1 = jessEngine.runQueryStar("metodosRedirectorsPorClase", params);
+				 
+				 List<Call_Counted> llamados = new ArrayList<Call_Counted>();
+				 
+				 while (result1.next()){
+//					 String a = result1.getString("MetodoLlamador");
+//					 String b =  result1.getString("MetodoLlamado");
+//					 System.out.println("A: "+ a + " B: "+ b  );
+//					 Call_Counted c = new Call_Counted(a, b);
+					 Call_Counted c = new Call_Counted(result1.getString("MetodoLlamador"), result1.getString("MetodoLlamado"));
+					 llamados.add(c);
+				 }
+				 redirecMethod.setLlamados(llamados);
+				 
 				 this.redirectorFinderResults.add(redirecMethod);
 		        }
 			 
@@ -110,22 +119,25 @@ public class RedirectionFinderModel implements IResultsModel{
 	    {
 			for (Iterator<RedirectorFinderResults> i = redirectorFinderResults.iterator(); i.hasNext() ;){
 				RedirectorFinderResults rm = i.next(); 
-				archive.write("Clase Base: " +rm.getClaseLlamadora()+ "    Clase redireccionada: " + rm.getClaseLlamada() + "    %:" + rm.getPercent());
-//				Map<String,String> llamados = rm.getLlamados();
-//				for (Iterator<String> ii = llamados.keySet().iterator(); ii.hasNext(); ){
-//						archive.newLine();
-//						String metodo = ii.next();
-//						archive.write("                       : " +MethodFormater.formatMethodId(metodo)+ " -> " + MethodFormater.formatMethodId(llamados.get(metodo)));
-//					}
-				}
+				archive.write("Clase Base: " +MethodFormater.formatClassIdToString(rm.getClaseLlamadora())+ "    Clase redireccionada: " + MethodFormater.formatClassIdToString(rm.getClaseLlamada()) + "    %:" + rm.getPercent());
 				archive.newLine();
+				
+				List<Call_Counted> llamados = rm.getLlamados();
+				archive.write("      Métodos Redireccionadores:");
+				archive.newLine();
+				for (Iterator<Call_Counted> ii = llamados.iterator(); ii.hasNext(); ){
+						archive.write("                                 " + ii.next().toString());
+						archive.newLine();
+					}
+				archive.newLine();
+				}
+				
 		        archive.close();
 					
 			}
 
 	    catch (IOException e)    {    }
-
-		
+	    
 	}
 
 	@Override

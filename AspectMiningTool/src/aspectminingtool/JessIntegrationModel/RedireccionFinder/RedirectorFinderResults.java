@@ -1,7 +1,9 @@
 package aspectminingtool.JessIntegrationModel.RedireccionFinder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import aspectminingtool.model.Call_Counted;
 
 public class RedirectorFinderResults {
 
@@ -9,11 +11,11 @@ public class RedirectorFinderResults {
 	String cantTotal;
 	String claseLlamada;
 	String cantidadRedireccionados;
-	Map<String,String> llamados = new HashMap<String,String>();
-	
+	List<Call_Counted> llamados = new ArrayList<Call_Counted>();
+
 	public RedirectorFinderResults(String claseLlamadora, String cantTotal,
 			String claseLlamada, String cantidadRedireccionados,
-			Map<String, String> llamados) {
+			List<Call_Counted> llamados) {
 		super();
 		this.claseLlamadora = claseLlamadora;
 		this.cantTotal = cantTotal;
@@ -24,7 +26,7 @@ public class RedirectorFinderResults {
 
 	public RedirectorFinderResults(String classLlamadora, String claseLlamada,
 			String cantRedireccionados) {
-		
+
 		this.claseLlamadora = classLlamadora;
 		this.cantidadRedireccionados = cantRedireccionados;
 		this.claseLlamada = claseLlamada;
@@ -65,21 +67,17 @@ public class RedirectorFinderResults {
 		this.cantidadRedireccionados = cantidadRedireccionados;
 	}
 
-	public Map<String, String> getLlamados() {
+	public List<Call_Counted> getLlamados() {
 		return llamados;
 	}
 
-	public void setLlamados(Map<String, String> llamados) {
+	public void setLlamados(List<Call_Counted> llamados) {
 		this.llamados = llamados;
 	}
-	
-	public Double getPercent(){
-		return Double.valueOf(cantidadRedireccionados)/Double.valueOf(cantTotal);
+
+	public Double getPercent() {
+		return Double.valueOf(cantidadRedireccionados)
+				/ Double.valueOf(cantTotal);
 	}
-	
 
-
-
-	
-	
 }

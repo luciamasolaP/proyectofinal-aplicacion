@@ -3,9 +3,12 @@ package aspectminingtool.JessIntegrationModel.RedireccionFinder;
 import java.util.ArrayList;
 import java.util.List;
 
-import aspectminingtool.model.Call_Counted;
 
-public class RedirectorFinderResults {
+import aspectminingtool.model.Call_Counted;
+import aspectminingtool.util.MethodFormater;
+import aspectminingtool.JessIntegrationModel.Results;
+
+public class RedirectorFinderResults extends Results{
 
 	String claseLlamadora;
 	String cantTotal;
@@ -79,5 +82,12 @@ public class RedirectorFinderResults {
 		return Double.valueOf(cantidadRedireccionados)
 				/ Double.valueOf(cantTotal);
 	}
+
+	@Override
+	public String getSearchData() {
+		return MethodFormater.getClassNameFromClassId(claseLlamadora).toLowerCase();
+	}
+
+
 
 }

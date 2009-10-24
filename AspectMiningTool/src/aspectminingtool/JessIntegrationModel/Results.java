@@ -2,6 +2,6 @@ package aspectminingtool.JessIntegrationModel;
 
 public abstract class Results {
 
-	public abstract String getData();
+	public abstract String getSearchData();
 	
 }

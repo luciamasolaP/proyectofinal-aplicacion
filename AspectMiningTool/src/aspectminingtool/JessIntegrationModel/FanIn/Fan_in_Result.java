@@ -1,8 +1,9 @@
 package aspectminingtool.JessIntegrationModel.FanIn;
 
+import aspectminingtool.JessIntegrationModel.Results;
 import JessIntegrationModel.Method;
 
-public class Fan_in_Result {
+public class Fan_in_Result extends Results{
 
 	private Method metodo;
 	private String metric;
@@ -29,6 +30,11 @@ public class Fan_in_Result {
 	
 	public String toString(){
 		return metodo.toString();
+	}
+
+	@Override
+	public String getSearchData() {
+		return metodo.getName().toLowerCase();
 	}
 	
 }

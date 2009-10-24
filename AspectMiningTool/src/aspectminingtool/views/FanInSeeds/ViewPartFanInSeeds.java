@@ -56,7 +56,7 @@ import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.ViewSeedsInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 
@@ -70,19 +70,15 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,ViewSeedsInterface{
+public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"; //$NON-NLS-1$
 
 	private SashForm sashForm;
 	private Composite composite1;
 	private Composite composite2;
 
-	private Table tableMethod;
-	private TableViewer tableViewerMethod;
 	private Button closeButton;
 
-	private Table callsTable;
-	private TableViewer callsTableViewer;
 	private Action openItemActionMethodsTable, openItemActionCallsTable,
 			deleteAction, selectAllActionMethodsTable,
 			selectAllActionCallsTable;
@@ -193,13 +189,13 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		// Create and setup the TableViewer
 		createMethodsTableViewer();
-		tableViewerMethod.setContentProvider(new ContentProviderSeedsFanIN());
-		tableViewerMethod
+		tableViewerLeft.setContentProvider(new ContentProviderSeedsFanIN());
+		tableViewerLeft
 				.setLabelProvider(new MethodsDescriptionLabelProvider());
 
 		// The input for the table viewer is the instance of ExampleTaskList
 		model = new SeedsModel();
-		tableViewerMethod.setInput(model);
+		tableViewerLeft.setInput(model);
 
 	}
 
@@ -215,8 +211,8 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		// Create and setup the TableViewer
 		createCallsTableViewer();
-		callsTableViewer.setContentProvider(new ContentProviderCallSeedsFanIN());
-		callsTableViewer
+		tableViewerRight.setContentProvider(new ContentProviderCallSeedsFanIN());
+		tableViewerRight
 				.setLabelProvider(new CallsDescriptionLabelProvider());
 
 		
@@ -227,40 +223,40 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	 */
 	private void createMethodsTable(Composite parent) {
 
-		tableMethod = new Table(parent, SWT.BORDER | SWT.MULTI);
+		tableLeft = new Table(parent, SWT.BORDER | SWT.MULTI);
 
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalSpan = 3;
-		tableMethod.setLayoutData(gridData);
+		tableLeft.setLayoutData(gridData);
 
-		tableMethod.setLinesVisible(true);
-		tableMethod.setHeaderVisible(true);
+		tableLeft.setLinesVisible(true);
+		tableLeft.setHeaderVisible(true);
 
-		TableColumn column = new TableColumn(tableMethod, SWT.CENTER, 0);
+		TableColumn column = new TableColumn(tableLeft, SWT.CENTER, 0);
 		column.setText("Method");
 		column.setWidth(200);
 		// Add listener to column so tasks are sorted by Method when clicked
 		column
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				((SorterMethodDescriptionView) tableViewerMethod
+				((SorterMethodDescriptionView) tableViewerLeft
 						.getSorter()).doSort(0);
-				tableViewerMethod.refresh();
+				tableViewerLeft.refresh();
 			}
 		});
 
 		// 2nd column with task Description
-		column = new TableColumn(tableMethod, SWT.LEFT, 1);
+		column = new TableColumn(tableLeft, SWT.LEFT, 1);
 		column.setText("Description");
 		column.setWidth(600);
 		// Add listener to column so tasks are sorted by description when clicked
 		column
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				((SorterMethodDescriptionView) tableViewerMethod
+				((SorterMethodDescriptionView) tableViewerLeft
 						.getSorter()).doSort(1);
-				tableViewerMethod.refresh();
+				tableViewerLeft.refresh();
 			}
 		});
 
@@ -268,46 +264,46 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	
 	private void createCallTable(Composite parent) {
 
-		callsTable = new Table(parent, SWT.BORDER | SWT.MULTI);
+		tableRight = new Table(parent, SWT.BORDER | SWT.MULTI);
 
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.horizontalSpan = 3;
-		callsTable.setLayoutData(gridData);
+		tableRight.setLayoutData(gridData);
 
-		callsTable.setLinesVisible(true);
-		callsTable.setHeaderVisible(true);
+		tableRight.setLinesVisible(true);
+		tableRight.setHeaderVisible(true);
 
 		{
 
 			//Columna de la imágen
-			TableColumn tableCallsColumn0 = new TableColumn(callsTable, SWT.NONE);
+			TableColumn tableCallsColumn0 = new TableColumn(tableRight, SWT.NONE);
 			tableCallsColumn0.setText("");
 			tableCallsColumn0.setWidth(40);
 
 			
 			//Columna del método
-			TableColumn tableCallsColumn1 = new TableColumn(callsTable, SWT.NONE);
+			TableColumn tableCallsColumn1 = new TableColumn(tableRight, SWT.NONE);
 			tableCallsColumn1.setText("Caller Method");
 			tableCallsColumn1.setWidth(300);
 			tableCallsColumn1
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 						public void widgetSelected(SelectionEvent event) {
-							((SorterFanInViewCalls) callsTableViewer
+							((SorterFanInViewCalls) tableViewerRight
 									.getSorter()).doSort(0);
-							callsTableViewer.refresh();
+							tableViewerRight.refresh();
 						}
 					});
 			//Columna de la descripcion
-			TableColumn tableCallsColumn2 = new TableColumn(callsTable, SWT.NONE);
+			TableColumn tableCallsColumn2 = new TableColumn(tableRight, SWT.NONE);
 			tableCallsColumn2.setText("Description");
 			tableCallsColumn2.setWidth(300);
 			tableCallsColumn2
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 						public void widgetSelected(SelectionEvent event) {
-							((SorterFanInViewCalls) callsTableViewer
+							((SorterFanInViewCalls) tableViewerRight
 									.getSorter()).doSort(0);
-							callsTableViewer.refresh();
+							tableViewerRight.refresh();
 						}
 					});
 		}
@@ -320,29 +316,29 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	 */
 	private void createMethodsTableViewer() {
 
-		tableViewerMethod = new TableViewer(tableMethod);
-		tableViewerMethod.setUseHashlookup(true);
+		tableViewerLeft = new TableViewer(tableLeft);
+		tableViewerLeft.setUseHashlookup(true);
 
-		tableViewerMethod.setColumnProperties(columnNamesMethodsTable);
+		tableViewerLeft.setColumnProperties(columnNamesMethodsTable);
 
 		// Set the sorter
 		ViewerSorter sorter = new SorterMethodDescriptionView();
-		tableViewerMethod.setSorter(sorter);
+		tableViewerLeft.setSorter(sorter);
 		// Create the cell editors
 		CellEditor[] editors = new CellEditor[columnNamesMethodsTable.length];
 		// Column 1 :
 		editors[0] = null;
 		// Column 2 : Description (Free text)
-		TextCellEditor textEditor = new TextCellEditor(tableMethod);
+		TextCellEditor textEditor = new TextCellEditor(tableLeft);
 		editors[1] = textEditor;
 
 		// Assign the cell editors to the viewer
-		tableViewerMethod.setCellEditors(editors);
+		tableViewerLeft.setCellEditors(editors);
 		// Set the cell modifier for the viewer
-		tableViewerMethod.setCellModifier(new CellModifierMethodsDescription(
+		tableViewerLeft.setCellModifier(new CellModifierMethodsDescription(
 				this));
 
-		tableViewerMethod
+		tableViewerLeft
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
 						selectionItem(event);
@@ -351,7 +347,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 				});
 		
-		tableViewerMethod.addDoubleClickListener(new IDoubleClickListener(){
+		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -376,10 +372,10 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	
 	private void createCallsTableViewer(){
 		
-		callsTableViewer = new TableViewer(callsTable);
-		callsTableViewer.setUseHashlookup(true);
+		tableViewerRight = new TableViewer(tableRight);
+		tableViewerRight.setUseHashlookup(true);
 
-		callsTableViewer.setColumnProperties(columnNamesCallsTable);
+		tableViewerRight.setColumnProperties(columnNamesCallsTable);
 
 		// Set the sorter
 //		ViewerSorter sorter = new SorterMethodDescriptionView();
@@ -392,17 +388,17 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 		String[] s = new String[2];
 		s[0] = "yes";
 		s[1] = "no";
-		editors[0] = new ComboBoxCellEditor(callsTable, s , SWT.READ_ONLY);
+		editors[0] = new ComboBoxCellEditor(tableRight, s , SWT.READ_ONLY);
 		// Column 1 : Call
 		editors[1] = null;
 		// Column 2 : Description (Free text)
-		TextCellEditor textEditor = new TextCellEditor(callsTable);
+		TextCellEditor textEditor = new TextCellEditor(tableRight);
 		editors[2] = textEditor;
 
 		// Assign the cell editors to the viewer
-		callsTableViewer.setCellEditors(editors);
+		tableViewerRight.setCellEditors(editors);
 		// Set the cell modifier for the viewer
-		callsTableViewer.setCellModifier(new CellModifierCallsDescription(
+		tableViewerRight.setCellModifier(new CellModifierCallsDescription(
 				this));
 		
 	}
@@ -434,7 +430,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 				MethodDescription metodo = (MethodDescription) ((IStructuredSelection) event
 						.getSelection()).getFirstElement();
 				String key = metodo.getMethod().getId();
-				callsTableViewer.setInput(key);
+				tableViewerRight.setInput(key);
 
 			}
 
@@ -465,7 +461,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	 * @return currently selected item
 	 */
 	public ISelection getSelection() {
-		return tableViewerMethod.getSelection();
+		return tableViewerLeft.getSelection();
 	}
 
 	/**
@@ -479,7 +475,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	 * Return the parent composite
 	 */
 	public Control getControl() {
-		return tableMethod.getParent();
+		return tableLeft.getParent();
 	}
 
 	/**
@@ -501,11 +497,11 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		});
 		// Create menu for methodsTableViewer
-		Menu menu = menuMgr.createContextMenu(tableViewerMethod.getControl());
-		tableViewerMethod.getControl().setMenu(menu);
+		Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
+		tableViewerLeft.getControl().setMenu(menu);
 
 		// Register menu for extension.
-		getSite().registerContextMenu(menuMgr, tableViewerMethod);
+		getSite().registerContextMenu(menuMgr, tableViewerLeft);
 
 		// Create menu manager for methodsTableViewer for callsTableViewer
 		MenuManager menuMgr1 = new MenuManager();
@@ -517,11 +513,11 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		});
 		// Create menu for callsTableViewer
-		Menu menu1 = menuMgr1.createContextMenu(callsTableViewer.getControl());
-		callsTableViewer.getControl().setMenu(menu1);
+		Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
+		tableViewerRight.getControl().setMenu(menu1);
 
 		// Register menu for extension.
-		getSite().registerContextMenu(menuMgr1, callsTableViewer);
+		getSite().registerContextMenu(menuMgr1, tableViewerRight);
 	}
 
 	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
@@ -553,7 +549,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 	public void createActions() {
 		openItemActionMethodsTable = new Action("Open") {
 			public void run() {
-				IStructuredSelection sel = (IStructuredSelection) tableViewerMethod
+				IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
 						.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
@@ -570,7 +566,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		deleteAction = new Action("Delete") {
 			public void run() {
-				IStructuredSelection sel = (IStructuredSelection) tableViewerMethod
+				IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
 						.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
@@ -588,13 +584,13 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		selectAllActionMethodsTable = new Action("Select All") {
 			public void run() {
-				selectAll(tableViewerMethod);
+				selectAll(tableViewerLeft);
 			}
 		};
 
 		openItemActionCallsTable = new Action("Open") {
 			public void run() {
-				IStructuredSelection sel = (IStructuredSelection) callsTableViewer
+				IStructuredSelection sel = (IStructuredSelection) tableViewerRight
 						.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
@@ -610,15 +606,15 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
-				selectAll(callsTableViewer);
+				selectAll(tableViewerRight);
 			}
 		};
 
 		// Add selection listener.
-		tableViewerMethod
+		tableViewerLeft
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) tableViewerMethod
+						IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
 								.getSelection();
 						openItemActionMethodsTable.setEnabled(sel.size() > 0);
 						selectAllActionMethodsTable.setEnabled(sel.size() > 0);
@@ -626,10 +622,10 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 					}
 				});
 
-		callsTableViewer
+		tableViewerRight
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) tableViewerMethod
+						IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
 								.getSelection();
 						selectAllActionCallsTable.setEnabled(sel.size() > 0);
 						openItemActionCallsTable.setEnabled(sel.size() > 0);
@@ -696,7 +692,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 		 * @see ITaskListViewer#addTask(ExampleTask)
 		 */
 		public void addMethodDescription(MethodDescription methodDescription) {
-			tableViewerMethod.add(methodDescription);
+			tableViewerLeft.add(methodDescription);
 		}
 
 		/*
@@ -705,7 +701,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 		 * @see ITaskListViewer#removeTask(ExampleTask)
 		 */
 		public void removeMethodDescription(MethodDescription methodDescription) {
-			tableViewerMethod.remove(methodDescription);
+			tableViewerLeft.remove(methodDescription);
 		}
 
 		/*
@@ -714,7 +710,7 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 		 * @see ITaskListViewer#updateTask(ExampleTask)
 		 */
 		public void updateMethodDEscription(MethodDescription methodDescription) {
-			tableViewerMethod.update(methodDescription, null);
+			tableViewerLeft.update(methodDescription, null);
 		}
 	}
 
@@ -751,19 +747,19 @@ public class ViewPartFanInSeeds extends ViewPart implements ViewFilterProject,Vi
 
 		@Override
 		public void addCallDescription(CallDescription callDescription) {
-			callsTableViewer.add(callDescription);
+			tableViewerRight.add(callDescription);
 			
 		}
 
 		@Override
 		public void removeCallDescription(CallDescription callDescription) {
-			callsTableViewer.remove(callDescription);
+			tableViewerRight.remove(callDescription);
 			
 		}
 
 		@Override
 		public void updateCallDEscription(CallDescription callDescription) {
-			callsTableViewer.update(callDescription, null);
+			tableViewerRight.update(callDescription, null);
 			
 		}
 

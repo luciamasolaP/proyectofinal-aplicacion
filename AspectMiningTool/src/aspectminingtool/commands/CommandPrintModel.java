@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import JessIntegrationModel.IResultsModel;
-import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.AbstractView;
 
 
 public class CommandPrintModel extends AbstractHandler implements IHandler {
@@ -23,7 +23,7 @@ public class CommandPrintModel extends AbstractHandler implements IHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
-		ViewFilterProject view = (ViewFilterProject)HandlerUtil.getActivePart(event);
+		AbstractView view = (AbstractView)HandlerUtil.getActivePart(event);
 		IResultsModel model = view.getModel();
 		if (model != null){
 		

@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import aspectminingtool.dialogs.SettingsDialogs;
-import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.AbstractView;
 
 
 public class CommandShowProjectView extends AbstractHandler implements IHandler {
@@ -20,7 +20,7 @@ public class CommandShowProjectView extends AbstractHandler implements IHandler 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		// TODO Auto-generated method stub
 		
-		ViewFilterProject view = (ViewFilterProject)HandlerUtil.getActivePart(event);
+		AbstractView view = (AbstractView)HandlerUtil.getActivePart(event);
 		
 		if (view.getModel() != null){
 			IJavaProject javaProject = view.getModel().getProjectModel().getProject(); //TODO obtener java project del modelo de la vista

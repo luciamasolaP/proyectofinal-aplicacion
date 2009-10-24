@@ -10,7 +10,6 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import aspectminingtool.Activator;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 
 public class CallsLabelProviderFanIn implements ITableLabelProvider {

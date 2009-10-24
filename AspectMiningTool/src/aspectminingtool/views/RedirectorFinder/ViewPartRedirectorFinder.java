@@ -16,28 +16,30 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
-import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
-import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 
 
 
@@ -53,22 +55,16 @@ import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProject{
+public class ViewPartRedirectorFinder extends AbstractView{
     public static final String ID_VIEW =
         "aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"; //$NON-NLS-1$
-    
-    private IResultsModel model;
-    
 
-    private SashForm sashForm;
+     private SashForm sashForm;
 
     private Composite composite1;
-	private TableViewer tableViewerLeft;
-	private Table tableLeft;
-    
 	private Composite composite2;
-	private Table tableRight;
-	private TableViewer tableViewerRight;
+	private Composite composite3;
+
 	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
 
     
@@ -97,8 +93,11 @@ public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProj
 
 	private void createLeftTable() {
 		composite1 = new Composite(sashForm, SWT.NULL);
-		FillLayout composite1Layout = new FillLayout(
-				org.eclipse.swt.SWT.HORIZONTAL);
+		GridLayout composite1Layout = new GridLayout();
+		composite1Layout.makeColumnsEqualWidth = true;
+		composite1Layout.marginWidth = 0;
+		composite1Layout.verticalSpacing = 0;
+		composite1Layout.marginHeight = 0;
 		composite1.setLayout(composite1Layout);
 
 		tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
@@ -161,10 +160,56 @@ public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProj
 
 		// Turn on the header and the lines
 		tableLeft.setHeaderVisible(true);
+		GridData tableLeftLData = new GridData();
+		tableLeftLData.horizontalAlignment = GridData.FILL;
+		tableLeftLData.verticalAlignment = GridData.FILL;
+		tableLeftLData.grabExcessVerticalSpace = true;
+		tableLeftLData.grabExcessHorizontalSpace = true;
+		tableLeft.setLayoutData(tableLeftLData);
 		tableLeft.setLinesVisible(true);
+		{
+			GridData composite3LData = new GridData();
+			composite3LData.verticalAlignment = GridData.FILL;
+			composite3LData.horizontalAlignment = GridData.FILL;
+			composite3 = new Composite(composite1, SWT.NONE);
+			GridLayout composite3Layout = new GridLayout();
+			composite3Layout.numColumns = 3;
+			composite3.setLayout(composite3Layout);
+			composite3.setLayoutData(composite3LData);
+			{
+				labelSearch = new CLabel(composite3, SWT.NONE);
+				GridData labelSearchData = new GridData();
+				labelSearchData.horizontalIndent = -5;
+				labelSearchData.widthHint = 47;
+				labelSearchData.heightHint = 21;
+				labelSearch.setLayoutData(labelSearchData);
+				labelSearch.setText("Search:");
+							
+			}
+			{
+				textSearch = new Text(composite3, SWT.BORDER);
+				GridData textSearchData = new GridData();
+				textSearchData.widthHint = 179;
+				textSearchData.heightHint = 15;
+				textSearch.setLayoutData(textSearchData);
+				textSearch.setText("");
+			}
+			{
+				buttonSearch = new Button(composite3, SWT.PUSH | SWT.CENTER);
+				GridData buttonSearchLData = new GridData();
+				buttonSearch.setLayoutData(buttonSearchLData);
+				buttonSearch.setText("Search");
+				
+				buttonSearch.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						locateItemInTable();
+						
+					}
+				});
+				
+			}
+		}
 
-		
-		
 	}
 
 	private void createLeftTableViewer() {
@@ -311,10 +356,7 @@ public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProj
 		tableViewerLeft.setInput(model);
 	}
 	
-	public IResultsModel getModel() {
-		return model;
-	}
-	
+
 	private void selectionItem(SelectionChangedEvent event) {
 		
 		if (!event.getSelection().isEmpty()) {
@@ -478,5 +520,46 @@ public class ViewPartRedirectorFinder extends ViewPart implements ViewFilterProj
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
 		
 	}
+	
+//	private void locateItemInTable() {
+//
+//
+//		String searchClass = textSearch.getText().toLowerCase();
+//		if (!searchClass.equals("")){
+//			//si tengo que buscar el siguiente Item, lo busco en el searchHistory
+//			if (searchHistory.equals(searchClass)){
+//				
+//				if (searchCounted >= searchHistoryResults.size()-1)
+//					searchCounted = 0;
+//				else
+//					searchCounted++;
+//				
+//				
+//			}
+//			//sino, busco todos los valores y lleno el history
+//			else
+//			{
+//				searchHistory = searchClass;
+//				searchCounted = 0;
+//				searchHistoryResults = new ArrayList<TableItem>();
+//	
+//				TableItem[] items = tableLeft.getItems();
+//	
+//				for (int i = 0 ; i < items.length; i++){
+//					RedirectorFinderResults rfr = (RedirectorFinderResults)items[i].getData();
+//					String callerClassId = rfr.getClaseLlamadora();
+//					if (searchClass.equals(MethodFormater.getClassNameFromClassId(callerClassId).toLowerCase())){
+//						searchHistoryResults.add(items[i]);
+//					}
+//				}
+//			}
+//	
+//			tableLeft.setSelection(searchHistoryResults.get(searchCounted));
+//		}
+//		
+//	}
+	
+
+
     
 }

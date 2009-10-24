@@ -1,12 +1,10 @@
 package aspectminingtool.views.FanIn;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -19,16 +17,22 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
@@ -37,7 +41,7 @@ import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
-import aspectminingtool.views.ViewFilterProject;
+import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
 
 /**
@@ -50,19 +54,18 @@ import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
+public class ViewPartFanIn extends AbstractView{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
+	private Composite composite3;
 	private SashForm sashForm1;
+	
 	private TableColumn tableCallsColumn1;
-	private Table callsTable;
-	private TableViewer callsTableViewer;
-	private Composite composite2;
-	private TableViewer methodsTableViewer;
-	private Table methodsTable = null;
+		
 	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
 
-	private IResultsModel model;
+	
 	Composite composite1;
+	private Composite composite2;
 
 	/**
      * 
@@ -86,8 +89,11 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 			sashForm1.setSize(60, 30);
 			{
 				composite1 = new Composite(sashForm1, SWT.NULL);
-				FillLayout composite1Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
+				GridLayout composite1Layout = new GridLayout();
+				composite1Layout.makeColumnsEqualWidth = true;
+				composite1Layout.marginHeight = 0;
+				composite1Layout.marginWidth = 0;
+				composite1Layout.verticalSpacing = 0;
 				composite1.setLayout(composite1Layout);
 				composite1.setBounds(-483, -25, 461, 81);
 				
@@ -117,59 +123,108 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 	private void createMethodsTable(){
 		
-		methodsTable = new Table(composite1, SWT.BORDER | SWT.MULTI);
+		tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
 		
 		// Set up the table, each column has a listener for the click
 		// that calls
 		// the sorter and refreshes the tree.
 		// Column 1
-		final TableColumn tc1 = new TableColumn(methodsTable, SWT.LEFT);
+		final TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
 		tc1.setText("Method");
 		tc1.setWidth(398);
 		tc1
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFanInViewFanIn) methodsTableViewer
+						((SorterFanInViewFanIn) tableViewerLeft
 								.getSorter()).doSort(0);
-						methodsTableViewer.refresh();
+						tableViewerLeft.refresh();
 					}
 				});
 
 		// Column 2
-		TableColumn tc2 = new TableColumn(methodsTable, SWT.LEFT);
+		TableColumn tc2 = new TableColumn(tableLeft, SWT.LEFT);
 		tc2.setText("Fan in");
 		tc2.setWidth(50);
 		tc2
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFanInViewFanIn) methodsTableViewer
+						((SorterFanInViewFanIn) tableViewerLeft
 								.getSorter()).doSort(1);
-						methodsTableViewer.refresh();
+						tableViewerLeft.refresh();
 					}
 				});
 
 		// Turn on the header and the lines
-		methodsTable.setHeaderVisible(true);
-		methodsTable.setLinesVisible(true);
-	
+		tableLeft.setHeaderVisible(true);
+		GridData tableLeftLData = new GridData();
+		tableLeftLData.verticalAlignment = GridData.FILL;
+		tableLeftLData.grabExcessVerticalSpace = true;
+		tableLeftLData.horizontalAlignment = GridData.FILL;
+		tableLeftLData.grabExcessHorizontalSpace = true;
+		tableLeft.setLayoutData(tableLeftLData);
+		tableLeft.setLinesVisible(true);
+		{
+			GridData composite3LData = new GridData();
+			composite3LData.verticalAlignment = GridData.FILL;
+			composite3LData.horizontalAlignment = GridData.FILL;
+			composite3 = new Composite(composite1, SWT.NONE);
+			GridLayout composite3Layout = new GridLayout();
+			composite3Layout.numColumns = 3;
+			composite3.setLayout(composite3Layout);
+			composite3.setLayoutData(composite3LData);
+			{
+				labelSearch = new CLabel(composite3, SWT.NONE);
+				GridData labelSearchData = new GridData();
+				labelSearchData.horizontalIndent = -5;
+				labelSearchData.widthHint = 47;
+				labelSearchData.heightHint = 21;
+				labelSearch.setLayoutData(labelSearchData);
+				labelSearch.setText("Search:");
+							
+			}
+			{
+				textSearch = new Text(composite3, SWT.BORDER);
+				GridData textSearchData = new GridData();
+				textSearchData.widthHint = 179;
+				textSearchData.heightHint = 15;
+				textSearch.setLayoutData(textSearchData);
+				textSearch.setText("");
+			}
+			{
+				buttonSearch = new Button(composite3, SWT.PUSH | SWT.CENTER);
+				GridData buttonSearchLData = new GridData();
+				buttonSearch.setLayoutData(buttonSearchLData);
+				buttonSearch.setText("Search");
+				
+				buttonSearch.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						locateItemInTable();
+						
+					}
+				});
+				
+			}
+		}
+
+
 		createMethodsTableViewer();
 		
 	}
 	
 	private void createMethodsTableViewer() {
 		
-		methodsTableViewer = new TableViewer(methodsTable);
+		tableViewerLeft = new TableViewer(tableLeft);
 
 		// Set the sorter
 		ViewerSorter sorter = new SorterFanInViewFanIn();
-		methodsTableViewer.setSorter(sorter);
+		tableViewerLeft.setSorter(sorter);
 
 		// Set the content and label providers
-		methodsTableViewer
+		tableViewerLeft
 				.setContentProvider(new FanInContentProvider());
-		methodsTableViewer.setLabelProvider(new FanInLabelProvider());
+		tableViewerLeft.setLabelProvider(new FanInLabelProvider());
 
-		methodsTableViewer
+		tableViewerLeft
 		.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(
 					SelectionChangedEvent event) {
@@ -179,7 +234,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 		});
 
-		methodsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
+		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
 		
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -200,25 +255,25 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 	private void createCallsTable(){
 		
-		callsTable = new Table(composite2, SWT.LEFT | SWT.MULTI);
+		tableRight = new Table(composite2, SWT.LEFT | SWT.MULTI);
 			
 		{
-			tableCallsColumn1 = new TableColumn(callsTable,
+			tableCallsColumn1 = new TableColumn(tableRight,
 					SWT.NONE);
 			tableCallsColumn1.setText("Calls");
 			tableCallsColumn1.setWidth(300);
 			tableCallsColumn1
 			.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 				public void widgetSelected(SelectionEvent event) {
-					((SorterFanInViewCalls) callsTableViewer
+					((SorterFanInViewCalls) tableViewerRight
 							.getSorter()).doSort(0);
-					callsTableViewer.refresh();
+					tableViewerRight.refresh();
 				}
 			});
 		}
 
 
-		callsTable.setHeaderVisible(true);
+		tableRight.setHeaderVisible(true);
 			
 		createCallsTableViewer();
 		
@@ -226,17 +281,17 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 	
 	private void createCallsTableViewer(){
 		
-		callsTableViewer = new TableViewer(callsTable);
+		tableViewerRight = new TableViewer(tableRight);
 		
 		// Set the sorter
 		ViewerSorter sorterCalls = new SorterFanInViewCalls();
-		callsTableViewer.setSorter(sorterCalls);
+		tableViewerRight.setSorter(sorterCalls);
 		
 		// Set the content and label providers
-		callsTableViewer.setContentProvider(new CallsContentProviderFanIn());
-		callsTableViewer.setLabelProvider(new CallsLabelProviderFanIn());
+		tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
+		tableViewerRight.setLabelProvider(new CallsLabelProviderFanIn());
 		
-		callsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
+		tableViewerRight.addDoubleClickListener(new IDoubleClickListener(){
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
@@ -289,11 +344,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 	public void setModel(IResultsModel model) {
 		this.model = model;
 		super.setPartName("Fan in Results - " + model.getId());
-		methodsTableViewer.setInput(model);
-	}
-
-	public IResultsModel getModel() {
-		return model;
+		tableViewerLeft.setInput(model);
 	}
 
 
@@ -305,7 +356,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 				Fan_in_Result metodo = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				String key = metodo.getMetodo().getId();
 				List<Call_Counted> llamadas = ((FanInModel) model).getCalls().get(key);
-				callsTableViewer.setInput(llamadas);
+				tableViewerRight.setInput(llamadas);
 
 			}
 
@@ -324,11 +375,11 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
         });
         // Create menu for methodsTableViewer
-        Menu menu = menuMgr.createContextMenu(methodsTableViewer.getControl());
-        methodsTableViewer.getControl().setMenu(menu);
+        Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
+        tableViewerLeft.getControl().setMenu(menu);
         
         // Register menu for extension.
-        getSite().registerContextMenu(menuMgr, methodsTableViewer);
+        getSite().registerContextMenu(menuMgr, tableViewerLeft);
 		
 
         MenuManager menuMgr1 = new MenuManager();
@@ -340,11 +391,11 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
         });
         // Create menu for methodsTableViewer
-        Menu menu1 = menuMgr.createContextMenu(callsTableViewer.getControl());
-        callsTableViewer.getControl().setMenu(menu1);
+        Menu menu1 = menuMgr.createContextMenu(tableViewerRight.getControl());
+        tableViewerRight.getControl().setMenu(menu1);
         
         // Register menu for extension.
-        getSite().registerContextMenu(menuMgr, methodsTableViewer);
+        getSite().registerContextMenu(menuMgr, tableViewerLeft);
 
          
 
@@ -373,7 +424,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 	public void createActions() {
 		openItemActionMethodsTable = new Action("Open") {
 			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
 					Fan_in_Result fanInResult = (Fan_in_Result) iter.next();
@@ -386,7 +437,7 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 		selectAsSeedAction = new Action("Select As a Seed") {
 			public void run() {
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
 					Fan_in_Result fir = (Fan_in_Result) iter.next();
@@ -402,13 +453,13 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 
 		selectAllActionMethodsTable = new Action("Select All") {
 			public void run() {
-				selectAll(methodsTableViewer);
+				selectAll(tableViewerLeft);
 			}
 		};
 		
 		openItemActionCallsTable = new Action("Open") {
 			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)callsTableViewer.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
 					Call_Counted callCounted = (Call_Counted) iter.next();
@@ -422,23 +473,23 @@ public class ViewPartFanIn extends ViewPart implements ViewFilterProject{
 		
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
-				selectAll(callsTableViewer);
+				selectAll(tableViewerRight);
 			}
 		};
 		
 		// Add selection listener.
-		methodsTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				openItemActionMethodsTable.setEnabled(sel.size() > 0);
 				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
 				selectAsSeedAction.setEnabled(sel.size() > 0);
 			}
 		});
 		
-		callsTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		tableViewerRight.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)methodsTableViewer.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				selectAllActionCallsTable.setEnabled(sel.size() > 0);
 				openItemActionCallsTable.setEnabled(sel.size() > 0);
 			}

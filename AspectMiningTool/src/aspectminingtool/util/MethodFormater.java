@@ -84,8 +84,17 @@ public class MethodFormater {
 			return "Clase: "+ classId.substring(index+1) + " Paquete: "+ classId.substring(0,index);
 		return "";
 		
-		
-		
+	}
+	/**
+	 * Returns the name of the class from a classId
+	 * @param classId
+	 * @return
+	 */
+	public static String getClassNameFromClassId(String classId){
+		int index = classId.indexOf("/");
+		if (index >= 0)
+			return classId.substring(index+1);
+		return "";
 	}
 }
 

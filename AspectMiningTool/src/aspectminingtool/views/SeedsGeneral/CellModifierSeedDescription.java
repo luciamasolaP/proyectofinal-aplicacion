@@ -3,6 +3,8 @@ package aspectminingtool.views.SeedsGeneral;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.swt.widgets.TableItem;
 
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescription;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedsGeneralModel;
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
 import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
 
@@ -24,7 +26,7 @@ public class CellModifierSeedDescription implements ICellModifier {
 	 * @see org.eclipse.jface.viewers.ICellModifier#canModify(java.lang.Object, java.lang.String)
 	 */
 	public boolean canModify(Object element, String property) {
-		if (property.equals("Method"))
+		if (property.equals("Method") || property.equals("Algorithm"))
 			return false;
 		return true;
 	}
@@ -38,15 +40,19 @@ public class CellModifierSeedDescription implements ICellModifier {
 		int columnIndex = viewPart.getColumnNamesMethods().indexOf(property);
 
 		Object result = null;
-		MethodDescription task = (MethodDescription) element;
+		SeedDescription task = (SeedDescription) element;
 
 		switch (columnIndex) {
 			case 0 : // METHOD_COLUMN 
 				result = task.getMethod();
 				break;
-			case 1 : // DESCRIPTION_COLUMN 
+			case 1: // ALGORITHM_COLUMN
+				result = task.getAlgoritmo();
+				break;
+			case 2 : // DESCRIPTION_COLUMN 
 				result = task.getDescription();
 				break;
+			
 			default :
 				result = "";
 		}
@@ -62,18 +68,21 @@ public class CellModifierSeedDescription implements ICellModifier {
 		int columnIndex	= viewPart.getColumnNamesMethods().indexOf(property);
 			
 		TableItem item = (TableItem) element;
-		MethodDescription task = (MethodDescription) item.getData();
+		SeedDescription seedDescription = (SeedDescription) item.getData();
 		String valueString;
 
 		switch (columnIndex) {
 			case 0 : // METHOD_COLUMN 
 				break;
-			case 1 : // DESCRIPTION_COLUMN 
-				valueString = ((String) value).trim();
-				task.setDescription(valueString);
+			case 1: //ALGOITHM_COLUMN
 				break;
+			case 2 : // DESCRIPTION_COLUMN 
+				valueString = ((String) value).trim();
+				seedDescription.setDescription(valueString);
+				break;
+
 			default :
 			}
-		((SeedsModel) viewPart.getModel()).methodDescriptionChanged(task);
+		((SeedsGeneralModel) viewPart.getModel()).seedDescriptionChanged(seedDescription);
 	}
 }

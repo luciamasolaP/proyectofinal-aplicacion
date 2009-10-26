@@ -1,6 +1,5 @@
 package aspectminingtool.views.SeedsGeneral;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -36,22 +36,25 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.ViewPart;
 
-import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
-
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescription;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedsGeneralModel;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.AbstractView;
@@ -69,41 +72,41 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
 public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
-	public static final String ID_VIEW = "aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"; //$NON-NLS-1$
-
+	public static final String ID_VIEW = "aspectminingtool.views.SeedsGeneral.ViewPartSeeds"; //$NON-NLS-1$
+	
 	private SashForm sashForm;
 	private Composite composite1;
 	private Composite composite2;
+	private Composite composite3;
 
-	private Table tableLeft;
-	private TableViewer tableViewerLeft;
-	private Button closeButton;
+	//private Button closeButton;
 
-	private Table tableRight;
-	private TableViewer tableViewerRight;
 	private Action openItemActionMethodsTable, openItemActionCallsTable,
 			deleteAction, selectAllActionMethodsTable,
 			selectAllActionCallsTable;
 
 	// Create a ExampleTaskList and assign it to an instance variable
-	private IResultsModel model = new SeedsGeneralModel();
+	//private IResultsModel model = new SeedsGeneralModel();
 
 	// Set the table column property names for tableViewerMethod
-	private final String METHOD_NAME_COLUMN = "Method";
-	private final String METHOD_DESCRIPTION_COLUMN = "description";
+	public final String SEED_NAME_COLUMN = "Method";
+	public final String SEED_ALGORITH_COLUMN = "Algorithm";
+	public final String SEED_DESCRIPTION_COLUMN = "Description";
+	
 
 	// Set the table column property names for callsTableViewer
-	private final String CALL_SELECTED_COLUMN = "";
-	private final String CALL_NAME_COLUMN = "Caller Method";
-	private final String CALL_DESCRIPTION_COLUMN = "Description";
+	public final String RMETHOD_SELECTED_COLUMN = "";
+	public final String RMETHOD_NAME_COLUMN = "Related Method";
+	public final String RMETHOD_DESCRIPTION_COLUMN = "Description";
 	
 	// Set column names
-	private String[] columnNamesMethodsTable = new String[] { METHOD_NAME_COLUMN,
-			METHOD_DESCRIPTION_COLUMN };
+	private String[] columnNamesMethodsTable = new String[] { SEED_NAME_COLUMN, SEED_ALGORITH_COLUMN,
+			SEED_DESCRIPTION_COLUMN};
 	
-	private String[] columnNamesCallsTable = new String[] { CALL_SELECTED_COLUMN, CALL_NAME_COLUMN,
-			CALL_DESCRIPTION_COLUMN };
+	private String[] columnNamesCallsTable = new String[] { RMETHOD_SELECTED_COLUMN, RMETHOD_NAME_COLUMN,
+			RMETHOD_DESCRIPTION_COLUMN };
 
+	private String SECOND_ID;
 	/**
      * 
      */
@@ -111,35 +114,22 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		super();
 	}
 
-	public void setName(){
-		super.setPartName("Fan in Seeds - " + model.getId());
+	public void setName(String secondId){
+		SECOND_ID = secondId;
+		super.setPartName("Seeds - " + SECOND_ID);
 	}
 	
-	public void addMethodToModel(Method method, List<Call_Counted> list,
+	public void addSeedToModel(Method method, String algorithm, List<RelatedMethodDescription> relatedMethods,
 			ProjectModel projectModel) {
 
-		
-		SeedDescription et = new SeedDescription();
-		et.setMethod(method);
+		SeedDescription seedDescription = new SeedDescription();
+		seedDescription.setMethod(method);
+		seedDescription.setAlgoritmo(algorithm);
 		((SeedsGeneralModel) model).setProjectModel(projectModel);
-		setName();
-		((SeedsGeneralModel) model).addMethodAsASeed(et, method.getId(), createMethodsDescriptions(list));
+		((SeedsGeneralModel) model).addMethodAsASeed(seedDescription, method.getId(), relatedMethods);
 
 	}
 
-	private List<CallDescription> createMethodsDescriptions(
-			List<Call_Counted> list) {
-		List<CallDescription> resultList = new ArrayList<CallDescription>();
-		if (list != null){	
-			for (Iterator<Call_Counted> iterator = list.iterator() ; iterator.hasNext() ; ){
-			
-				CallDescription cd = new CallDescription(iterator.next());
-				resultList.add(cd);
-			
-			}
-		}
-		return resultList;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -150,16 +140,20 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	 */
 	public void createPartControl(Composite parent) {
 
+		model = new SeedsGeneralModel();
+		
 		{
 			sashForm = new SashForm(parent, SWT.NONE);
 			sashForm.setSize(60, 30);
 			{
 
 				composite1 = new Composite(sashForm, SWT.NULL);
-				FillLayout composite1Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
+				GridLayout composite1Layout = new GridLayout();
+				composite1Layout.makeColumnsEqualWidth = true;
+				composite1Layout.marginWidth = 0;
+				composite1Layout.verticalSpacing = 0;
+				composite1Layout.marginHeight = 0;
 				composite1.setLayout(composite1Layout);
-				composite1.setBounds(-483, -25, 461, 81);
 				this.createTableLeft(composite1);
 			}
 			{
@@ -182,22 +176,15 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	private void createTableLeft(Composite composite1) {
 
 		// Set numColumns to 3 for the buttons
-		GridLayout layout = new GridLayout(3, false);
-		layout.marginWidth = 4;
-		composite1.setLayout(layout);
+//		GridLayout layout = new GridLayout(3, false);
+//		layout.marginWidth = 4;
+//		composite1.setLayout(layout);
 
 		// Create the table
-		createMethodsTable(composite1);
+		createTableLeftColumns(composite1);
 
 		// Create and setup the TableViewer
-		createMethodsTableViewer();
-		tableViewerLeft.setContentProvider(new ContentProviderSeedsFanIN());
-		tableViewerLeft
-				.setLabelProvider(new MethodsDescriptionLabelProvider());
-
-		// The input for the table viewer is the instance of ExampleTaskList
-		model = new SeedsModel();
-		tableViewerLeft.setInput(model);
+		createTableViewerLeft();
 
 	}
 
@@ -209,62 +196,118 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		composite2.setLayout(layout);
 
 		// Create the table
-		createCallTable(composite2);
+		createTableRightColumns(composite2);
 
 		// Create and setup the TableViewer
-		createCallsTableViewer();
-		tableViewerRight.setContentProvider(new ContentProviderCallSeedsFanIN());
-		tableViewerRight
-				.setLabelProvider(new CallsDescriptionLabelProvider());
-
-		
+		createCallsTableViewerRight();
+				
 	}
 	
 	/**
 	 * Create the Methods Table
 	 */
-	private void createMethodsTable(Composite parent) {
+	private void createTableLeftColumns(Composite parent) {
 
 		tableLeft = new Table(parent, SWT.BORDER | SWT.MULTI);
 
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.grabExcessVerticalSpace = true;
-		gridData.horizontalSpan = 3;
-		tableLeft.setLayoutData(gridData);
-
-		tableLeft.setLinesVisible(true);
 		tableLeft.setHeaderVisible(true);
+		GridData tableLeftLData = new GridData();
+		tableLeftLData.horizontalAlignment = GridData.FILL;
+		tableLeftLData.verticalAlignment = GridData.FILL;
+		tableLeftLData.grabExcessVerticalSpace = true;
+		tableLeftLData.grabExcessHorizontalSpace = true;
+		tableLeft.setLayoutData(tableLeftLData);
+		tableLeft.setLinesVisible(true);
 
 		TableColumn column = new TableColumn(tableLeft, SWT.CENTER, 0);
-		column.setText("Method");
+		column.setText(SEED_NAME_COLUMN);
 		column.setWidth(200);
 		// Add listener to column so tasks are sorted by Method when clicked
 		column
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				((SorterMethodDescriptionView) tableViewerLeft
+				((SorterSeedsDescriptionView) tableViewerLeft
 						.getSorter()).doSort(0);
 				tableViewerLeft.refresh();
 			}
 		});
+		
 
-		// 2nd column with task Description
+
+		// 3er column with algorithmn
 		column = new TableColumn(tableLeft, SWT.LEFT, 1);
-		column.setText("Description");
+		column.setText(SEED_ALGORITH_COLUMN);
+		column.setWidth(150);
+		// Add listener to column so tasks are sorted by description when clicked
+		column
+		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				((SorterSeedsDescriptionView) tableViewerLeft
+						.getSorter()).doSort(1);
+				tableViewerLeft.refresh();
+			}
+		});
+		
+		// 2nd column with task Description
+		column = new TableColumn(tableLeft, SWT.LEFT, 2);
+		column.setText(SEED_DESCRIPTION_COLUMN);
 		column.setWidth(600);
 		// Add listener to column so tasks are sorted by description when clicked
 		column
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				((SorterMethodDescriptionView) tableViewerLeft
-						.getSorter()).doSort(1);
+				((SorterSeedsDescriptionView) tableViewerLeft
+						.getSorter()).doSort(2);
 				tableViewerLeft.refresh();
 			}
 		});
+		
+		{
+			GridData composite3LData = new GridData();
+			composite3LData.verticalAlignment = GridData.FILL;
+			composite3LData.horizontalAlignment = GridData.FILL;
+			composite3 = new Composite(composite1, SWT.NONE);
+			GridLayout composite3Layout = new GridLayout();
+			composite3Layout.numColumns = 3;
+			composite3.setLayout(composite3Layout);
+			composite3.setLayoutData(composite3LData);
+			{
+				labelSearch = new CLabel(composite3, SWT.NONE);
+				GridData labelSearchData = new GridData();
+				labelSearchData.horizontalIndent = -5;
+				labelSearchData.widthHint = 47;
+				labelSearchData.heightHint = 21;
+				labelSearch.setLayoutData(labelSearchData);
+				labelSearch.setText("Search:");
+							
+			}
+			{
+				textSearch = new Text(composite3, SWT.BORDER);
+				GridData textSearchData = new GridData();
+				textSearchData.widthHint = 179;
+				textSearchData.heightHint = 15;
+				textSearch.setLayoutData(textSearchData);
+				textSearch.setText("");
+			}
+			{
+				buttonSearch = new Button(composite3, SWT.PUSH | SWT.CENTER);
+				GridData buttonSearchLData = new GridData();
+				buttonSearch.setLayoutData(buttonSearchLData);
+				buttonSearch.setText("Search");
+				
+				buttonSearch.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						locateItemInTable();
+						
+					}
+				});
+				
+			}
+		}
 
 	}
 	
-	private void createCallTable(Composite parent) {
+	private void createTableRightColumns(Composite parent) {
 
 		tableRight = new Table(parent, SWT.BORDER | SWT.MULTI);
 
@@ -282,11 +325,10 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			TableColumn tableCallsColumn0 = new TableColumn(tableRight, SWT.NONE);
 			tableCallsColumn0.setText("");
 			tableCallsColumn0.setWidth(40);
-
-			
+		
 			//Columna del método
 			TableColumn tableCallsColumn1 = new TableColumn(tableRight, SWT.NONE);
-			tableCallsColumn1.setText("Caller Method");
+			tableCallsColumn1.setText(RMETHOD_NAME_COLUMN);
 			tableCallsColumn1.setWidth(300);
 			tableCallsColumn1
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -298,7 +340,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 					});
 			//Columna de la descripcion
 			TableColumn tableCallsColumn2 = new TableColumn(tableRight, SWT.NONE);
-			tableCallsColumn2.setText("Description");
+			tableCallsColumn2.setText(RMETHOD_DESCRIPTION_COLUMN);
 			tableCallsColumn2.setWidth(300);
 			tableCallsColumn2
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -310,13 +352,12 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 					});
 		}
 
-
 	}
 	
 	/**
 	 * Create the Methods TableViewer
 	 */
-	private void createMethodsTableViewer() {
+	private void createTableViewerLeft() {
 
 		tableViewerLeft = new TableViewer(tableLeft);
 		tableViewerLeft.setUseHashlookup(true);
@@ -324,20 +365,25 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		tableViewerLeft.setColumnProperties(columnNamesMethodsTable);
 
 		// Set the sorter
-		ViewerSorter sorter = new SorterMethodDescriptionView();
+		ViewerSorter sorter = new SorterSeedsDescriptionView();
 		tableViewerLeft.setSorter(sorter);
+		
 		// Create the cell editors
 		CellEditor[] editors = new CellEditor[columnNamesMethodsTable.length];
-		// Column 1 :
+		// Column 1 : nombre del método
 		editors[0] = null;
-		// Column 2 : Description (Free text)
+		//Column 2: Algoritmo
+		editors[1] = null;
+		// Column 3 : Description
 		TextCellEditor textEditor = new TextCellEditor(tableLeft);
-		editors[1] = textEditor;
+		editors[2] = textEditor;
+
+		
 
 		// Assign the cell editors to the viewer
 		tableViewerLeft.setCellEditors(editors);
 		// Set the cell modifier for the viewer
-		tableViewerLeft.setCellModifier(new CellModifierMethodsDescription(
+		tableViewerLeft.setCellModifier(new CellModifierSeedDescription(
 				this));
 
 		tableViewerLeft
@@ -355,9 +401,8 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			public void doubleClick(DoubleClickEvent event) {
 				if (!event.getSelection().isEmpty()) {
 					
-					if (event.getSelection() instanceof IStructuredSelection) {
-						
-						MethodDescription methodDescription = (MethodDescription) ((IStructuredSelection) event.getSelection()).getFirstElement();
+					if (event.getSelection() instanceof IStructuredSelection) {	
+						SeedDescription methodDescription = (SeedDescription) ((IStructuredSelection) event.getSelection()).getFirstElement();
 						openResource(methodDescription.getMethod().getClass_id());
 					}
 				}
@@ -366,13 +411,17 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			
 		});
 
-		// Set the default sorter for the viewer
-		// tableViewerMethod.setSorter(new
-		// ExampleTaskSorter(ExampleTaskSorter.DESCRIPTION));
+		tableViewerLeft.setContentProvider(new ContentProviderSeedsDescription());
+		tableViewerLeft
+				.setLabelProvider(new LabelProviderSeedsDescription());
+
+		// The input for the table viewer is the instance of ExampleTaskList
+		model = new SeedsGeneralModel();
+		tableViewerLeft.setInput(model);
 	}
 
 	
-	private void createCallsTableViewer(){
+	private void createCallsTableViewerRight(){
 		
 		tableViewerRight = new TableViewer(tableRight);
 		tableViewerRight.setUseHashlookup(true);
@@ -382,8 +431,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		// Set the sorter
 //		ViewerSorter sorter = new SorterMethodDescriptionView();
 //		callsTableViewer.setSorter(sorter);
-		
-		
+				
 		// Create the cell editors
 		CellEditor[] editors = new CellEditor[columnNamesCallsTable.length];
 		// Column 0 : Imagen
@@ -400,8 +448,12 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		// Assign the cell editors to the viewer
 		tableViewerRight.setCellEditors(editors);
 		// Set the cell modifier for the viewer
-		tableViewerRight.setCellModifier(new CellModifierCallsDescription(
+		tableViewerRight.setCellModifier(new CellModifierRelatedMethods(
 				this));
+		
+		tableViewerRight.setContentProvider(new ContentProviderRelatedMethodsSeeds());
+		tableViewerRight
+				.setLabelProvider(new LabelProviderRelatedMethodsSeeds());
 		
 	}
 
@@ -419,17 +471,13 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	public void dispose() {
 		super.dispose();
 	}
-
-	
-
-
-	
+		
 	protected void selectionItem(SelectionChangedEvent event) {
 
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				MethodDescription metodo = (MethodDescription) ((IStructuredSelection) event
+				SeedDescription metodo = (SeedDescription) ((IStructuredSelection) event
 						.getSelection()).getFirstElement();
 				String key = metodo.getMethod().getId();
 				tableViewerRight.setInput(key);
@@ -471,13 +519,6 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	 */
 	public Control getControl() {
 		return tableLeft.getParent();
-	}
-
-	/**
-	 * Return the 'close' Button
-	 */
-	public Button getCloseButton() {
-		return closeButton;
 	}
 
 
@@ -548,7 +589,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 						.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					MethodDescription methodDescription = (MethodDescription) iter
+					SeedDescription methodDescription = (SeedDescription) iter
 							.next();
 					if (methodDescription != null) {
 						String id = methodDescription.getMethod().getClass_id();
@@ -565,10 +606,10 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 						.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					MethodDescription methodDescription = (MethodDescription) iter
+					SeedDescription methodDescription = (SeedDescription) iter
 							.next();
 					if (methodDescription != null) {
-						((SeedsModel) model)
+						((SeedsGeneralModel) model)
 								.removeMethodDescription(methodDescription);
 					}
 
@@ -660,25 +701,25 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	 * 
 	 *
 	 */
-	class ContentProviderSeedsFanIN implements IStructuredContentProvider,
-			MethodDescriptionListViewer {
+	class ContentProviderSeedsDescription implements IStructuredContentProvider,
+		SeedDescriptionListViewer {
 		/**
 		 * It register itself as a listener to the domain object changes so it can notify the tree viewer of any changes. 
 		 */
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			if (newInput != null)
-				((SeedsModel) newInput).addChangeListenerMethodDescription(this);
+				((SeedsGeneralModel) newInput).addChangeListenerSeedDescription(this);
 			if (oldInput != null)
-				((SeedsModel) oldInput).removeChangeListenerMethodDescription(this);
+				((SeedsGeneralModel) oldInput).removeChangeListenerSeedDescription(this);
 		}
 
 		public void dispose() {
-			((SeedsModel) model).removeChangeListenerMethodDescription(this);
+			((SeedsGeneralModel) model).removeChangeListenerSeedDescription(this);
 		}
 
 		// Return the methodsDescriptions as an array of Objects
 		public Object[] getElements(Object parent) {
-			return ((SeedsModel) model).getMethodsDescriptions().toArray();
+			return ((SeedsGeneralModel) model).getSeedDescriptions().toArray();
 		}
 
 		/*
@@ -686,7 +727,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		 * 
 		 * @see ITaskListViewer#addTask(ExampleTask)
 		 */
-		public void addMethodDescription(MethodDescription methodDescription) {
+		public void addSeedDescription(SeedDescription methodDescription) {
 			tableViewerLeft.add(methodDescription);
 		}
 
@@ -695,7 +736,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		 * 
 		 * @see ITaskListViewer#removeTask(ExampleTask)
 		 */
-		public void removeMethodDescription(MethodDescription methodDescription) {
+		public void removeSeedDescription(SeedDescription methodDescription) {
 			tableViewerLeft.remove(methodDescription);
 		}
 
@@ -704,7 +745,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		 * 
 		 * @see ITaskListViewer#updateTask(ExampleTask)
 		 */
-		public void updateMethodDEscription(MethodDescription methodDescription) {
+		public void updateSeedDescription(SeedDescription methodDescription) {
 			tableViewerLeft.update(methodDescription, null);
 		}
 	}
@@ -717,48 +758,46 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	 * 
 	 *
 	 */
-	class ContentProviderCallSeedsFanIN implements IStructuredContentProvider,
-	CallDescriptionListViewer {
+	class ContentProviderRelatedMethodsSeeds implements IStructuredContentProvider,
+	RelatedMethodDescriptionListViewer {
 		/**
 		 * It register itself as a listener to the domain object changes so it can notify the tree viewer of any changes. 
 		 */
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			if (newInput != null)
-				((SeedsModel) model).addChangeListenerCallDescription(this);
+				((SeedsGeneralModel) model).addChangeListenerRelatedMethodDescription(this);
 			if (oldInput != null)
-				((SeedsModel) model).removeChangeListenerCallDescription(this);
+				((SeedsGeneralModel) model).removeChangeListenerRelatedMethodDescription(this);
 		}
 
 		public void dispose() {
-			((SeedsModel) model).removeChangeListenerCallDescription(this);
+			((SeedsGeneralModel) model).removeChangeListenerRelatedMethodDescription(this);
 		}
 
 		// Returns the callDescriptions of a given method_id
 		public Object[] getElements(Object inputElement) {
 			String method_id = (String)inputElement;
-			return (((SeedsModel)model).getCallsDescriptions(method_id)).toArray();
+			return (((SeedsGeneralModel)model).getRelatedMethodDescriptions(method_id)).toArray();
 
 		}
 
 		@Override
-		public void addCallDescription(CallDescription callDescription) {
-			tableViewerRight.add(callDescription);
+		public void addRelatedMethodDescription(RelatedMethodDescription relatedMethodDescription) {
+			tableViewerRight.add(relatedMethodDescription);
 			
 		}
 
 		@Override
-		public void removeCallDescription(CallDescription callDescription) {
-			tableViewerRight.remove(callDescription);
+		public void removeRelatedDescription(RelatedMethodDescription relatedMethodDescription){
+			tableViewerRight.remove(relatedMethodDescription);
 			
 		}
 
 		@Override
-		public void updateCallDEscription(CallDescription callDescription) {
-			tableViewerRight.update(callDescription, null);
+		public void updateRelatedMethodDescription(RelatedMethodDescription relatedMethodDescription){
+			tableViewerRight.update(relatedMethodDescription, null);
 			
 		}
-
-
 
 	}
 	

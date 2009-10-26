@@ -45,11 +45,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.JessIntegrationModel.Seeds.CallDescription;
 import aspectminingtool.JessIntegrationModel.Seeds.CallDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.Seeds.MethodDescription;
@@ -465,13 +465,6 @@ public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterfa
 	}
 
 	/**
-	 * Return the ExampleTaskList
-	 */
-	public IResultsModel getModel() {
-		return model;
-	}
-
-	/**
 	 * Return the parent composite
 	 */
 	public Control getControl() {
@@ -639,6 +632,7 @@ public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterfa
 
 	}
 
+	
 	private void openResource(String resourceName) {
 
 		ProjectModel projectModel = model.getProjectModel();
@@ -765,6 +759,14 @@ public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterfa
 
 
 
+	}
+
+	@Override
+	public void addSeedToModel(Method method, String algorithm,
+			List<RelatedMethodDescription> relatedMethods,
+			ProjectModel projectModel) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

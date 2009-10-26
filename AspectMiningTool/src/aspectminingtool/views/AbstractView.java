@@ -71,4 +71,6 @@ public abstract class AbstractView extends ViewPart{
 		
 	}
 	
+	
+	
 }

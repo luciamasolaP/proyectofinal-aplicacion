@@ -1,5 +1,6 @@
 package aspectminingtool.views.FanIn;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,20 +18,15 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
@@ -38,11 +34,13 @@ import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
-import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
+import aspectminingtool.views.ViewAlgorithmInterface;
+import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -54,9 +52,9 @@ import aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanIn extends AbstractView{
+public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
-	private Composite composite3;
+	public static final String NAME = "Fan-In";
 	private SashForm sashForm1;
 	
 	private TableColumn tableCallsColumn1;
@@ -163,48 +161,6 @@ public class ViewPartFanIn extends AbstractView{
 		tableLeftLData.grabExcessHorizontalSpace = true;
 		tableLeft.setLayoutData(tableLeftLData);
 		tableLeft.setLinesVisible(true);
-		{
-			GridData composite3LData = new GridData();
-			composite3LData.verticalAlignment = GridData.FILL;
-			composite3LData.horizontalAlignment = GridData.FILL;
-			composite3 = new Composite(composite1, SWT.NONE);
-			GridLayout composite3Layout = new GridLayout();
-			composite3Layout.numColumns = 3;
-			composite3.setLayout(composite3Layout);
-			composite3.setLayoutData(composite3LData);
-			{
-				labelSearch = new CLabel(composite3, SWT.NONE);
-				GridData labelSearchData = new GridData();
-				labelSearchData.horizontalIndent = -5;
-				labelSearchData.widthHint = 47;
-				labelSearchData.heightHint = 21;
-				labelSearch.setLayoutData(labelSearchData);
-				labelSearch.setText("Search:");
-							
-			}
-			{
-				textSearch = new Text(composite3, SWT.BORDER);
-				GridData textSearchData = new GridData();
-				textSearchData.widthHint = 179;
-				textSearchData.heightHint = 15;
-				textSearch.setLayoutData(textSearchData);
-				textSearch.setText("");
-			}
-			{
-				buttonSearch = new Button(composite3, SWT.PUSH | SWT.CENTER);
-				GridData buttonSearchLData = new GridData();
-				buttonSearch.setLayoutData(buttonSearchLData);
-				buttonSearch.setText("Search");
-				
-				buttonSearch.addListener (SWT.Selection, new Listener () {
-					public void handleEvent (Event event) {
-						locateItemInTable();
-						
-					}
-				});
-				
-			}
-		}
 
 
 		createMethodsTableViewer();
@@ -442,7 +398,8 @@ public class ViewPartFanIn extends AbstractView{
 				while (iter.hasNext()) {
 					Fan_in_Result fir = (Fan_in_Result) iter.next();
 					Method method = fir.getMetodo();
-					ViewPartUtil.selectAsSeed(method, ViewPartFanInSeeds.ID_VIEW, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
+					
+					ViewPartUtil.selectAsSeed(method, ViewPartSeeds.ID_VIEW, getRelatedMethods(((FanInModel)model).getCalls(method.getId())), ((FanInModel)model).getProjectModel(), NAME);
 					//selectAsSeedOperation(method.getMetodo());
 
 				}
@@ -502,6 +459,19 @@ public class ViewPartFanIn extends AbstractView{
 		tableViewer.getTable().selectAll();
 		
 	}
+
+	@Override
+	public List<RelatedMethodDescription> getRelatedMethods(List relatedMethods) {
+		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
+		if (relatedMethods!=null)
+			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
+				//((FanInModel)model).getCalls(method.getId());
+				RelatedMethodDescription rmd = new RelatedMethodDescription(((Call_Counted)i.next()).getCaller_id());
+				resultRelatedMethods.add(rmd);
+			}
+		return resultRelatedMethods;
+	}
+
 
 //	protected void selectAsSeedOperation(Method method) {
 //

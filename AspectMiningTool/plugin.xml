@@ -64,13 +64,6 @@
             restorable="true">
       </view>
       <view
-            category="AspectMiningTool.category1"
-            class="aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"
-            id="aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"
-            name="Fan In Seeds"
-            restorable="true">
-      </view>
-      <view
             allowMultiple="false"
             category="AspectMiningTool.category1"
             class="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
@@ -80,23 +73,17 @@
       </view>
       <view
             category="AspectMiningTool.category1"
-            class="aspectminingtool.views.FanInSeeds.SampleView"
-            id="aspectminingtool.views.Seeds.SampleView"
-            name="EditorView"
-            restorable="true">
-      </view>
-      <view
-            category="AspectMiningTool.category1"
-            class="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
-            id="aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds"
-            name="Unique Methods Seeds"
-            restorable="true">
-      </view>
-      <view
-            category="AspectMiningTool.category1"
             class="aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"
             id="aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"
             name="Redirector Finder Results"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.SeedsGeneral.ViewPartSeeds"
+            id="aspectminingtool.views.SeedsGeneral.ViewPartSeeds"
+            name="Seeds"
             restorable="true">
       </view>
    </extension>
@@ -129,7 +116,7 @@
          </command>
       </menuContribution>
       <menuContribution
-            locationURI="toolbar:aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds">
+            locationURI="toolbar:aspectminingtool.views.SeedsGeneral.ViewPartSeeds">
          <command
                commandId="aspectminingtool.commands.CommandPrintModel"
                icon="images/save_edit.gif"

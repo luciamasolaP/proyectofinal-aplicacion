@@ -27,11 +27,11 @@ import JessIntegrationModel.ProjectModel;
 
 public class SeedsGeneralModel implements IResultsModel{
 
-	private List methodsDescriptionList = new ArrayList();
-	private List changeListenersMethodDescription = new ArrayList();
+	private List seedDescriptionList = new ArrayList();
+	private List changeListenersSeedDescription = new ArrayList();
 	
-	private Map<String,List<CallDescription>> callDescriptionList = new HashMap<String,List<CallDescription>>();
-	private List changeListenersCallsDescription = new ArrayList();
+	private Map<String,List<RelatedMethodDescription>> relatedMethodDescriptionList = new HashMap<String,List<RelatedMethodDescription>>();
+	private List changeListenersRelatedMethodDescription = new ArrayList();
 	
 	ProjectModel projectModel = null;
 
@@ -49,45 +49,45 @@ public class SeedsGeneralModel implements IResultsModel{
 	/**
 	 * Return the collection of methodDescriptions
 	 */
-	public List getMethodsDescriptions() {
-		return methodsDescriptionList;
+	public List getSeedDescriptions() {
+		return seedDescriptionList;
 	}
 	
 	/**
 	 * Return the collection of methodDescriptions
 	 */
-	public List<CallDescription> getCallsDescriptions(String method_id) {
-		return callDescriptionList.get(method_id);
+	public List<RelatedMethodDescription> getRelatedMethodDescriptions(String method_id) {
+		return relatedMethodDescriptionList.get(method_id);
 	}
 	
 	/**
 	 * Add a new task to the collection of methodsDescriptions and tells all the listener to add the new methodDescription
 	 */
 	public void addTask() {
-		MethodDescription methodDescription = new MethodDescription();
-		methodsDescriptionList.add(methodsDescriptionList.size(), methodDescription);
-		Iterator iterator = changeListenersMethodDescription.iterator();
+		SeedDescription seedDescription = new SeedDescription();
+		seedDescriptionList.add(seedDescriptionList.size(), seedDescription);
+		Iterator iterator = changeListenersSeedDescription.iterator();
 		while (iterator.hasNext())
-			((MethodDescriptionListViewer) iterator.next()).addMethodDescription(methodDescription);
+			((SeedDescriptionListViewer) iterator.next()).addSeedDescription(seedDescription);
 	}
 
-	public void addMethodAsASeed(MethodDescription et, String methodId,List<CallDescription> methodsCalls) {
+	public void addMethodAsASeed(SeedDescription et, String methodId,List<RelatedMethodDescription> methodsCalls) {
 		
 		if (!pertenece(et)){
-			methodsDescriptionList.add(methodsDescriptionList.size(), et);
+			seedDescriptionList.add(seedDescriptionList.size(), et);
 			if (methodsCalls != null)
-				this.callDescriptionList.put(methodId, methodsCalls);
-			Iterator iterator = changeListenersMethodDescription.iterator();
+				this.relatedMethodDescriptionList.put(methodId, methodsCalls);
+			Iterator iterator = changeListenersSeedDescription.iterator();
 			while (iterator.hasNext())
-				((MethodDescriptionListViewer) iterator.next()).addMethodDescription(et);
+				((SeedDescriptionListViewer) iterator.next()).addSeedDescription(et);
 			
 		}
 		
 	}
 	
-	private boolean pertenece(MethodDescription et) {
-		for (Iterator i = methodsDescriptionList.iterator(); i.hasNext(); ){
-			String id = ((MethodDescription)i.next()).getMethod().getId();
+	private boolean pertenece(SeedDescription et) {
+		for (Iterator i = seedDescriptionList.iterator(); i.hasNext(); ){
+			String id = ((SeedDescription)i.next()).getMethod().getId();
 			if (id.equals(et.getMethod().getId()))
 				return true;
 		}
@@ -95,24 +95,24 @@ public class SeedsGeneralModel implements IResultsModel{
 	}
 
 	/**
-	 * @param methodDescription
+	 * @param seedDescription
 	 */
-	public void removeMethodDescription(MethodDescription methodDescription) {
-		methodsDescriptionList.remove(methodDescription);
-		callDescriptionList.remove(methodDescription.getMethod().getId());
-		Iterator iterator = changeListenersMethodDescription.iterator();
+	public void removeMethodDescription(SeedDescription seedDescription) {
+		seedDescriptionList.remove(seedDescription);
+		relatedMethodDescriptionList.remove(seedDescription.getMethod().getId());
+		Iterator iterator = changeListenersSeedDescription.iterator();
 		while (iterator.hasNext())
-			((MethodDescriptionListViewer) iterator.next()).removeMethodDescription(methodDescription);
+			((SeedDescriptionListViewer) iterator.next()).removeSeedDescription(seedDescription);
 		//debería iterar sobre los listener de las calls para avisar al modelo de removerlo
 	}
 
 	/**
 	 * @param methodDescription
 	 */
-	public void methodDescriptionChanged(MethodDescription methodDescription) {
-		Iterator iterator = changeListenersMethodDescription.iterator();
+	public void seedDescriptionChanged(SeedDescription methodDescription) {
+		Iterator iterator = changeListenersSeedDescription.iterator();
 		while (iterator.hasNext())
-			((MethodDescriptionListViewer) iterator.next()).updateMethodDEscription(methodDescription);
+			((SeedDescriptionListViewer) iterator.next()).updateSeedDescription(methodDescription);
 //		for (Iterator i= methodsDescriptionList.iterator() ; i.hasNext() ;){
 //			MethodDescription et = (MethodDescription)i.next();
 //
@@ -120,12 +120,12 @@ public class SeedsGeneralModel implements IResultsModel{
 	}
 
 	/**
-	 * @param callDescription
+	 * @param relatedMethodDescription
 	 */
-	public void CallDescriptionChanged(CallDescription callDescription) {
-		Iterator iterator = changeListenersCallsDescription.iterator();
+	public void relatedMethodDescriptionChanged(RelatedMethodDescription relatedMethodDescription) {
+		Iterator iterator = changeListenersRelatedMethodDescription.iterator();
 		while (iterator.hasNext())
-			((CallDescriptionListViewer) iterator.next()).updateCallDEscription(callDescription);
+			((RelatedMethodDescriptionListViewer) iterator.next()).updateRelatedMethodDescription(relatedMethodDescription);
 //		for (Iterator i= callDescription.iterator() ; i.hasNext() ;){
 //			CallDescription et = (CallDescription)i.next();
 //
@@ -136,15 +136,15 @@ public class SeedsGeneralModel implements IResultsModel{
 	/**
 	 * @param viewer
 	 */
-	public void removeChangeListenerMethodDescription(MethodDescriptionListViewer viewer) {
-		changeListenersMethodDescription.remove(viewer);
+	public void removeChangeListenerSeedDescription(SeedDescriptionListViewer viewer) {
+		changeListenersSeedDescription.remove(viewer);
 	}
 
 	/**
 	 * @param viewer
 	 */
-	public void addChangeListenerMethodDescription(MethodDescriptionListViewer viewer) {
-		changeListenersMethodDescription.add(viewer);
+	public void addChangeListenerSeedDescription(SeedDescriptionListViewer viewer) {
+		changeListenersSeedDescription.add(viewer);
 	}
 
 	
@@ -152,31 +152,31 @@ public class SeedsGeneralModel implements IResultsModel{
 	 * It removes a listener of the type CallDescriptionListViewer
 	 * @param viewer
 	 */
-	public void removeChangeListenerCallDescription(CallDescriptionListViewer viewer) {
-		changeListenersCallsDescription.remove(viewer);
+	public void removeChangeListenerRelatedMethodDescription(RelatedMethodDescriptionListViewer viewer) {
+		changeListenersRelatedMethodDescription.remove(viewer);
 	}
 
 	/**
 	 * It adds a listener of the type CallDescriptionListViewer
 	 * @param viewer
 	 */
-	public void addChangeListenerCallDescription(CallDescriptionListViewer viewer) {
-		changeListenersCallsDescription.add(viewer);
+	public void addChangeListenerRelatedMethodDescription(RelatedMethodDescriptionListViewer viewer) {
+		changeListenersRelatedMethodDescription.add(viewer);
 	}
 	
 	
-	public Map<String, List<CallDescription>> getCalls() {
-		return callDescriptionList;
+	public Map<String, List<RelatedMethodDescription>> getRelatedMethods() {
+		return relatedMethodDescriptionList;
 	}
 	
-	public List<CallDescription> getCalls(String methodId){
+	public List<RelatedMethodDescription> getRelatedMethods(String methodId){
 		
-		return callDescriptionList.get(methodId);
+		return relatedMethodDescriptionList.get(methodId);
 		
 	}
 
-	public void setCalls(Map<String, List<CallDescription>> calls) {
-		this.callDescriptionList = calls;
+	public void setRelatedMethods(Map<String, List<RelatedMethodDescription>> calls) {
+		this.relatedMethodDescriptionList = calls;
 	}
 
 	@Override
@@ -199,16 +199,16 @@ public class SeedsGeneralModel implements IResultsModel{
 		
 		try 
 	    {
-			for (Iterator<MethodDescription> methodIterator = methodsDescriptionList.iterator(); methodIterator.hasNext() ;){
-				MethodDescription md = methodIterator.next(); 
+			for (Iterator<SeedDescription> methodIterator = seedDescriptionList.iterator(); methodIterator.hasNext() ;){
+				SeedDescription md = methodIterator.next(); 
 				Method m = md.getMethod();
 				archive.write(md.toString());
 				archive.newLine();
 				String key = m.getId();
-				if (callDescriptionList.containsKey(key)){
+				if (relatedMethodDescriptionList.containsKey(key)){
 					
-					List<CallDescription> list = callDescriptionList.get(key);
-					for (Iterator<CallDescription> callIterator=list.iterator();callIterator.hasNext();){
+					List<RelatedMethodDescription> list = relatedMethodDescriptionList.get(key);
+					for (Iterator<RelatedMethodDescription> callIterator=list.iterator();callIterator.hasNext();){
 						archive.write("                 " + callIterator.next().toString());
 						archive.newLine();
 					}

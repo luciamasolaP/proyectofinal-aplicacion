@@ -1,7 +1,6 @@
 package aspectminingtool.JessIntegrationModel.Seeds;
 
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.util.MethodFormater;
 
 public class CallDescription {
 

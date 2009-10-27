@@ -1,28 +1,16 @@
 package aspectminingtool.views.FanIn;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-
-
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.swt.graphics.Image;
 
 import aspectminingtool.Activator;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 
 public class FanInLabelProvider implements ITableLabelProvider {
 
@@ -56,11 +44,11 @@ public class FanInLabelProvider implements ITableLabelProvider {
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		
-		if (element instanceof Fan_in_Result){
+		if (element instanceof MetricMethodResult){
 			if (columnIndex == 0) 
-		    	return ((Fan_in_Result)element).toString();
+		    	return ((MetricMethodResult)element).toString();
 		    else if (columnIndex == 1)
-		    	return ((Fan_in_Result)element).getMetric();
+		    	return ((MetricMethodResult)element).getMetric();
 		}
 		 
 		return "";

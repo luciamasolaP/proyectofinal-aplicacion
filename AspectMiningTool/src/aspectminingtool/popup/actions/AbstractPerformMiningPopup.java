@@ -79,6 +79,8 @@ public abstract class AbstractPerformMiningPopup implements IObjectActionDelegat
 				 inferenceEngine.setAlgorithm(getAlgorithm());
 				 
 				 inferenceEngine.execute(Facts);
+				 
+				 Facts.clear();
 			
 				 showResults(getResults(inferenceEngine));
 				

@@ -19,6 +19,7 @@ import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.model.Call_Counted;
 
 public class FanInModel implements IResultsModel{
@@ -27,7 +28,7 @@ public class FanInModel implements IResultsModel{
 	Map<String,final_fan_in_metric> metrics;
 	Map<String,Method> methods;
 	ProjectModel projectModel;
-	List<Fan_in_Result> resultadoFanIn = new ArrayList<Fan_in_Result>();
+	List<MetricMethodResult> resultadoFanIn = new ArrayList<MetricMethodResult>();
 	InferenceEngine inferenceEngine = null;
 	
 	
@@ -136,18 +137,18 @@ public class FanInModel implements IResultsModel{
 		for (Iterator i = this.methods.keySet().iterator() ; i.hasNext() ; ){
 			
 			String key = (String)i.next();
-			Fan_in_Result fir = new Fan_in_Result(methods.get(key),metrics.get(key).getMetric());
+			MetricMethodResult fir = new MetricMethodResult(methods.get(key),metrics.get(key).getMetric());
 			this.resultadoFanIn.add(fir);
 			
 		}
 		
 	}
 
-	public List<Fan_in_Result> getResultadoFanIn() {
+	public List<MetricMethodResult> getResultadoFanIn() {
 		return resultadoFanIn;
 	}
 
-	public void setResultadoFanIn(List<Fan_in_Result> resultadoFanIn) {
+	public void setResultadoFanIn(List<MetricMethodResult> resultadoFanIn) {
 		this.resultadoFanIn = resultadoFanIn;
 	}
 
@@ -262,8 +263,8 @@ public class FanInModel implements IResultsModel{
 
 		try 
 	    {
-			for (Iterator<Fan_in_Result> i = resultadoFanIn.iterator(); i.hasNext() ;){
-				Fan_in_Result fir = i.next(); 
+			for (Iterator<MetricMethodResult> i = resultadoFanIn.iterator(); i.hasNext() ;){
+				MetricMethodResult fir = i.next(); 
 				Method m = fir.getMetodo();
 				String metric = fir.getMetric();
 				archive.write("Método: " + m.toString() + "    FanIn: "+ metric);

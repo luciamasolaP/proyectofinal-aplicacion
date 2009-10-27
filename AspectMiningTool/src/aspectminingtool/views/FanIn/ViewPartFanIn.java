@@ -37,13 +37,14 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.OpenMethodListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
 import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
@@ -250,22 +251,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 
 		});
 
-		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
-		
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					
-					if (event.getSelection() instanceof IStructuredSelection) {
-						
-						Fan_in_Result fanInResult = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-						ViewPartUtil.openResource(fanInResult.getMetodo().getClass_id(),model.getProjectModel());
-					}
-				}
-				
-			}
-			
-		});
+		tableViewerLeft.addDoubleClickListener(new OpenMethodListener(this));
 		
 	}
 
@@ -369,7 +355,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				Fan_in_Result metodo = (Fan_in_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				MetricMethodResult metodo = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				String key = metodo.getMetodo().getId();
 				List<Call_Counted> llamadas = ((FanInModel) model).getCalls().get(key);
 				tableViewerRight.setInput(llamadas);
@@ -443,7 +429,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					Fan_in_Result fanInResult = (Fan_in_Result) iter.next();
+					MetricMethodResult fanInResult = (MetricMethodResult) iter.next();
 					String id = fanInResult.getMetodo().getClass_id();
 					ViewPartUtil.openResource(id,model.getProjectModel());
 
@@ -456,7 +442,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				Iterator iter = sel.iterator();
 				while (iter.hasNext()) {
-					Fan_in_Result fir = (Fan_in_Result) iter.next();
+					MetricMethodResult fir = (MetricMethodResult) iter.next();
 					Method method = fir.getMetodo();
 					
 					ViewPartUtil.selectAsSeed(method, ViewPartSeeds.ID_VIEW, getRelatedMethods(((FanInModel)model).getCalls(method.getId())), ((FanInModel)model).getProjectModel(), NAME);

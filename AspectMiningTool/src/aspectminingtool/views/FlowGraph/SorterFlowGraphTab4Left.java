@@ -3,7 +3,7 @@ package aspectminingtool.views.FlowGraph;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 
 public class SorterFlowGraphTab4Left extends ViewerSorter {
 
@@ -27,17 +27,17 @@ public class SorterFlowGraphTab4Left extends ViewerSorter {
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int rc = 0;
-		InsideLastExecutionMetric fir1 = (InsideLastExecutionMetric)e1;
-		InsideLastExecutionMetric fir2 = (InsideLastExecutionMetric)e2;
+		MetricMethodResult fir1 = (MetricMethodResult)e1;
+		MetricMethodResult fir2 = (MetricMethodResult)e2;
 	    switch (column) {
 	    case 0:
-	    	String name1 = fir1.getMethod().getName();
-	    	String name2 = fir2.getMethod().getName();
+	    	String name1 = fir1.getMetodo().getName();
+	    	String name2 = fir2.getMetodo().getName();
 	    	rc = name1.compareTo(name2);
 	      break;
 	    case 1:
-	    	int numero1 = fir1.getMetric();
-	    	int numero2 = fir2.getMetric();
+	    	int numero1 = Integer.valueOf(fir1.getMetric());
+	    	int numero2 = Integer.valueOf(fir2.getMetric());
 	    	Integer int1 = new Integer(numero1);
 	    	Integer int2 = new Integer(numero2);
 	    	rc = int1.compareTo(int2);

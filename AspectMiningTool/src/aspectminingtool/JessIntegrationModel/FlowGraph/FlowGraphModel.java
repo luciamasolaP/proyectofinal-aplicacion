@@ -18,7 +18,7 @@ import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.JessIntegrationModel.FanIn.final_fan_in_metric;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 
 public class FlowGraphModel implements IResultsModel {
 
@@ -27,10 +27,10 @@ public class FlowGraphModel implements IResultsModel {
 	List<InsideFirstExecution> insideFirstExecutionRelations = new ArrayList<InsideFirstExecution>();
 	List<InsideLastExecution> insideLastExecutionRelations = new ArrayList<InsideLastExecution>();
 	
-	List<OutsideBeforeExecutionMetric> outsideBeforeExecutionResult = new ArrayList<OutsideBeforeExecutionMetric>();
-	List<OutsideAfterExecutionMetric> outsideAfterExecutionResult = new ArrayList<OutsideAfterExecutionMetric>();
-	List<InsideFirstExecutionMetric> insideFirstExecutionResult = new ArrayList<InsideFirstExecutionMetric>();
-	List<InsideLastExecutionMetric> insideLastExecutionResult = new ArrayList<InsideLastExecutionMetric>();
+	List<MetricMethodResult> outsideBeforeExecutionResult = new ArrayList<MetricMethodResult>();
+	List<MetricMethodResult> outsideAfterExecutionResult = new ArrayList<MetricMethodResult>();
+	List<MetricMethodResult> insideFirstExecutionResult = new ArrayList<MetricMethodResult>();
+	List<MetricMethodResult> insideLastExecutionResult = new ArrayList<MetricMethodResult>();
 	
 	Map<String,Call> calls;
 	Map<String,Method> methods;
@@ -284,7 +284,7 @@ public class FlowGraphModel implements IResultsModel {
 //			for(int j=0;j<resultMethods.size();j++){
 //				relatedMethods.add(resultMethods.get(j).getId());				
 //			}	
-			OutsideBeforeExecutionMetric element = new OutsideBeforeExecutionMetric(mm,resultMethods.size());
+			MetricMethodResult element = new MetricMethodResult(mm,String.valueOf(resultMethods.size()));
 			//element.setRelatedMethods(relatedMethods);
 			outsideBeforeExecutionResult.add(element);
 		}		
@@ -300,7 +300,7 @@ public class FlowGraphModel implements IResultsModel {
 //			for(int j=0;j<resultMethods.size();j++){
 //				relatedMethods.add(resultMethods.get(j).getId());				
 //			}	
-			OutsideAfterExecutionMetric element = new OutsideAfterExecutionMetric(mm,resultMethods.size());
+			MetricMethodResult element = new MetricMethodResult(mm,String.valueOf(resultMethods.size()));
 			//element.setRelatedMethods(relatedMethods);
 			outsideAfterExecutionResult.add(element);
 		}		
@@ -317,7 +317,7 @@ public class FlowGraphModel implements IResultsModel {
 //			for(int j=0;j<resultMethods.size();j++){
 //				relatedMethods.add(resultMethods.get(j).getId());				
 //			}
-			InsideFirstExecutionMetric element = new InsideFirstExecutionMetric(mm,resultMethods.size());
+			MetricMethodResult element = new MetricMethodResult(mm,String.valueOf(resultMethods.size()));
 			//element.setRelatedMethods(relatedMethods);
 			insideFirstExecutionResult.add(element);
 		}
@@ -334,7 +334,7 @@ public class FlowGraphModel implements IResultsModel {
 //			for(int j=0;j<resultMethods.size();j++){
 //				relatedMethods.add(resultMethods.get(j).getId());				
 //			}
-			InsideLastExecutionMetric element = new InsideLastExecutionMetric(mm,resultMethods.size());
+			MetricMethodResult element = new MetricMethodResult(mm,String.valueOf(resultMethods.size()));
 			//element.setRelatedMethods(relatedMethods);
 			insideLastExecutionResult.add(element);
 		}
@@ -347,7 +347,7 @@ public class FlowGraphModel implements IResultsModel {
 		try {
 			result = jessEngine.runQueryStar("get_OutsideBeforeExecution_Metric", new ValueVector().add(""));
 			 while (result.next()) {
-				 OutsideBeforeExecutionMetric metricRelation = new OutsideBeforeExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 MetricMethodResult metricRelation = new MetricMethodResult(methods.get(result.getString("method")), result.getString("metric"));
 				 outsideBeforeExecutionResult.add(metricRelation);
 		        }
 		} catch (JessException e) {
@@ -363,7 +363,7 @@ public class FlowGraphModel implements IResultsModel {
 		try {
 			result = jessEngine.runQueryStar("get_OutsideAfterExecution_Metric", new ValueVector().add(""));
 			 while (result.next()) {
-				 OutsideAfterExecutionMetric metricRelation = new OutsideAfterExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 MetricMethodResult metricRelation = new MetricMethodResult(methods.get(result.getString("method")), result.getString("metric"));
 				 outsideAfterExecutionResult.add(metricRelation);
 		        }
 		} catch (JessException e) {
@@ -379,7 +379,7 @@ public class FlowGraphModel implements IResultsModel {
 		try {
 			result = jessEngine.runQueryStar("get_InsideFirstExecution_Metric", new ValueVector().add(""));
 			 while (result.next()) {
-				 InsideFirstExecutionMetric metricRelation = new InsideFirstExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+				 MetricMethodResult metricRelation = new MetricMethodResult(methods.get(result.getString("method")), result.getString("metric"));
 				 insideFirstExecutionResult.add(metricRelation);
 		        }
 		} catch (JessException e) {
@@ -395,7 +395,7 @@ public class FlowGraphModel implements IResultsModel {
 	try {
 		result = jessEngine.runQueryStar("get_InsideLastExecution_Metric", new ValueVector().add(""));
 		 while (result.next()) {
-			 InsideLastExecutionMetric metricRelation = new InsideLastExecutionMetric(methods.get(result.getString("method")), result.getInt("metric"));
+			 MetricMethodResult metricRelation = new MetricMethodResult(methods.get(result.getString("method")), String.valueOf(result.getInt("metric")));
 			 insideLastExecutionResult.add(metricRelation);
 	        }
 	} catch (JessException e) {
@@ -432,39 +432,39 @@ public class FlowGraphModel implements IResultsModel {
 		
 	}
 
-	public List<OutsideBeforeExecutionMetric> getOutsideBeforeExecutionResult() {
+	public List<MetricMethodResult> getOutsideBeforeExecutionResult() {
 		return outsideBeforeExecutionResult;
 	}
 
 	public void setOutsideBeforeExecutionResult(
-			List<OutsideBeforeExecutionMetric> outsideBeforeExecutionResult) {
+			List<MetricMethodResult> outsideBeforeExecutionResult) {
 		this.outsideBeforeExecutionResult = outsideBeforeExecutionResult;
 	}
 
-	public List<OutsideAfterExecutionMetric> getOutsideAfterExecutionResult() {
+	public List<MetricMethodResult> getOutsideAfterExecutionResult() {
 		return outsideAfterExecutionResult;
 	}
 
 	public void setOutsideAfterExecutionResult(
-			List<OutsideAfterExecutionMetric> outsideAfterExecutionResult) {
+			List<MetricMethodResult> outsideAfterExecutionResult) {
 		this.outsideAfterExecutionResult = outsideAfterExecutionResult;
 	}
 
-	public List<InsideFirstExecutionMetric> getInsideFirstExecutionResult() {
+	public List<MetricMethodResult> getInsideFirstExecutionResult() {
 		return insideFirstExecutionResult;
 	}
 
 	public void setInsideFirstExecutionResult(
-			List<InsideFirstExecutionMetric> insideFirstExecutionResult) {
+			List<MetricMethodResult> insideFirstExecutionResult) {
 		this.insideFirstExecutionResult = insideFirstExecutionResult;
 	}
 
-	public List<InsideLastExecutionMetric> getInsideLastExecutionResult() {
+	public List<MetricMethodResult> getInsideLastExecutionResult() {
 		return insideLastExecutionResult;
 	}
 
 	public void setInsideLastExecutionResult(
-			List<InsideLastExecutionMetric> insideLastExecutionResult) {
+			List<MetricMethodResult> insideLastExecutionResult) {
 		this.insideLastExecutionResult = insideLastExecutionResult;
 	}
 

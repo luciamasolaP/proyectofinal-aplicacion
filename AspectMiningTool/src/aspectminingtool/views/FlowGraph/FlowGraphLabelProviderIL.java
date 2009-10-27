@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import aspectminingtool.Activator;
-import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 
 public class FlowGraphLabelProviderIL implements ITableLabelProvider {
 
@@ -43,11 +43,11 @@ private Map imageCache = new HashMap(2);
 	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		
-		if (element instanceof InsideLastExecutionMetric){
+		if (element instanceof MetricMethodResult){
 			if (columnIndex == 0) 
-		    	return ((InsideLastExecutionMetric)element).getMethod().toString();
+		    	return ((MetricMethodResult)element).getMetodo().toString();
 		    else if (columnIndex == 1)
-		    	return String.valueOf(((InsideLastExecutionMetric)element).getMetric());
+		    	return ((MetricMethodResult)element).getMetric();
 		}
 		 
 		return "";

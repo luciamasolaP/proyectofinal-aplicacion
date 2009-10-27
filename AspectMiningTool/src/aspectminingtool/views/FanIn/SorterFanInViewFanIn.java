@@ -4,7 +4,7 @@ package aspectminingtool.views.FanIn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 
 public class SorterFanInViewFanIn extends ViewerSorter {
 	private static final int ASCENDING = 0;
@@ -27,8 +27,8 @@ public class SorterFanInViewFanIn extends ViewerSorter {
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int rc = 0;
-			Fan_in_Result fir1 = (Fan_in_Result)e1;
-	    	Fan_in_Result fir2 = (Fan_in_Result)e2;
+		MetricMethodResult fir1 = (MetricMethodResult)e1;
+		MetricMethodResult fir2 = (MetricMethodResult)e2;
 		    switch (column) {
 		    case 0:
 		    	String name1 = fir1.getMetodo().getName();

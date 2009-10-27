@@ -13,11 +13,9 @@ import jess.Rete;
 import jess.Value;
 import jess.ValueVector;
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 

@@ -1,11 +1,9 @@
 package aspectminingtool.JessIntegrationModel.FlowGraph;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import JessIntegrationModel.Method;
+import aspectminingtool.JessIntegrationModel.Results;
 
-public class OutsideAfterExecutionMetric {
+public class OutsideAfterExecutionMetric extends Results{
 	
 	private Method method;
 	private int metric;
@@ -31,6 +29,11 @@ public class OutsideAfterExecutionMetric {
 
 	public void setMetric(int metric) {
 		this.metric = metric;
+	}
+
+	@Override
+	public String getSearchData() {
+		return method.getName().toLowerCase();
 	}
 
 //	public List<String> getRelatedMethods() {

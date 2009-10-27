@@ -3,9 +3,11 @@ package aspectminingtool.JessIntegrationModel.FlowGraph;
 import java.util.List;
 import java.util.ArrayList;
 
+import aspectminingtool.JessIntegrationModel.Results;
+
 import JessIntegrationModel.Method;
 
-public class InsideLastExecutionMetric {
+public class InsideLastExecutionMetric extends Results{
 	
 	private Method method;
 	private int metric;
@@ -31,6 +33,11 @@ public class InsideLastExecutionMetric {
 
 	public void setMetric(int metric) {
 		this.metric = metric;
+	}
+
+	@Override
+	public String getSearchData() {
+		return method.getName().toLowerCase();
 	}
 
 //	public List<String> getRelatedMethods() {

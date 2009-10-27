@@ -35,5 +35,10 @@ public class MetricMethodResult extends Results{
 	public String getSearchData() {
 		return metodo.getName().toLowerCase();
 	}
+
+	@Override
+	public String getOpenableData() {
+		return metodo.getClass_id();
+	}
 	
 }

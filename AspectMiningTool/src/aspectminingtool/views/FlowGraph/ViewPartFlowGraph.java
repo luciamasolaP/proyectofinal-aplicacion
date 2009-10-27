@@ -26,13 +26,11 @@ import org.eclipse.swt.widgets.Text;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
-import aspectminingtool.JessIntegrationModel.FlowGraph.InsideFirstExecutionMetric;
-import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric;
-import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetric;
-import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.OpenMethodListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
@@ -142,8 +140,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				OutsideBeforeExecutionMetric relation = (OutsideBeforeExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMethod());
+				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMetodo());
 				tableViewerRight.setInput(relatedMethos);
 			}
 		}
@@ -154,8 +152,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				OutsideAfterExecutionMetric relation = (OutsideAfterExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideAfterExecutionMethods(relation.getMethod());
+				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideAfterExecutionMethods(relation.getMetodo());
 				tableViewerRightTab2.setInput(relatedMethos);
 			}
 		}
@@ -166,8 +164,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				InsideFirstExecutionMetric relation = (InsideFirstExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideFirstExecutionMethods(relation.getMethod());
+				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideFirstExecutionMethods(relation.getMetodo());
 				tableViewerRightTab3.setInput(relatedMethos);
 			}
 		}
@@ -178,8 +176,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				InsideLastExecutionMetric relation = (InsideLastExecutionMetric) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideLastExecutionMethods(relation.getMethod());
+				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideLastExecutionMethods(relation.getMetodo());
 				tableViewerRightTab4.setInput(relatedMethos);
 			}
 		}
@@ -318,6 +316,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
+				
+				tableViewerLeft.addDoubleClickListener(new OpenMethodListener(this));
 
 				
 				 		{
@@ -489,6 +489,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
+				tableViewerLeftTab2.addDoubleClickListener(new OpenMethodListener(this));
 
 		 		{
 					GridData composite10LData = new GridData();
@@ -648,6 +649,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
+				
+				tableViewerLeftTab3.addDoubleClickListener(new OpenMethodListener(this));
 
 
 		 		{
@@ -821,6 +824,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
+				
+				tableViewerLeftTab4.addDoubleClickListener(new OpenMethodListener(this));
 
 
 				{

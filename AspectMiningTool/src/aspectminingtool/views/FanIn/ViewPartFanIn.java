@@ -18,15 +18,20 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
@@ -39,6 +44,7 @@ import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
 import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
 
@@ -55,7 +61,19 @@ import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
 public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
 	public static final String NAME = "Fan-In";
+	private Composite composite3;
 	private SashForm sashForm1;
+	
+	private TableViewer tableViewerLeft;
+	private Table tableLeft;
+	private Table tableRight;
+	private TableViewer tableViewerRight;
+	
+	private Button buttonSearch;
+	private CLabel labelSearch;
+	private Text textSearch;
+	
+	private SearchInTable searchInTable = new SearchInTable();
 	
 	private TableColumn tableCallsColumn1;
 		
@@ -161,6 +179,48 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		tableLeftLData.grabExcessHorizontalSpace = true;
 		tableLeft.setLayoutData(tableLeftLData);
 		tableLeft.setLinesVisible(true);
+		{
+			GridData composite3LData = new GridData();
+			composite3LData.verticalAlignment = GridData.FILL;
+			composite3LData.horizontalAlignment = GridData.FILL;
+			composite3 = new Composite(composite1, SWT.NONE);
+			GridLayout composite3Layout = new GridLayout();
+			composite3Layout.numColumns = 3;
+			composite3.setLayout(composite3Layout);
+			composite3.setLayoutData(composite3LData);
+			{
+				labelSearch = new CLabel(composite3, SWT.NONE);
+				GridData labelSearchData = new GridData();
+				labelSearchData.horizontalIndent = -5;
+				labelSearchData.widthHint = 47;
+				labelSearchData.heightHint = 21;
+				labelSearch.setLayoutData(labelSearchData);
+				labelSearch.setText("Search:");
+							
+			}
+			{
+				textSearch = new Text(composite3, SWT.BORDER);
+				GridData textSearchData = new GridData();
+				textSearchData.widthHint = 179;
+				textSearchData.heightHint = 15;
+				textSearch.setLayoutData(textSearchData);
+				textSearch.setText("");
+			}
+			{
+				buttonSearch = new Button(composite3, SWT.PUSH | SWT.CENTER);
+				GridData buttonSearchLData = new GridData();
+				buttonSearch.setLayoutData(buttonSearchLData);
+				buttonSearch.setText("Search");
+				
+				buttonSearch.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						searchInTable.locateItemInTable(textSearch.getText().toLowerCase(),tableLeft);
+						
+					}
+				});
+				
+			}
+		}
 
 
 		createMethodsTableViewer();

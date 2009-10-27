@@ -2,6 +2,12 @@ package aspectminingtool.views.FlowGraph;
 
 import java.util.List;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -20,20 +26,24 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IWorkbenchActionConstants;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
-import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.views.AbstractView;
-import aspectminingtool.views.OpenMethodListener;
+import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectMethodAsSeedAction;
 
 
 /**
@@ -51,6 +61,7 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInterface{
     public static final String ID_VIEW =
         "aspectminingtool.views.FlowGraph.ViewPartFlowGraph"; //$NON-NLS-1$
+		public static final String NAME = "Flow Graph";
 
         private CTabItem cTabItemInsideFirstExecution;
         private CTabItem cTabItemInsideLastExecution;
@@ -65,9 +76,13 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
     	
     	private Table tableLeft;
     	private TableViewer tableViewerLeft;
-    	private SearchInTable searchInTableLeft = new SearchInTable();
     	private Table tableRight;
     	private TableViewer tableViewerRight;
+    	private SearchInTable searchInTableLeft = new SearchInTable();
+    	private Action selectAllActionMethodsTableTab1, selectAllActionCallsTableTab1;
+    	private OpenClassAction openActionTableLeftTab1;
+    	private OpenClassAction openActionTableRightTab1;
+    	private SelectMethodAsSeedAction selectAsSeedOperationTab1;
     	
     	private Button buttonSearch;
     	private CLabel labelSearch;
@@ -130,6 +145,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		super.setPartName("FlowControl Results - " + model.getId());
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
 		tableViewerLeft.setInput(model);
+		openActionTableLeftTab1 = new OpenClassAction(model,tableViewerLeft);
+		selectAsSeedOperationTab1 = new SelectMethodAsSeedAction(model,tableViewerLeft,NAME);
 		tableViewerLeftTab2.setInput(model);
 		tableViewerLeftTab3.setInput(model);
 		tableViewerLeftTab4.setInput(model);
@@ -143,6 +160,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMetodo());
 				tableViewerRight.setInput(relatedMethos);
+				openActionTableRightTab1 = new OpenClassAction(model,tableViewerRight);
 			}
 		}
 	}
@@ -201,6 +219,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
         		cTabItemOutsideBeforeExecution = new CTabItem(cTabFolderFlowGraph, SWT.NONE);
         		cTabItemOutsideBeforeExecution.setText("Outside Before Execution");
         		createTab1();
+        		createActionsTab1();
+        		createContextMenuTab1();
+        		hookGlobalActionsTab1();
 
         	}
         	{
@@ -317,7 +338,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeft.addDoubleClickListener(new OpenMethodListener(this));
+				tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
 
 				
 				 		{
@@ -489,7 +510,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
-				tableViewerLeftTab2.addDoubleClickListener(new OpenMethodListener(this));
+				tableViewerLeftTab2.addDoubleClickListener(new OpenClassListener(this));
 
 		 		{
 					GridData composite10LData = new GridData();
@@ -650,7 +671,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeftTab3.addDoubleClickListener(new OpenMethodListener(this));
+				tableViewerLeftTab3.addDoubleClickListener(new OpenClassListener(this));
 
 
 		 		{
@@ -825,7 +846,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeftTab4.addDoubleClickListener(new OpenMethodListener(this));
+				tableViewerLeftTab4.addDoubleClickListener(new OpenClassListener(this));
 
 
 				{
@@ -915,11 +936,110 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				}
 			}
 		}
-}
+ 	}
+ 
+	private void createContextMenuTab1() {
+        
+		MenuManager menuMgr = new MenuManager();
+        menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenuMethodsTableViewer(mgr);
+                }
 
-	@Override
-	public List<RelatedMethodDescription> getRelatedMethods(List relatedMethods) {
-		// TODO Auto-generated method stub
-		return null;
+        });
+        // Create menu for methodsTableViewer
+        Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
+        tableViewerLeft.getControl().setMenu(menu);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr, tableViewerLeft);
+		
+
+        MenuManager menuMgr1 = new MenuManager();
+        menuMgr1.setRemoveAllWhenShown(true);
+        menuMgr1.addMenuListener(new IMenuListener() {
+                public void menuAboutToShow(IMenuManager mgr) {
+                	fillContextMenuCallsTableViewer(mgr);
+                }
+
+        });
+        // Create menu for methodsTableViewer
+        Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
+        tableViewerRight.getControl().setMenu(menu1);
+        
+        // Register menu for extension.
+        getSite().registerContextMenu(menuMgr1, tableViewerRight);
+
+         
+
+ }
+
+	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
+		mgr.add(openActionTableRightTab1);
+		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		mgr.add(new Separator());
+		mgr.add(selectAllActionCallsTableTab1);
+		
 	}
+
+	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
+		mgr.add(openActionTableLeftTab1);
+		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+		mgr.add(selectAsSeedOperationTab1);
+		mgr.add(new Separator());
+		mgr.add(selectAllActionMethodsTableTab1);
+		
+	}
+	
+	/**
+	 * Create the actions.
+	 */
+	public void createActionsTab1() {
+		
+		selectAllActionMethodsTableTab1 = new Action("Select All") {
+			public void run() {
+				selectAll(tableViewerLeft);
+			}
+		};
+		
+		
+		selectAllActionCallsTableTab1 = new Action("Select All") {
+			public void run() {
+				selectAll(tableViewerRight);
+			}
+		};
+		
+		// Add selection listener.
+		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
+				openActionTableLeftTab1.setEnabled(sel.size() > 0);
+				selectAllActionMethodsTableTab1.setEnabled(sel.size() > 0);
+				selectAsSeedOperationTab1.setEnabled(sel.size() > 0);
+			}
+		});
+		
+		tableViewerRight.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
+				selectAllActionCallsTableTab1.setEnabled(sel.size() > 0);
+				openActionTableRightTab1.setEnabled(sel.size() > 0);
+			}
+		});
+		
+		
+	}
+	
+	private void hookGlobalActionsTab1() {
+		IActionBars bars = getViewSite().getActionBars();
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTableTab1);
+	
+	}
+	
+	protected void selectAll(TableViewer tableViewer) {
+		tableViewer.getTable().selectAll();
+		
+	}
+
 }

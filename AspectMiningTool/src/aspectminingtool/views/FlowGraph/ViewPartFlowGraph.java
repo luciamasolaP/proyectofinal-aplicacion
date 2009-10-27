@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
@@ -15,24 +16,26 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.widgets.Text;
 
 import JessIntegrationModel.IResultsModel;
-import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.FanIn.Fan_in_Result;
-import aspectminingtool.model.Call_Counted;
-import aspectminingtool.views.FanIn.SorterFanInViewCalls;
-import aspectminingtool.views.FanIn.SorterFanInViewFanIn;
-
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
-import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
-import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetric;
 import aspectminingtool.JessIntegrationModel.FlowGraph.InsideFirstExecutionMetric;
 import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric;
+import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideAfterExecutionMetric;
+import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
+import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.SearchInTable;
+import aspectminingtool.views.ViewAlgorithmInterface;
+import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 
 
 /**
@@ -47,7 +50,7 @@ import aspectminingtool.JessIntegrationModel.FlowGraph.InsideLastExecutionMetric
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class ViewPartFlowGraph extends ViewPart {
+public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInterface{
     public static final String ID_VIEW =
         "aspectminingtool.views.FlowGraph.ViewPartFlowGraph"; //$NON-NLS-1$
 
@@ -64,25 +67,42 @@ public class ViewPartFlowGraph extends ViewPart {
     	
     	private Table tableLeft;
     	private TableViewer tableViewerLeft;
+    	private SearchInTable searchInTableLeft = new SearchInTable();
     	private Table tableRight;
     	private TableViewer tableViewerRight;
+    	
+    	private Button buttonSearch;
+    	private CLabel labelSearch;
+    	private Text textSearch;
 
     	private Table tableLeftTab2;
 		private TableViewer tableViewerLeftTab2;
+		private SearchInTable searchInTableLeftTab2 = new SearchInTable();
 		private Table tableRightTab2;
 		private TableViewer tableViewerRightTab2;
+		private Button buttonSearch2;
+    	private CLabel labelSearch2;
+    	private Text textSearch2;
 		
 		private Table tableLeftTab3;
 		private TableViewer tableViewerLeftTab3;
+		private SearchInTable searchInTableLeftTab3 = new SearchInTable();
 		private Table tableRightTab3;
 		private TableViewer tableViewerRightTab3;
+		private Button buttonSearch3;
+    	private CLabel labelSearch3;
+    	private Text textSearch3;
 		
 		private Table tableLeftTab4;
 		private TableViewer tableViewerLeftTab4;
+		private SearchInTable searchInTableLeftTab4 = new SearchInTable();
 		private Table tableRightTab4;
 		private TableViewer tableViewerRightTab4;
+		private Button buttonSearch4;
+    	private CLabel labelSearch4;
+    	private Text textSearch4;
 
-    	private IResultsModel model;
+//    	private IResultsModel model;
     	
     	private Composite composite1;
     	private Composite composite2;
@@ -92,6 +112,11 @@ public class ViewPartFlowGraph extends ViewPart {
     	private Composite composite6;
     	private Composite composite7;
     	private Composite composite8;
+    	
+    	private Composite composite9;
+    	private Composite composite10;
+    	private Composite composite11;
+    	private Composite composite12;
 
     
     /**
@@ -223,8 +248,11 @@ public class ViewPartFlowGraph extends ViewPart {
 			sashForm1.setSize(60, 30);
 			{
 				composite1 = new Composite(sashForm1, SWT.NULL);
-				FillLayout composite1Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
+				GridLayout composite1Layout = new GridLayout();
+				composite1Layout.makeColumnsEqualWidth = true;
+				composite1Layout.marginHeight = 0;
+				composite1Layout.marginWidth = 0;
+				composite1Layout.verticalSpacing = 0;
 				composite1.setLayout(composite1Layout);
 				composite1.setBounds(-483, -25, 461, 81);
 				
@@ -270,10 +298,16 @@ public class ViewPartFlowGraph extends ViewPart {
 					}
 				});
 
-
-				// Turn on the header and the lines
+				
 				tableLeft.setHeaderVisible(true);
+				GridData tableLeftLData = new GridData();
+				tableLeftLData.verticalAlignment = GridData.FILL;
+				tableLeftLData.grabExcessVerticalSpace = true;
+				tableLeftLData.horizontalAlignment = GridData.FILL;
+				tableLeftLData.grabExcessHorizontalSpace = true;
+				tableLeft.setLayoutData(tableLeftLData);
 				tableLeft.setLinesVisible(true);
+
 				
 				tableViewerLeft
 				.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -285,7 +319,51 @@ public class ViewPartFlowGraph extends ViewPart {
 
 				});
 
-
+				
+				 		{
+			GridData composite9LData = new GridData();
+			composite9LData.verticalAlignment = GridData.FILL;
+			composite9LData.horizontalAlignment = GridData.FILL;
+			composite9 = new Composite(composite1, SWT.NONE);
+			GridLayout composite9Layout = new GridLayout();
+			composite9Layout.numColumns = 3;
+			composite9.setLayout(composite9Layout);
+			composite9.setLayoutData(composite9LData);
+			
+			{
+				labelSearch = new CLabel(composite9, SWT.NONE);
+				GridData labelSearchData = new GridData();
+				labelSearchData.horizontalIndent = -5;
+				labelSearchData.widthHint = 47;
+				labelSearchData.heightHint = 21;
+				labelSearch.setLayoutData(labelSearchData);
+				labelSearch.setText("Search:");
+							
+			}
+			{
+				textSearch = new Text(composite9, SWT.BORDER);
+				GridData textSearchData = new GridData();
+				textSearchData.widthHint = 179;
+				textSearchData.heightHint = 15;
+				textSearch.setLayoutData(textSearchData);
+				textSearch.setText("");
+			}
+			{
+				buttonSearch = new Button(composite9, SWT.PUSH | SWT.CENTER);
+				GridData buttonSearchLData = new GridData();
+				buttonSearch.setLayoutData(buttonSearchLData);
+				buttonSearch.setText("Search");
+				
+				buttonSearch.addListener (SWT.Selection, new Listener () {
+					public void handleEvent (Event event) {
+						searchInTableLeft.locateItemInTable(textSearch.getText().toLowerCase(),tableLeft);
+						
+					}
+				});
+				
+			}
+		}
+				
 
 			}
 			{
@@ -339,10 +417,14 @@ public class ViewPartFlowGraph extends ViewPart {
 			cTabItemOutsideAfterExecution.setControl(sashForm2);
 			sashForm2.setSize(60, 30);
 			{
+				
 				composite3 = new Composite(sashForm2, SWT.NULL);
-				FillLayout composite1Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
-				composite3.setLayout(composite1Layout);
+				GridLayout composite3Layout = new GridLayout();
+				composite3Layout.makeColumnsEqualWidth = true;
+				composite3Layout.marginHeight = 0;
+				composite3Layout.marginWidth = 0;
+				composite3Layout.verticalSpacing = 0;
+				composite3.setLayout(composite3Layout);
 				composite3.setBounds(-483, -25, 461, 81);
 				
 				tableLeftTab2 = new Table(composite3, SWT.BORDER | SWT.MULTI);
@@ -388,8 +470,14 @@ public class ViewPartFlowGraph extends ViewPart {
 				});
 
 
-				// Turn on the header and the lines
+				
 				tableLeftTab2.setHeaderVisible(true);
+				GridData tableLeftTab2LData = new GridData();
+				tableLeftTab2LData.verticalAlignment = GridData.FILL;
+				tableLeftTab2LData.grabExcessVerticalSpace = true;
+				tableLeftTab2LData.horizontalAlignment = GridData.FILL;
+				tableLeftTab2LData.grabExcessHorizontalSpace = true;
+				tableLeftTab2.setLayoutData(tableLeftTab2LData);
 				tableLeftTab2.setLinesVisible(true);
 				
 				tableViewerLeftTab2
@@ -402,7 +490,49 @@ public class ViewPartFlowGraph extends ViewPart {
 
 				});
 
-
+		 		{
+					GridData composite10LData = new GridData();
+					composite10LData.verticalAlignment = GridData.FILL;
+					composite10LData.horizontalAlignment = GridData.FILL;
+					composite10 = new Composite(composite3, SWT.NONE);
+					GridLayout composite10Layout = new GridLayout();
+					composite10Layout.numColumns = 3;
+					composite10.setLayout(composite10Layout);
+					composite10.setLayoutData(composite10LData);
+					
+					{
+						labelSearch2 = new CLabel(composite10, SWT.NONE);
+						GridData labelSearch2Data = new GridData();
+						labelSearch2Data.horizontalIndent = -5;
+						labelSearch2Data.widthHint = 47;
+						labelSearch2Data.heightHint = 21;
+						labelSearch2.setLayoutData(labelSearch2Data);
+						labelSearch2.setText("Search:");
+									
+					}
+					{
+						textSearch2 = new Text(composite10, SWT.BORDER);
+						GridData textSearch2Data = new GridData();
+						textSearch2Data.widthHint = 179;
+						textSearch2Data.heightHint = 15;
+						textSearch2.setLayoutData(textSearch2Data);
+						textSearch2.setText("");
+					}
+					{
+						buttonSearch2 = new Button(composite10, SWT.PUSH | SWT.CENTER);
+						GridData buttonSearch2LData = new GridData();
+						buttonSearch2.setLayoutData(buttonSearch2LData);
+						buttonSearch2.setText("Search");
+						
+						buttonSearch2.addListener (SWT.Selection, new Listener () {
+							public void handleEvent (Event event) {
+								searchInTableLeftTab2.locateItemInTable(textSearch2.getText().toLowerCase(),tableLeftTab2);
+								
+							}
+						});
+						
+					}
+				}
 
 			}
 			{
@@ -446,9 +576,13 @@ public class ViewPartFlowGraph extends ViewPart {
 			cTabItemInsideFirstExecution.setControl(sashForm3);
 			sashForm3.setSize(60, 30);
 			{
+			
 				composite5 = new Composite(sashForm3, SWT.NULL);
-				FillLayout composite5Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
+				GridLayout composite5Layout = new GridLayout();
+				composite5Layout.makeColumnsEqualWidth = true;
+				composite5Layout.marginHeight = 0;
+				composite5Layout.marginWidth = 0;
+				composite5Layout.verticalSpacing = 0;
 				composite5.setLayout(composite5Layout);
 				composite5.setBounds(-483, -25, 461, 81);
 				
@@ -495,8 +629,14 @@ public class ViewPartFlowGraph extends ViewPart {
 				});
 
 
-				// Turn on the header and the lines
+				
 				tableLeftTab3.setHeaderVisible(true);
+				GridData tableLeftTab3LData = new GridData();
+				tableLeftTab3LData.verticalAlignment = GridData.FILL;
+				tableLeftTab3LData.grabExcessVerticalSpace = true;
+				tableLeftTab3LData.horizontalAlignment = GridData.FILL;
+				tableLeftTab3LData.grabExcessHorizontalSpace = true;
+				tableLeftTab3.setLayoutData(tableLeftTab3LData);
 				tableLeftTab3.setLinesVisible(true);
 				
 				tableViewerLeftTab3
@@ -510,6 +650,52 @@ public class ViewPartFlowGraph extends ViewPart {
 				});
 
 
+		 		{
+					GridData composite11LData = new GridData();
+					composite11LData.verticalAlignment = GridData.FILL;
+					composite11LData.horizontalAlignment = GridData.FILL;
+					composite11 = new Composite(composite5, SWT.NONE);
+					GridLayout composite11Layout = new GridLayout();
+					composite11Layout.numColumns = 3;
+					composite11.setLayout(composite11Layout);
+					composite11.setLayoutData(composite11LData);
+					
+					{
+						labelSearch3 = new CLabel(composite11, SWT.NONE);
+						GridData labelSearch3Data = new GridData();
+						labelSearch3Data.horizontalIndent = -5;
+						labelSearch3Data.widthHint = 47;
+						labelSearch3Data.heightHint = 21;
+						labelSearch3.setLayoutData(labelSearch3Data);
+						labelSearch3.setText("Search:");
+									
+					}
+					{
+						textSearch3 = new Text(composite11, SWT.BORDER);
+						GridData textSearch3Data = new GridData();
+						textSearch3Data.widthHint = 179;
+						textSearch3Data.heightHint = 15;
+						textSearch3.setLayoutData(textSearch3Data);
+						textSearch3.setText("");
+					}
+					{
+						buttonSearch3 = new Button(composite11, SWT.PUSH | SWT.CENTER);
+						GridData buttonSearch3LData = new GridData();
+						buttonSearch3.setLayoutData(buttonSearch3LData);
+						buttonSearch3.setText("Search");
+						
+						buttonSearch3.addListener (SWT.Selection, new Listener () {
+							public void handleEvent (Event event) {
+								searchInTableLeftTab3.locateItemInTable(textSearch3.getText().toLowerCase(),tableLeftTab3);
+								
+							}
+						});
+						
+					}
+				}
+
+
+				
 
 			}
 			{
@@ -561,9 +747,13 @@ public class ViewPartFlowGraph extends ViewPart {
 			cTabItemInsideLastExecution.setControl(sashForm4);
 			sashForm4.setSize(60, 30);
 			{
+				
 				composite7 = new Composite(sashForm4, SWT.NULL);
-				FillLayout composite7Layout = new FillLayout(
-						org.eclipse.swt.SWT.HORIZONTAL);
+				GridLayout composite7Layout = new GridLayout();
+				composite7Layout.makeColumnsEqualWidth = true;
+				composite7Layout.marginHeight = 0;
+				composite7Layout.marginWidth = 0;
+				composite7Layout.verticalSpacing = 0;
 				composite7.setLayout(composite7Layout);
 				composite7.setBounds(-483, -25, 461, 81);
 				
@@ -610,9 +800,17 @@ public class ViewPartFlowGraph extends ViewPart {
 				});
 
 
-				// Turn on the header and the lines
+				
 				tableLeftTab4.setHeaderVisible(true);
+				GridData tableLeftTab4LData = new GridData();
+				tableLeftTab4LData.verticalAlignment = GridData.FILL;
+				tableLeftTab4LData.grabExcessVerticalSpace = true;
+				tableLeftTab4LData.horizontalAlignment = GridData.FILL;
+				tableLeftTab4LData.grabExcessHorizontalSpace = true;
+				tableLeftTab4.setLayoutData(tableLeftTab4LData);
 				tableLeftTab4.setLinesVisible(true);
+				
+				
 				
 				tableViewerLeftTab4
 				.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -625,6 +823,51 @@ public class ViewPartFlowGraph extends ViewPart {
 				});
 
 
+				{
+					GridData composite12LData = new GridData();
+					composite12LData.verticalAlignment = GridData.FILL;
+					composite12LData.horizontalAlignment = GridData.FILL;
+					composite12 = new Composite(composite7, SWT.NONE);
+					GridLayout composite12Layout = new GridLayout();
+					composite12Layout.numColumns = 3;
+					composite12.setLayout(composite12Layout);
+					composite12.setLayoutData(composite12LData);
+					
+					{
+						labelSearch4 = new CLabel(composite12, SWT.NONE);
+						GridData labelSearch4Data = new GridData();
+						labelSearch4Data.horizontalIndent = -5;
+						labelSearch4Data.widthHint = 47;
+						labelSearch4Data.heightHint = 21;
+						labelSearch4.setLayoutData(labelSearch4Data);
+						labelSearch4.setText("Search:");
+									
+					}
+					{
+						textSearch4 = new Text(composite12, SWT.BORDER);
+						GridData textSearch4Data = new GridData();
+						textSearch4Data.widthHint = 179;
+						textSearch4Data.heightHint = 15;
+						textSearch4.setLayoutData(textSearch4Data);
+						textSearch4.setText("");
+					}
+					{
+						buttonSearch4 = new Button(composite12, SWT.PUSH | SWT.CENTER);
+						GridData buttonSearch3LData = new GridData();
+						buttonSearch4.setLayoutData(buttonSearch3LData);
+						buttonSearch4.setText("Search");
+						
+						buttonSearch4.addListener (SWT.Selection, new Listener () {
+							public void handleEvent (Event event) {
+								searchInTableLeftTab3.locateItemInTable(textSearch4.getText().toLowerCase(),tableLeftTab4);
+								
+							}
+						});
+						
+					}
+				}
+
+				
 
 			}
 			{
@@ -668,4 +911,10 @@ public class ViewPartFlowGraph extends ViewPart {
 			}
 		}
 }
+
+	@Override
+	public List<RelatedMethodDescription> getRelatedMethods(List relatedMethods) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

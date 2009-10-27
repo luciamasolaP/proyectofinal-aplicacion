@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -58,6 +59,7 @@ import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescriptionListVie
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedsGeneralModel;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewSeedsInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 
@@ -74,12 +76,22 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.SeedsGeneral.ViewPartSeeds"; //$NON-NLS-1$
 	
+	private TableViewer tableViewerLeft;
+	private Table tableLeft;
+	private Table tableRight;
+	private TableViewer tableViewerRight;
+	
 	private SashForm sashForm;
 	private Composite composite1;
 	private Composite composite2;
 	private Composite composite3;
 
-	//private Button closeButton;
+	private Button buttonSearch;
+	private CLabel labelSearch;
+	private Text textSearch;
+	
+	private SearchInTable searchInTable = new SearchInTable();
+	
 
 	private Action openItemActionMethodsTable, openItemActionCallsTable,
 			deleteAction, selectAllActionMethodsTable,
@@ -297,7 +309,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 				
 				buttonSearch.addListener (SWT.Selection, new Listener () {
 					public void handleEvent (Event event) {
-						locateItemInTable();
+						searchInTable.locateItemInTable(textSearch.getText().toLowerCase(),tableLeft);
 						
 					}
 				});

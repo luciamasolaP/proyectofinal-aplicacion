@@ -1,6 +1,7 @@
 package aspectminingtool.views.RedirectorFinder;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
@@ -29,6 +30,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -39,6 +41,7 @@ import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
 
 
@@ -64,7 +67,18 @@ public class ViewPartRedirectorFinder extends AbstractView{
     private Composite composite1;
 	private Composite composite2;
 	private Composite composite3;
+	
+	private TableViewer tableViewerLeft;
+	private Table tableLeft;
+	private Table tableRight;
+	private TableViewer tableViewerRight;
 
+	private Button buttonSearch;
+	private CLabel labelSearch;
+	private Text textSearch;
+	
+	private SearchInTable searchInTable = new SearchInTable();
+	
 	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
 
     
@@ -202,7 +216,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 				
 				buttonSearch.addListener (SWT.Selection, new Listener () {
 					public void handleEvent (Event event) {
-						locateItemInTable();
+						searchInTable.locateItemInTable(textSearch.getText().toLowerCase(),tableLeft);
 						
 					}
 				});

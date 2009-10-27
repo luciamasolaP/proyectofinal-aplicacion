@@ -118,7 +118,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	private String[] columnNamesCallsTable = new String[] { RMETHOD_SELECTED_COLUMN, RMETHOD_NAME_COLUMN,
 			RMETHOD_DESCRIPTION_COLUMN };
 
-	private String SECOND_ID;
+	private String SECOND_ID = "";
 	/**
      * 
      */
@@ -139,7 +139,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		seedDescription.setAlgoritmo(algorithm);
 		((SeedsGeneralModel) model).setProjectModel(projectModel);
 		((SeedsGeneralModel) model).addMethodAsASeed(seedDescription, method.getId(), relatedMethods);
-
+		setName(projectModel.getName());
 	}
 
 

@@ -9,11 +9,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import aspectminingtool.Activator;
-import aspectminingtool.JessIntegrationModel.FlowGraph.OutsideBeforeExecutionMetric;
-import aspectminingtool.model.Call_Counted;
-
 import JessIntegrationModel.Method;
+import aspectminingtool.Activator;
+import aspectminingtool.util.MethodFormater;
 
 public class FlowGraphLabelProviderOBCalls implements ITableLabelProvider {
 
@@ -47,7 +45,7 @@ private Map imageCache = new HashMap(2);
 	public String getColumnText(Object element, int columnIndex) {
 		
 		if (element instanceof Method)
-		    return columnIndex == 0 ? ((Method)element).getId():"";
+		    return columnIndex == 0 ? MethodFormater.formatMethodIdToString(((Method)element).getId()):"";
 		 
 		return "";
 	}

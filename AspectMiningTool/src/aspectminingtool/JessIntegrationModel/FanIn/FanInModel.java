@@ -14,15 +14,16 @@ import jess.JessException;
 import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
-import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ISelectAsSeedModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
 
-public class FanInModel implements IResultsModel{
+public class FanInModel implements ISelectAsSeedModel{
 
 	Map<String,List<Call_Counted>> calls;
 	Map<String,final_fan_in_metric> metrics;
@@ -286,6 +287,20 @@ public class FanInModel implements IResultsModel{
 	    }
 	    catch (IOException e)    {    }
 		
+	}
+
+	@Override
+	public List<RelatedMethodDescription> getRelatedMethods(Method method) {
+		
+		List<Call_Counted> relatedMethods = getCalls(method.getId());
+		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
+		if (relatedMethods!=null)
+			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
+				//((FanInModel)model).getCalls(method.getId());
+				RelatedMethodDescription rmd = new RelatedMethodDescription(((Call_Counted)i.next()).getCaller_id());
+				resultRelatedMethods.add(rmd);
+			}
+		return resultRelatedMethods;
 	}
 
 

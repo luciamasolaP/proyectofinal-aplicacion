@@ -1,17 +1,11 @@
 package aspectminingtool.views.FlowGraph;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
 import JessIntegrationModel.Method;
-
-import aspectminingtool.model.Call_Counted;
 
 public class FlowGraphContentProviderOBCalls implements IStructuredContentProvider {
 

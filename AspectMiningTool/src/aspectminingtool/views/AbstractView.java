@@ -1,17 +1,8 @@
 package aspectminingtool.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 import JessIntegrationModel.IResultsModel;
-import aspectminingtool.JessIntegrationModel.Results;
 
 public abstract class AbstractView extends ViewPart{
 

@@ -4,14 +4,14 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
-import aspectminingtool.JessIntegrationModel.MetricMethodResult;
+import aspectminingtool.JessIntegrationModel.Results;
 import aspectminingtool.util.ViewPartUtil;
 
-public class OpenMethodListener implements IDoubleClickListener{
+public class OpenClassListener implements IDoubleClickListener{
 	
 	AbstractView view;
 	
-	public OpenMethodListener(AbstractView view){
+	public OpenClassListener(AbstractView view){
 		this.view = view;
 	}
 	
@@ -20,8 +20,8 @@ public class OpenMethodListener implements IDoubleClickListener{
 			
 			if (event.getSelection() instanceof IStructuredSelection) {
 				
-				MetricMethodResult result = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				ViewPartUtil.openResource(result.getMetodo().getClass_id(),view.getModel().getProjectModel());
+				Results result = (Results) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				ViewPartUtil.openResource(result.getOpenableData(),view.getModel().getProjectModel());
 			}
 		}
 		

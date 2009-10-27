@@ -1,8 +1,9 @@
 package aspectminingtool.model;
 
+import aspectminingtool.JessIntegrationModel.Results;
 import aspectminingtool.util.MethodFormater;
 
-public class Call_Counted {
+public class Call_Counted extends Results{
 
 	private String caller_id;
 	private String calle_id;
@@ -41,6 +42,17 @@ public class Call_Counted {
 	
 	public String calleeToString(){
 		return MethodFormater.formatMethodIdToString(calle_id);
+	}
+
+	@Override
+	public String getOpenableData() {
+		return MethodFormater.getClassIdFromMethodId(caller_id);
+	}
+
+	@Override
+	public String getSearchData() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

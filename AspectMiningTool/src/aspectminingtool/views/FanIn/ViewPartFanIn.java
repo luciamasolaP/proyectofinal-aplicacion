@@ -1,7 +1,5 @@
 package aspectminingtool.views.FanIn;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
@@ -10,8 +8,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -36,18 +32,15 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
-import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.util.MethodFormater;
-import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
-import aspectminingtool.views.OpenMethodListener;
+import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
-import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
+import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectMethodAsSeedAction;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -62,6 +55,8 @@ import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
 public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
 	public static final String NAME = "Fan-In";
+	private Composite composite1;
+	private Composite composite2;
 	private Composite composite3;
 	private SashForm sashForm1;
 	
@@ -75,14 +70,15 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	private Text textSearch;
 	
 	private SearchInTable searchInTable = new SearchInTable();
-	
-	private TableColumn tableCallsColumn1;
-		
-	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
 
 	
-	Composite composite1;
-	private Composite composite2;
+	//actions
+	private Action selectAllActionMethodsTable, selectAllActionCallsTable;
+	private OpenClassAction openActionTableLeft;
+	private OpenClassAction openActionTableRight;
+	private SelectMethodAsSeedAction selectAsSeedOperation;
+
+	
 
 	/**
      * 
@@ -115,8 +111,6 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 				composite1.setBounds(-483, -25, 461, 81);
 				
 				createMethodsTable();
-				
-				
 
 			}
 			{
@@ -251,7 +245,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 
 		});
 
-		tableViewerLeft.addDoubleClickListener(new OpenMethodListener(this));
+		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
 		
 	}
 
@@ -260,7 +254,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		tableRight = new Table(composite2, SWT.LEFT | SWT.MULTI);
 			
 		{
-			tableCallsColumn1 = new TableColumn(tableRight,
+			TableColumn tableCallsColumn1 = new TableColumn(tableRight,
 					SWT.NONE);
 			tableCallsColumn1.setText("Calls");
 			tableCallsColumn1.setWidth(300);
@@ -293,24 +287,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
 		tableViewerRight.setLabelProvider(new CallsLabelProviderFanIn());
 		
-		tableViewerRight.addDoubleClickListener(new IDoubleClickListener(){
-
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					
-					if (event.getSelection() instanceof IStructuredSelection) {
-						
-						Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
-						String name = callCounted.getCaller_id();
-						name = MethodFormater.getClassIdFromMethodId(name);
-						ViewPartUtil.openResource(name,model.getProjectModel());
-					}
-				}
-				
-			}
-			
-		});
+		tableViewerRight.addDoubleClickListener(new OpenClassListener(this));
 		
 		
 	}
@@ -347,6 +324,8 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		this.model = model;
 		super.setPartName("Fan in Results - " + model.getId());
 		tableViewerLeft.setInput(model);
+		openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
+		selectAsSeedOperation = new SelectMethodAsSeedAction(model,tableViewerLeft,NAME);
 	}
 
 
@@ -359,11 +338,10 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 				String key = metodo.getMetodo().getId();
 				List<Call_Counted> llamadas = ((FanInModel) model).getCalls().get(key);
 				tableViewerRight.setInput(llamadas);
+				openActionTableRight = new OpenClassAction(model,tableViewerRight);
 
 			}
-
 		}
-
 	}
 	
 	private void createContextMenu() {
@@ -393,18 +371,18 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 
         });
         // Create menu for methodsTableViewer
-        Menu menu1 = menuMgr.createContextMenu(tableViewerRight.getControl());
+        Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
         tableViewerRight.getControl().setMenu(menu1);
         
         // Register menu for extension.
-        getSite().registerContextMenu(menuMgr, tableViewerLeft);
+        getSite().registerContextMenu(menuMgr1, tableViewerRight);
 
          
 
  }
 
 	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionCallsTable);
+		mgr.add(openActionTableRight);
 		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		mgr.add(new Separator());
 		mgr.add(selectAllActionCallsTable);
@@ -412,9 +390,9 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	}
 
 	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionMethodsTable);
+		mgr.add(openActionTableLeft);
 		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(selectAsSeedAction);
+		mgr.add(selectAsSeedOperation);
 		mgr.add(new Separator());
 		mgr.add(selectAllActionMethodsTable);
 		
@@ -424,55 +402,13 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	 * Create the actions.
 	 */
 	public void createActions() {
-		openItemActionMethodsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					MetricMethodResult fanInResult = (MetricMethodResult) iter.next();
-					String id = fanInResult.getMetodo().getClass_id();
-					ViewPartUtil.openResource(id,model.getProjectModel());
-
-			}
-			}
-		};
 		
-		selectAsSeedAction = new Action("Select As a Seed") {
-			public void run() {
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					MetricMethodResult fir = (MetricMethodResult) iter.next();
-					Method method = fir.getMetodo();
-					
-					ViewPartUtil.selectAsSeed(method, ViewPartSeeds.ID_VIEW, getRelatedMethods(((FanInModel)model).getCalls(method.getId())), ((FanInModel)model).getProjectModel(), NAME);
-					//selectAsSeedOperation(method.getMetodo());
-
-				}
-
-				
-			}
-		};
-
 		selectAllActionMethodsTable = new Action("Select All") {
 			public void run() {
 				selectAll(tableViewerLeft);
 			}
 		};
 		
-		openItemActionCallsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Call_Counted callCounted = (Call_Counted) iter.next();
-					String name = callCounted.getCaller_id();
-					name = MethodFormater.getClassIdFromMethodId(name);
-					ViewPartUtil.openResource(name,model.getProjectModel());
-
-			}
-			}
-		};
 		
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
@@ -484,17 +420,17 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				openItemActionMethodsTable.setEnabled(sel.size() > 0);
+				openActionTableLeft.setEnabled(sel.size() > 0);
 				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-				selectAsSeedAction.setEnabled(sel.size() > 0);
+				selectAsSeedOperation.setEnabled(sel.size() > 0);
 			}
 		});
 		
 		tableViewerRight.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
+				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
 				selectAllActionCallsTable.setEnabled(sel.size() > 0);
-				openItemActionCallsTable.setEnabled(sel.size() > 0);
+				openActionTableRight.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -505,36 +441,6 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		tableViewer.getTable().selectAll();
 		
 	}
-
-	@Override
-	public List<RelatedMethodDescription> getRelatedMethods(List relatedMethods) {
-		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
-		if (relatedMethods!=null)
-			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
-				//((FanInModel)model).getCalls(method.getId());
-				RelatedMethodDescription rmd = new RelatedMethodDescription(((Call_Counted)i.next()).getCaller_id());
-				resultRelatedMethods.add(rmd);
-			}
-		return resultRelatedMethods;
-	}
-
-
-//	protected void selectAsSeedOperation(Method method) {
-//
-//		try {
-//			ViewPartFanInSeeds view = (ViewPartFanInSeeds) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-//			.getActivePage().showView(ViewPartFanInSeeds.ID_VIEW );
-//
-//			view.addMethodToModel(method, ((FanInModel)model).getCalls(method.getId()), ((FanInModel)model).getProjectModel());
-//			
-//		} catch (PartInitException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
-//		
-//	}
-
 
 
 	

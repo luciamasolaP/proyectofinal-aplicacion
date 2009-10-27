@@ -1,16 +1,11 @@
 package aspectminingtool.views.RedirectorFinder;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,19 +25,17 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 
 import JessIntegrationModel.IResultsModel;
 import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
-import aspectminingtool.model.Call_Counted;
-import aspectminingtool.util.MethodFormater;
-import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
+import aspectminingtool.views.actions.OpenClassAction;
 
 
 
@@ -61,12 +54,13 @@ import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
 public class ViewPartRedirectorFinder extends AbstractView{
     public static final String ID_VIEW =
         "aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"; //$NON-NLS-1$
+	public static final String NAME = "Redirector Finder";
+     
 
-     private SashForm sashForm;
-
-    private Composite composite1;
+	private Composite composite1;
 	private Composite composite2;
 	private Composite composite3;
+	private SashForm sashForm;
 	
 	private TableViewer tableViewerLeft;
 	private Table tableLeft;
@@ -79,7 +73,12 @@ public class ViewPartRedirectorFinder extends AbstractView{
 	
 	private SearchInTable searchInTable = new SearchInTable();
 	
-	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
+//	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
+	//actions
+	private Action selectAllActionMethodsTable, selectAllActionCallsTable;
+	private OpenClassAction openActionTableLeft;
+	private OpenClassAction openActionTableRight;
+//	private SelectMethodAsSeedAction selectAsSeedOperation;
 
     
     /**
@@ -102,6 +101,8 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		createRightTable();
 		
 		createPopUpsMenus();
+		
+	
 
     }
 
@@ -109,6 +110,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		composite1 = new Composite(sashForm, SWT.NULL);
 		GridLayout composite1Layout = new GridLayout();
 		composite1Layout.makeColumnsEqualWidth = true;
+		composite1Layout.marginHeight = 0;
 		composite1Layout.marginWidth = 0;
 		composite1Layout.verticalSpacing = 0;
 		composite1Layout.marginHeight = 0;
@@ -250,22 +252,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 
 		});
 
-		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
-		
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					
-					if (event.getSelection() instanceof IStructuredSelection) {
-						
-						RedirectorFinderResults redirFinderResult = (RedirectorFinderResults) ((IStructuredSelection) event.getSelection()).getFirstElement();
-						ViewPartUtil.openResource(redirFinderResult.getClaseLlamadora(),model.getProjectModel());
-					}
-				}
-				
-			}
-			
-		});
+		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
 	}
 	
 	 private void createRightTable() {
@@ -316,33 +303,11 @@ public class ViewPartRedirectorFinder extends AbstractView{
 				.setContentProvider(new CallsContentProviderFanIn());
 		tableViewerRight.setLabelProvider(new CallsLabelProviderRedirMethod());
 		
+		tableViewerRight.addDoubleClickListener(new OpenClassListener(this));
 
-//		
-//		// Set the content and label providers
-//		tableViewerRight.setContentProvider(new CallsContentProviderFanIn());
-//		tableViewerRight.setLabelProvider(new CallsLabelProviderFanIn());
-		
-//		callsTableViewer.addDoubleClickListener(new IDoubleClickListener(){
-		//
-//							@Override
-//							public void doubleClick(DoubleClickEvent event) {
-//								if (!event.getSelection().isEmpty()) {
-//									
-//									if (event.getSelection() instanceof IStructuredSelection) {
-//										
-//										Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
-//										String name = callCounted.getCaller_id();
-//										int index = name.indexOf("//");
-//										name = name.substring(0, index);
-//										openResource(name);
-//									}
-//								}
-//								
-//							}
-//							
-//						});
 		
 	}
+
 
 	/* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchPart#setFocus()
@@ -368,6 +333,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		this.model = model;
 		super.setPartName("Redirector Finder Results - " + model.getId());
 		tableViewerLeft.setInput(model);
+		openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
 	}
 	
 
@@ -378,6 +344,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 			if (event.getSelection() instanceof IStructuredSelection) {
 				RedirectorFinderResults redirectorFinderResult = (RedirectorFinderResults) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				tableViewerRight.setInput(redirectorFinderResult.getLlamados());
+				openActionTableRight = new OpenClassAction(model,tableViewerRight);
 
 			}
 
@@ -395,21 +362,9 @@ public class ViewPartRedirectorFinder extends AbstractView{
 	 * Create the actions.
 	 */
 	public void createActions() {
-		openItemActionMethodsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					RedirectorFinderResults redirFinderResul = (RedirectorFinderResults) iter.next();
-					String id = redirFinderResul.getClaseLlamadora();
-					ViewPartUtil.openResource(id,model.getProjectModel());
-
-			}
-			}
-		};
 		
-		selectAsSeedAction = new Action("Select As a Seed") {
-			public void run() {
+//		selectAsSeedAction = new Action("Select As a Seed") {
+//			public void run() {
 //				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 //				Iterator iter = sel.iterator();
 //				while (iter.hasNext()) {
@@ -421,29 +376,15 @@ public class ViewPartRedirectorFinder extends AbstractView{
 //				}
 
 				
-			}
-		};
+
+
 
 		selectAllActionMethodsTable = new Action("Select All") {
 			public void run() {
 				selectAll(tableViewerLeft);
 			}
 		};
-		
-		openItemActionCallsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Call_Counted callCounted = (Call_Counted) iter.next();
-					String name = callCounted.getCaller_id();
-					name = MethodFormater.getClassIdFromMethodId(name);
-					ViewPartUtil.openResource(name,model.getProjectModel());
-
-			}
-			}
-		};
-		
+				
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
 				selectAll(tableViewerRight);
@@ -454,9 +395,9 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				openItemActionMethodsTable.setEnabled(sel.size() > 0);
+				openActionTableLeft.setEnabled(sel.size() > 0);
 				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-				selectAsSeedAction.setEnabled(sel.size() > 0);
+		//		selectAsSeedAction.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -464,7 +405,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
 				selectAllActionCallsTable.setEnabled(sel.size() > 0);
-				openItemActionCallsTable.setEnabled(sel.size() > 0);
+				openActionTableRight.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -486,9 +427,9 @@ public class ViewPartRedirectorFinder extends AbstractView{
                 }
 
 				private void fillContextMenutableViewerLeft(IMenuManager mgr) {
-					mgr.add(openItemActionMethodsTable);
+					mgr.add(openActionTableLeft);
 					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-					mgr.add(selectAsSeedAction);
+				//	mgr.add(selectAsSeedAction);
 					mgr.add(new Separator());
 					mgr.add(selectAllActionMethodsTable);
 					
@@ -511,7 +452,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
                 }
 
 				private void fillContextMenutableViewerRight(IMenuManager mgr) {
-					mgr.add(openItemActionCallsTable);
+					mgr.add(openActionTableRight);
 					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 					mgr.add(new Separator());
 					mgr.add(selectAllActionCallsTable);
@@ -520,11 +461,11 @@ public class ViewPartRedirectorFinder extends AbstractView{
 
         });
         // Create menu for methodsTableViewer
-        Menu menu1 = menuMgr.createContextMenu(tableViewerRight.getControl());
+        Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
         tableViewerRight.getControl().setMenu(menu1);
         
         // Register menu for extension.
-        getSite().registerContextMenu(menuMgr, tableViewerRight);
+        getSite().registerContextMenu(menuMgr1, tableViewerRight);
 
 		
 	}
@@ -535,45 +476,5 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		
 	}
 	
-//	private void locateItemInTable() {
-//
-//
-//		String searchClass = textSearch.getText().toLowerCase();
-//		if (!searchClass.equals("")){
-//			//si tengo que buscar el siguiente Item, lo busco en el searchHistory
-//			if (searchHistory.equals(searchClass)){
-//				
-//				if (searchCounted >= searchHistoryResults.size()-1)
-//					searchCounted = 0;
-//				else
-//					searchCounted++;
-//				
-//				
-//			}
-//			//sino, busco todos los valores y lleno el history
-//			else
-//			{
-//				searchHistory = searchClass;
-//				searchCounted = 0;
-//				searchHistoryResults = new ArrayList<TableItem>();
-//	
-//				TableItem[] items = tableLeft.getItems();
-//	
-//				for (int i = 0 ; i < items.length; i++){
-//					RedirectorFinderResults rfr = (RedirectorFinderResults)items[i].getData();
-//					String callerClassId = rfr.getClaseLlamadora();
-//					if (searchClass.equals(MethodFormater.getClassNameFromClassId(callerClassId).toLowerCase())){
-//						searchHistoryResults.add(items[i]);
-//					}
-//				}
-//			}
-//	
-//			tableLeft.setSelection(searchHistoryResults.get(searchCounted));
-//		}
-//		
-//	}
-	
-
-
     
 }

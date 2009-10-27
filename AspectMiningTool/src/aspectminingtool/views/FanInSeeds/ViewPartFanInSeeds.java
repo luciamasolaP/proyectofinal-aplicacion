@@ -76,6 +76,11 @@ public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterfa
 	private SashForm sashForm;
 	private Composite composite1;
 	private Composite composite2;
+	
+	private TableViewer tableViewerLeft;
+	private Table tableLeft;
+	private Table tableRight;
+	private TableViewer tableViewerRight;
 
 	private Button closeButton;
 

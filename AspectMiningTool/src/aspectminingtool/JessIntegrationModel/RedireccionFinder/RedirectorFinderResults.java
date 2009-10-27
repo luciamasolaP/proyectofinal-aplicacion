@@ -88,6 +88,11 @@ public class RedirectorFinderResults extends Results{
 		return MethodFormater.getClassNameFromClassId(claseLlamadora).toLowerCase();
 	}
 
+	@Override
+	public String getOpenableData() {
+		return claseLlamadora;
+	}
+
 
 
 }

@@ -4,19 +4,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -41,14 +32,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
@@ -57,11 +43,16 @@ import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescripti
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescription;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedsGeneralModel;
-import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewSeedsInterface;
-import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectAllAction;
+import aspectminingtool.views.listeners.MenuLeftChangeListener;
+import aspectminingtool.views.listeners.MenuLeftListener;
+import aspectminingtool.views.listeners.MenuRightChangeListener;
+import aspectminingtool.views.listeners.MenuRightListener;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -93,15 +84,22 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	private SearchInTable searchInTable = new SearchInTable();
 	
 
-	private Action openItemActionMethodsTable, openItemActionCallsTable,
-			deleteAction, selectAllActionMethodsTable,
-			selectAllActionCallsTable;
+//	private Action openItemActionMethodsTable, openItemActionCallsTable,
+//			deleteAction, selectAllActionMethodsTable,
+//			selectAllActionCallsTable;
 
+	Action selectAllActionsRight;
+	Action selectAllActionsLeft;
+	Action deleteAction;
+	OpenClassAction openClassActionTableL;
+	OpenClassAction openClassActionTableR;
+	
+	
 	// Create a ExampleTaskList and assign it to an instance variable
 	//private IResultsModel model = new SeedsGeneralModel();
 
 	// Set the table column property names for tableViewerMethod
-	public final String SEED_NAME_COLUMN = "Method";
+	public final String SEED_NAME_COLUMN = "Seed";
 	public final String SEED_ALGORITH_COLUMN = "Algorithm";
 	public final String SEED_DESCRIPTION_COLUMN = "Description";
 	
@@ -140,6 +138,12 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		((SeedsGeneralModel) model).setProjectModel(projectModel);
 		((SeedsGeneralModel) model).addMethodAsASeed(seedDescription, method.getId(), relatedMethods);
 		setName(projectModel.getName());
+		openClassActionTableL = new OpenClassAction(model,tableViewerLeft);
+	
+		createActionsTableLeft();
+		createContextMenuTableLeft();
+		hookGlobalActionsTableLeft();
+	
 	}
 
 
@@ -178,10 +182,6 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 				this.createTableRight(composite2);
 			}
 		}
-
-		createActions();
-		createContextMenu();
-		hookGlobalActions();
 
 	}
 	
@@ -337,6 +337,14 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			TableColumn tableCallsColumn0 = new TableColumn(tableRight, SWT.NONE);
 			tableCallsColumn0.setText("");
 			tableCallsColumn0.setWidth(40);
+			tableCallsColumn0
+			.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+				public void widgetSelected(SelectionEvent event) {
+					((SorterRelatedMethodsDescription) tableViewerRight
+							.getSorter()).doSort(0);
+					tableViewerRight.refresh();
+				}
+			});
 		
 			//Columna del método
 			TableColumn tableCallsColumn1 = new TableColumn(tableRight, SWT.NONE);
@@ -345,8 +353,8 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			tableCallsColumn1
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 						public void widgetSelected(SelectionEvent event) {
-							((SorterFanInViewCalls) tableViewerRight
-									.getSorter()).doSort(0);
+							((SorterRelatedMethodsDescription) tableViewerRight
+									.getSorter()).doSort(1);
 							tableViewerRight.refresh();
 						}
 					});
@@ -357,8 +365,8 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			tableCallsColumn2
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 						public void widgetSelected(SelectionEvent event) {
-							((SorterFanInViewCalls) tableViewerRight
-									.getSorter()).doSort(0);
+							((SorterRelatedMethodsDescription) tableViewerRight
+									.getSorter()).doSort(2);
 							tableViewerRight.refresh();
 						}
 					});
@@ -407,21 +415,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 
 				});
 		
-		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
-
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					
-					if (event.getSelection() instanceof IStructuredSelection) {	
-						SeedDescription methodDescription = (SeedDescription) ((IStructuredSelection) event.getSelection()).getFirstElement();
-						openResource(methodDescription.getMethod().getClass_id());
-					}
-				}
-				
-			}
-			
-		});
+		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
 
 		tableViewerLeft.setContentProvider(new ContentProviderSeedsDescription());
 		tableViewerLeft
@@ -441,8 +435,8 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		tableViewerRight.setColumnProperties(columnNamesCallsTable);
 
 		// Set the sorter
-//		ViewerSorter sorter = new SorterMethodDescriptionView();
-//		callsTableViewer.setSorter(sorter);
+		ViewerSorter sorter = new SorterRelatedMethodsDescription();
+		tableViewerRight.setSorter(sorter);
 				
 		// Create the cell editors
 		CellEditor[] editors = new CellEditor[columnNamesCallsTable.length];
@@ -466,6 +460,8 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		tableViewerRight.setContentProvider(new ContentProviderRelatedMethodsSeeds());
 		tableViewerRight
 				.setLabelProvider(new LabelProviderRelatedMethodsSeeds());
+		
+		tableViewerRight.addDoubleClickListener(new OpenClassListener(this));
 		
 	}
 
@@ -494,6 +490,10 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 				String key = metodo.getMethod().getId();
 				tableViewerRight.setInput(key);
 
+				createActionsTableRight();
+				createContextMenuTableRight();
+				hookGlobalActionsTableRight();
+				
 			}
 
 		}
@@ -534,16 +534,11 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	}
 
 
-	private void createContextMenu() {
+	private void createContextMenuTableLeft() {
 		// Create menu manager for methodsTableViewer
 		MenuManager menuMgr = new MenuManager();
 		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager mgr) {
-				fillContextMenuMethodsTableViewer(mgr);
-			}
-
-		});
+		menuMgr.addMenuListener(new MenuLeftListener(tableViewerLeft,selectAllActionsLeft,openClassActionTableL,deleteAction));
 		// Create menu for methodsTableViewer
 		Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
 		tableViewerLeft.getControl().setMenu(menu);
@@ -551,15 +546,15 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		// Register menu for extension.
 		getSite().registerContextMenu(menuMgr, tableViewerLeft);
 
+	}
+	
+	private void createContextMenuTableRight() {
+
 		// Create menu manager for methodsTableViewer for callsTableViewer
 		MenuManager menuMgr1 = new MenuManager();
 		menuMgr1.setRemoveAllWhenShown(true);
-		menuMgr1.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager mgr) {
-				fillContextMenuCallsTableViewer(mgr);
-			}
-
-		});
+		menuMgr1.addMenuListener(new MenuRightListener(tableViewerRight,selectAllActionsRight,openClassActionTableR));
+		
 		// Create menu for callsTableViewer
 		Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
 		tableViewerRight.getControl().setMenu(menu1);
@@ -568,50 +563,27 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 		getSite().registerContextMenu(menuMgr1, tableViewerRight);
 	}
 
-	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionMethodsTable);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(deleteAction);
-		mgr.add(new Separator());
-		mgr.add(selectAllActionMethodsTable);
-	}
-
-	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionCallsTable);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(new Separator());
-		mgr.add(selectAllActionCallsTable);
-
-	}
-
-	private void hookGlobalActions() {
+	private void hookGlobalActionsTableLeft() {
 		IActionBars bars = getViewSite().getActionBars();
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL,
-				selectAllActionMethodsTable);
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsLeft);
+
 
 	}
 
+	private void hookGlobalActionsTableRight() {
+		IActionBars bars = getViewSite().getActionBars();
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsRight);
+
+	}
+	
+	
 	/**
 	 * Create the actions.
 	 */
-	public void createActions() {
-		openItemActionMethodsTable = new Action("Open") {
-			public void run() {
-				IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
-						.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					SeedDescription methodDescription = (SeedDescription) iter
-							.next();
-					if (methodDescription != null) {
-						String id = methodDescription.getMethod().getClass_id();
-						openResource(id);
-					}
-
-				}
-			}
-		};
-
+	public void createActionsTableLeft() {
+		
+		selectAllActionsLeft = new SelectAllAction(tableViewerLeft);
+		
 		deleteAction = new Action("Delete") {
 			public void run() {
 				IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
@@ -630,79 +602,23 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			}
 		};
 
-		selectAllActionMethodsTable = new Action("Select All") {
-			public void run() {
-				selectAll(tableViewerLeft);
-			}
-		};
+		selectAllActionsRight = new SelectAllAction(tableViewerRight);
 
-		openItemActionCallsTable = new Action("Open") {
-			public void run() {
-				IStructuredSelection sel = (IStructuredSelection) tableViewerRight
-						.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Call_Counted callCounted = (Call_Counted) iter.next();
-					String name = callCounted.getCaller_id();
-					int index = name.indexOf("//");
-					name = name.substring(0, index);
-					openResource(name);
-
-				}
-			}
-		};
-
-		selectAllActionCallsTable = new Action("Select All") {
-			public void run() {
-				selectAll(tableViewerRight);
-			}
-		};
 
 		// Add selection listener.
-		tableViewerLeft
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
-								.getSelection();
-						openItemActionMethodsTable.setEnabled(sel.size() > 0);
-						selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-						deleteAction.setEnabled(sel.size() > 0);
-					}
-				});
+		tableViewerLeft.addSelectionChangedListener(new MenuLeftChangeListener(tableViewerLeft,selectAllActionsLeft,openClassActionTableL,deleteAction));
+		
 
-		tableViewerRight
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(SelectionChangedEvent event) {
-						IStructuredSelection sel = (IStructuredSelection) tableViewerLeft
-								.getSelection();
-						selectAllActionCallsTable.setEnabled(sel.size() > 0);
-						openItemActionCallsTable.setEnabled(sel.size() > 0);
-					}
-				});
 
 	}
 
-	protected void selectAll(TableViewer tableViewer) {
-		tableViewer.getTable().selectAll();
-
-	}
-
-	private void openResource(String resourceName) {
-
-		ProjectModel projectModel = model.getProjectModel();
-		IResource resource = projectModel.getAssociatedResource(resourceName);
-		if (resource != null) {
-			IFile fileStore = ResourcesPlugin.getWorkspace().getRoot().getFile(
-					resource.getFullPath());
-			IWorkbenchPage page = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage();
-			try {
-				IDE.openEditor(page, fileStore, true);
-			} catch (PartInitException e) {
-				e.printStackTrace();
-			}
-		}
-
+public void createActionsTableRight() {
+		
+		selectAllActionsRight = new SelectAllAction(tableViewerRight);
+		openClassActionTableR = new OpenClassAction(model,tableViewerRight);
+		tableViewerRight.addSelectionChangedListener(new MenuRightChangeListener(tableViewerRight,selectAllActionsRight,openClassActionTableR));
+		
+		
 	}
 
 	/**

@@ -13,14 +13,15 @@ import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
 import JessIntegrationModel.Call;
-import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ISelectAsSeedModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 
-public class FlowGraphModel implements IResultsModel {
+public class FlowGraphModel implements ISelectAsSeedModel {
 
 	List<OutsideBeforeExecution> outsideBeforeExecutionRelations = new ArrayList<OutsideBeforeExecution>();
 	List<OutsideAfterExecution> outsideAfterExecutionRelations = new ArrayList<OutsideAfterExecution>();	
@@ -466,6 +467,12 @@ public class FlowGraphModel implements IResultsModel {
 	public void setInsideLastExecutionResult(
 			List<MetricMethodResult> insideLastExecutionResult) {
 		this.insideLastExecutionResult = insideLastExecutionResult;
+	}
+
+	@Override
+	public List<RelatedMethodDescription> getRelatedMethods(Method method) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

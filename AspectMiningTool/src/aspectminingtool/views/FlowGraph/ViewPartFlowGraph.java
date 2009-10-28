@@ -3,11 +3,7 @@ package aspectminingtool.views.FlowGraph;
 import java.util.List;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.GroupMarker;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -75,15 +71,17 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
         private SashForm sashForm4;        
     	
     	private Table tableLeft;
-    	private TableViewer tableViewerLeft;
+    	private TableViewer tableViewerLeftTab1;
     	private Table tableRight;
-    	private TableViewer tableViewerRight;
+    	private TableViewer tableViewerRightTab1;
     	private SearchInTable searchInTableLeft = new SearchInTable();
-    	private Action selectAllActionMethodsTableTab1, selectAllActionCallsTableTab1;
-    	private OpenClassAction openActionTableLeftTab1;
-    	private OpenClassAction openActionTableRightTab1;
-    	private SelectMethodAsSeedAction selectAsSeedOperationTab1;
     	
+//    	private Action selectAllActionMethodsTableTab1, selectAllActionCallsTableTab1;
+//    	private OpenClassAction openActionTableLeftTab1;
+//    	private OpenClassAction openActionTableRightTab1;
+//    	private SelectMethodAsSeedAction selectAsSeedOperationTab1;
+    	
+    	  	
     	private Button buttonSearch;
     	private CLabel labelSearch;
     	private Text textSearch;
@@ -115,6 +113,28 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
     	private CLabel labelSearch4;
     	private Text textSearch4;
 
+//    	private Action selectAllActionTableLTab1, selectAllActionTableRTab1, selectAllActionTableLTab2, selectAllActionTableRTab2, 
+//    					selectAllActionTableLTab3, selectAllActionTableRTab3, selectAllActionTableLTab4, selectAllActionTableRTab4;
+//    	private OpenClassAction openActionTableLeftTab1,openActionTableLeftTab2,openActionTableLeftTab3,openActionTableLeftTab4;
+//    	private OpenClassAction openActionTableRightTab1,openActionTableRightTab2,openActionTableRightTab3,openActionTableRightTab4;
+//    	private SelectMethodAsSeedAction selectAsSeedOperationTab1,selectAsSeedOperationTab2,selectAsSeedOperationTab3,selectAsSeedOperationTab4;
+    	
+//    	TableViewer[] tablesVLeft =  {tableViewerLeftTab1,tableViewerLeftTab2,tableViewerLeftTab3,tableViewerLeftTab4};
+//    	TableViewer[] tablesVRight = {tableViewerRightTab1,tableViewerRightTab2,tableViewerRightTab3,tableViewerRightTab4};
+//    	Action[] selectAllActionsRight = {selectAllActionTableRTab1,selectAllActionTableRTab2,selectAllActionTableRTab3,selectAllActionTableRTab4};
+//    	Action[] selectAllActionsLeft = {selectAllActionTableLTab1,selectAllActionTableLTab2,selectAllActionTableLTab3,selectAllActionTableLTab4};
+//    	OpenClassAction[] openClassActionTableL = {openActionTableLeftTab1,openActionTableLeftTab2,openActionTableLeftTab3,openActionTableLeftTab4};
+//    	OpenClassAction[] openClassActionTableR = {openActionTableRightTab1,openActionTableRightTab2,openActionTableRightTab3,openActionTableRightTab4};
+//    	SelectMethodAsSeedAction[] selectMethodAsSeedAction = {selectAsSeedOperationTab1,selectAsSeedOperationTab2,selectAsSeedOperationTab3,selectAsSeedOperationTab4};
+    	
+    	TableViewer[] tablesVLeft = new TableViewer[4];
+    	TableViewer[] tablesVRight = new TableViewer[4];
+    	Action[] selectAllActionsRight = new Action[4];
+    	Action[] selectAllActionsLeft = new Action[4];
+    	OpenClassAction[] openClassActionTableL = new OpenClassAction[4];
+    	OpenClassAction[] openClassActionTableR = new OpenClassAction[4];
+    	SelectMethodAsSeedAction[] selectMethodAsSeedAction = new SelectMethodAsSeedAction[4];
+    	
 //    	private IResultsModel model;
     	
     	private Composite composite1;
@@ -144,12 +164,23 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		this.model = model;
 		super.setPartName("FlowControl Results - " + model.getId());
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
-		tableViewerLeft.setInput(model);
-		openActionTableLeftTab1 = new OpenClassAction(model,tableViewerLeft);
-		selectAsSeedOperationTab1 = new SelectMethodAsSeedAction(model,tableViewerLeft,NAME);
-		tableViewerLeftTab2.setInput(model);
-		tableViewerLeftTab3.setInput(model);
-		tableViewerLeftTab4.setInput(model);
+		tablesVLeft[0].setInput(model);
+		
+		tablesVLeft[1].setInput(model);
+		tablesVLeft[2].setInput(model);
+		tablesVLeft[3].setInput(model);
+		
+		for (int i = 0; i < tablesVLeft.length ; i ++){
+		
+			openClassActionTableL[i] = new OpenClassAction(model,tablesVLeft[i]);
+			selectMethodAsSeedAction[i] = new SelectMethodAsSeedAction(model,tablesVLeft[i],NAME);
+			
+		}
+		
+		createActions();
+		createContextMenu();
+		hookGlobalActions();
+		
 	}
 	
 	private void selectionItemTab1(SelectionChangedEvent event) {
@@ -159,8 +190,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 			if (event.getSelection() instanceof IStructuredSelection) {
 				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideBeforeExecutionMethods(relation.getMetodo());
-				tableViewerRight.setInput(relatedMethos);
-				openActionTableRightTab1 = new OpenClassAction(model,tableViewerRight);
+				tablesVRight[0].setInput(relatedMethos);
+				openClassActionTableR[0] = new OpenClassAction(model,tablesVRight[0]);
 			}
 		}
 	}
@@ -172,7 +203,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 			if (event.getSelection() instanceof IStructuredSelection) {
 				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getOutsideAfterExecutionMethods(relation.getMetodo());
-				tableViewerRightTab2.setInput(relatedMethos);
+				tablesVRight[1].setInput(relatedMethos);
+				openClassActionTableR[1] = new OpenClassAction(model,tablesVRight[1]);
 			}
 		}
 	}
@@ -184,7 +216,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 			if (event.getSelection() instanceof IStructuredSelection) {
 				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideFirstExecutionMethods(relation.getMetodo());
-				tableViewerRightTab3.setInput(relatedMethos);
+				tablesVRight[2].setInput(relatedMethos);
+				openClassActionTableR[2] = new OpenClassAction(model,tablesVRight[2]);
 			}
 		}
 	}
@@ -196,7 +229,8 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 			if (event.getSelection() instanceof IStructuredSelection) {
 				MetricMethodResult relation = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				List<Method> relatedMethos = ((FlowGraphModel) model).getInsideLastExecutionMethods(relation.getMetodo());
-				tableViewerRightTab4.setInput(relatedMethos);
+				tablesVRight[3].setInput(relatedMethos);
+				openClassActionTableR[3] = new OpenClassAction(model,tablesVRight[3]);
 			}
 		}
 	}
@@ -219,9 +253,6 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
         		cTabItemOutsideBeforeExecution = new CTabItem(cTabFolderFlowGraph, SWT.NONE);
         		cTabItemOutsideBeforeExecution.setText("Outside Before Execution");
         		createTab1();
-        		createActionsTab1();
-        		createContextMenuTab1();
-        		hookGlobalActionsTab1();
 
         	}
         	{
@@ -241,8 +272,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
         	}
         	cTabFolderFlowGraph.setSelection(0);
         }
-
-
+        
     }
 
     /* (non-Javadoc)
@@ -276,16 +306,16 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite1.setBounds(-483, -25, 461, 81);
 				
 				tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
-				tableViewerLeft = new TableViewer(tableLeft);
+				tablesVLeft[0] = new TableViewer(tableLeft);
 				
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab1Left();
-				tableViewerLeft.setSorter(sorter);
+				tablesVLeft[0].setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-				tableViewerLeft
+				tablesVLeft[0]
 						.setContentProvider(new FlowGraphContentProviderOB());
-				tableViewerLeft.setLabelProvider(new FlowGraphLabelProviderOB());
+				tablesVLeft[0].setLabelProvider(new FlowGraphLabelProviderOB());
 
 				// Set up the table, each column has a listener for the click
 				// that calls
@@ -297,9 +327,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc1
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab1Left) tableViewerLeft
+						((SorterFlowGraphTab1Left) tablesVLeft[0]
 								.getSorter()).doSort(0);
-						tableViewerLeft.refresh();
+						tablesVLeft[0].refresh();
 					}
 				});
 
@@ -311,9 +341,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc2
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab1Left) tableViewerLeft
+						((SorterFlowGraphTab1Left) tablesVLeft[0]
 								.getSorter()).doSort(1);
-						tableViewerLeft.refresh();
+						tablesVLeft[0].refresh();
 					}
 				});
 
@@ -328,7 +358,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tableLeft.setLinesVisible(true);
 
 				
-				tableViewerLeft
+				tablesVLeft[0]
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							SelectionChangedEvent event) {
@@ -338,7 +368,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
+				tablesVLeft[0].addDoubleClickListener(new OpenClassListener(this));
 
 				
 				 		{
@@ -395,15 +425,15 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite2.setBounds(0, 0, 77, 81);
 				{
 					tableRight = new Table(composite2, SWT.LEFT | SWT.MULTI);
-					tableViewerRight = new TableViewer(tableRight);
+					tablesVRight[0] = new TableViewer(tableRight);
 					
 					// Set the sorter
 //					ViewerSorter sorterCalls = new SorterFanInViewCalls();
 //					tableViewerRight.setSorter(sorterCalls);
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-					tableViewerRight.setContentProvider(new FlowGraphContentProviderOBCalls());
-					tableViewerRight.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					tablesVRight[0].setContentProvider(new FlowGraphContentProviderOBCalls());
+					tablesVRight[0].setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightColumn1 = new TableColumn(tableRight,
@@ -413,9 +443,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 						tableRightColumn1
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewCalls) tableViewerRight
+								((SorterFanInViewCalls) tableViewerRightTab1
 										.getSorter()).doSort(0);
-								tableViewerRight.refresh();
+								tablesVRight[0].refresh();
 							}
 						});
 					}
@@ -449,16 +479,16 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite3.setBounds(-483, -25, 461, 81);
 				
 				tableLeftTab2 = new Table(composite3, SWT.BORDER | SWT.MULTI);
-				tableViewerLeftTab2 = new TableViewer(tableLeftTab2);
+				tablesVLeft[1] = new TableViewer(tableLeftTab2);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab2Left();
-				tableViewerLeftTab2.setSorter(sorter);
+				tablesVLeft[1].setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-				tableViewerLeftTab2
+				tablesVLeft[1]
 						.setContentProvider(new FlowGraphContentProviderOA());
-				tableViewerLeftTab2.setLabelProvider(new FlowGraphLabelProviderOA());
+				tablesVLeft[1].setLabelProvider(new FlowGraphLabelProviderOA());
 
 				// Set up the table, each column has a listener for the click
 				// that calls
@@ -470,9 +500,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc21
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab2Left) tableViewerLeftTab2
+						((SorterFlowGraphTab2Left) tablesVLeft[1]
 								.getSorter()).doSort(0);
-						tableViewerLeftTab2.refresh();
+						tablesVLeft[1].refresh();
 					}
 				});
 
@@ -484,9 +514,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc22
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab2Left) tableViewerLeftTab2
+						((SorterFlowGraphTab2Left) tablesVLeft[1]
 								.getSorter()).doSort(1);
-						tableViewerLeftTab2.refresh();
+						tablesVLeft[1].refresh();
 					}
 				});
 
@@ -501,7 +531,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tableLeftTab2.setLayoutData(tableLeftTab2LData);
 				tableLeftTab2.setLinesVisible(true);
 				
-				tableViewerLeftTab2
+				tablesVLeft[1]
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							SelectionChangedEvent event) {
@@ -510,7 +540,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 					}
 
 				});
-				tableViewerLeftTab2.addDoubleClickListener(new OpenClassListener(this));
+				tablesVLeft[1].addDoubleClickListener(new OpenClassListener(this));
 
 		 		{
 					GridData composite10LData = new GridData();
@@ -565,12 +595,12 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite4.setBounds(0, 0, 77, 81);
 				{
 					tableRightTab2 = new Table(composite4, SWT.LEFT | SWT.MULTI);
-					tableViewerRightTab2 = new TableViewer(tableRightTab2);
+					tablesVRight[1] = new TableViewer(tableRightTab2);
 					
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-					tableViewerRightTab2.setContentProvider(new FlowGraphContentProviderOBCalls());
-					tableViewerRightTab2.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					tablesVRight[1].setContentProvider(new FlowGraphContentProviderOBCalls());
+					tablesVRight[1].setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightTab2Column1 = new TableColumn(tableRightTab2,
@@ -609,16 +639,16 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite5.setBounds(-483, -25, 461, 81);
 				
 				tableLeftTab3 = new Table(composite5, SWT.BORDER | SWT.MULTI);
-				tableViewerLeftTab3 = new TableViewer(tableLeftTab3);
+				tablesVLeft[2] = new TableViewer(tableLeftTab3);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab3Left();
-				tableViewerLeftTab3.setSorter(sorter);
+				tablesVLeft[2].setSorter(sorter);
 				
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-				tableViewerLeftTab3
+				tablesVLeft[2]
 						.setContentProvider(new FlowGraphContentProviderIF());
-				tableViewerLeftTab3.setLabelProvider(new FlowGraphLabelProviderIF());
+				tablesVLeft[2].setLabelProvider(new FlowGraphLabelProviderIF());
 
 				// Set up the table, each column has a listener for the click
 				// that calls
@@ -630,9 +660,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc31
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab3Left) tableViewerLeftTab3
+						((SorterFlowGraphTab3Left) tablesVLeft[2]
 								.getSorter()).doSort(0);
-						tableViewerLeftTab3.refresh();
+						tablesVLeft[2].refresh();
 					}
 				});
 
@@ -644,9 +674,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc32
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab3Left) tableViewerLeftTab3
+						((SorterFlowGraphTab3Left) tablesVLeft[2]
 								.getSorter()).doSort(1);
-						tableViewerLeftTab3.refresh();
+						tablesVLeft[2].refresh();
 					}
 				});
 
@@ -661,7 +691,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tableLeftTab3.setLayoutData(tableLeftTab3LData);
 				tableLeftTab3.setLinesVisible(true);
 				
-				tableViewerLeftTab3
+				tablesVLeft[2]
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							SelectionChangedEvent event) {
@@ -671,7 +701,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeftTab3.addDoubleClickListener(new OpenClassListener(this));
+				tablesVLeft[2].addDoubleClickListener(new OpenClassListener(this));
 
 
 		 		{
@@ -730,15 +760,15 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite6.setBounds(0, 0, 77, 81);
 				{
 					tableRightTab3 = new Table(composite6, SWT.LEFT | SWT.MULTI);
-					tableViewerRightTab3 = new TableViewer(tableRightTab3);
+					tablesVRight[2] = new TableViewer(tableRightTab3);
 					
 					// Set the sorter
 //					ViewerSorter sorterCalls = new SorterFanInViewCalls();
 //					tableViewerRight.setSorter(sorterCalls);
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-					tableViewerRightTab3.setContentProvider(new FlowGraphContentProviderOBCalls());
-					tableViewerRightTab3.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					tablesVRight[2].setContentProvider(new FlowGraphContentProviderOBCalls());
+					tablesVRight[2].setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightColumn1 = new TableColumn(tableRightTab3,
@@ -748,9 +778,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 						tableRightColumn1
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewCalls) tableViewerRightTab3
+								((SorterFanInViewCalls) tablesVRight[2]
 										.getSorter()).doSort(0);
-								tableViewerRightTab3.refresh();
+								tablesVRight[2].refresh();
 							}
 						});
 					}
@@ -782,16 +812,16 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite7.setBounds(-483, -25, 461, 81);
 				
 				tableLeftTab4 = new Table(composite7, SWT.BORDER | SWT.MULTI);
-				tableViewerLeftTab4 = new TableViewer(tableLeftTab4);
+				tablesVLeft[3] = new TableViewer(tableLeftTab4);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab4Left();
-				tableViewerLeftTab4.setSorter(sorter);
+				tablesVLeft[3].setSorter(sorter);
 
 				// Set the content and label providers ACA tienen que ir tus contentsProviders!
-				tableViewerLeftTab4
+				tablesVLeft[3]
 						.setContentProvider(new FlowGraphContentProviderIL());
-				tableViewerLeftTab4.setLabelProvider(new FlowGraphLabelProviderIL());
+				tablesVLeft[3].setLabelProvider(new FlowGraphLabelProviderIL());
 
 				// Set up the table, each column has a listener for the click
 				// that calls
@@ -803,9 +833,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc31
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab4Left) tableViewerLeftTab4
+						((SorterFlowGraphTab4Left) tablesVLeft[3]
 								.getSorter()).doSort(0);
-						tableViewerLeftTab4.refresh();
+						tablesVLeft[3].refresh();
 					}
 				});
 
@@ -817,9 +847,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tc32
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterFlowGraphTab4Left) tableViewerLeftTab4
+						((SorterFlowGraphTab4Left) tablesVLeft[3]
 								.getSorter()).doSort(1);
-						tableViewerLeftTab4.refresh();
+						tablesVLeft[3].refresh();
 					}
 				});
 
@@ -836,7 +866,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				
 				
 				
-				tableViewerLeftTab4
+				tablesVLeft[3]
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 					public void selectionChanged(
 							SelectionChangedEvent event) {
@@ -846,7 +876,7 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 
 				});
 				
-				tableViewerLeftTab4.addDoubleClickListener(new OpenClassListener(this));
+				tablesVLeft[3].addDoubleClickListener(new OpenClassListener(this));
 
 
 				{
@@ -904,15 +934,15 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				composite8.setBounds(0, 0, 77, 81);
 				{
 					tableRightTab4 = new Table(composite8, SWT.LEFT | SWT.MULTI);
-					tableViewerRightTab4 = new TableViewer(tableRightTab4);
+					tablesVRight[3] = new TableViewer(tableRightTab4);
 					
 					// Set the sorter
 //					ViewerSorter sorterCalls = new SorterFanInViewCalls();
 //					tableViewerRight.setSorter(sorterCalls);
 					
 					// Set the content and label providers ACA tienen que ir tus contentsProviders DE LA SEGUNDA TABLA!
-					tableViewerRightTab4.setContentProvider(new FlowGraphContentProviderOBCalls());
-					tableViewerRightTab4.setLabelProvider(new FlowGraphLabelProviderOBCalls());
+					tablesVRight[3].setContentProvider(new FlowGraphContentProviderOBCalls());
+					tablesVRight[3].setLabelProvider(new FlowGraphLabelProviderOBCalls());
 					
 					{
 						TableColumn tableRightColumn1 = new TableColumn(tableRightTab4,
@@ -922,9 +952,9 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 						tableRightColumn1
 						.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 							public void widgetSelected(SelectionEvent event) {
-								((SorterFanInViewCalls) tableViewerRightTab4
+								((SorterFanInViewCalls) tablesVRight[3]
 										.getSorter()).doSort(0);
-								tableViewerRightTab4.refresh();
+								tablesVRight[3].refresh();
 							}
 						});
 					}
@@ -938,108 +968,89 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 		}
  	}
  
-	private void createContextMenuTab1() {
+	private void createContextMenu() {
         
-		MenuManager menuMgr = new MenuManager();
-        menuMgr.setRemoveAllWhenShown(true);
-        menuMgr.addMenuListener(new IMenuListener() {
-                public void menuAboutToShow(IMenuManager mgr) {
-                	fillContextMenuMethodsTableViewer(mgr);
-                }
-
-        });
-        // Create menu for methodsTableViewer
-        Menu menu = menuMgr.createContextMenu(tableViewerLeft.getControl());
-        tableViewerLeft.getControl().setMenu(menu);
-        
-        // Register menu for extension.
-        getSite().registerContextMenu(menuMgr, tableViewerLeft);
+		for (int i = 0; i < tablesVLeft.length ; i ++){
 		
-
-        MenuManager menuMgr1 = new MenuManager();
-        menuMgr1.setRemoveAllWhenShown(true);
-        menuMgr1.addMenuListener(new IMenuListener() {
-                public void menuAboutToShow(IMenuManager mgr) {
-                	fillContextMenuCallsTableViewer(mgr);
-                }
-
-        });
-        // Create menu for methodsTableViewer
-        Menu menu1 = menuMgr1.createContextMenu(tableViewerRight.getControl());
-        tableViewerRight.getControl().setMenu(menu1);
-        
-        // Register menu for extension.
-        getSite().registerContextMenu(menuMgr1, tableViewerRight);
-
-         
-
- }
-
-	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
-		mgr.add(openActionTableRightTab1);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(new Separator());
-		mgr.add(selectAllActionCallsTableTab1);
+			MenuManager menuMgr = new MenuManager();
+	        menuMgr.setRemoveAllWhenShown(true);
+	        menuMgr.addMenuListener(new MenuLeftListener(tablesVLeft[i],selectAllActionsLeft[i],openClassActionTableL[i],selectMethodAsSeedAction[i]));
+	        // Create menu for methodsTableViewer
+	        Menu menu = menuMgr.createContextMenu(tablesVLeft[i].getControl());
+	        tablesVLeft[i].getControl().setMenu(menu);
+	        
+	        // Register menu for extension.
+	        getSite().registerContextMenu(menuMgr, tablesVLeft[i]);
+			
+		}
+	        
+		for (int i = 0; i < tablesVRight.length ; i ++){
 		
+			   MenuManager menuMgr1 = new MenuManager();
+		        menuMgr1.setRemoveAllWhenShown(true);
+		        menuMgr1.addMenuListener(new MenuRightListener(tablesVRight[i],selectAllActionsRight[i],openClassActionTableR[i]));
+	        
+	        // Create menu for methodsTableViewer
+	        Menu menu1 = menuMgr1.createContextMenu(tablesVRight[i].getControl());
+	        tablesVRight[i].getControl().setMenu(menu1);
+	        
+	        // Register menu for extension.
+	        getSite().registerContextMenu(menuMgr1, tablesVRight[i]);
+			
+		}
+
 	}
 
-	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
-		mgr.add(openActionTableLeftTab1);
-		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(selectAsSeedOperationTab1);
-		mgr.add(new Separator());
-		mgr.add(selectAllActionMethodsTableTab1);
-		
-	}
+//	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
+//		mgr.add(openActionTableRightTab1);
+//		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+//		mgr.add(new Separator());
+//		mgr.add(selectAllActionCallsTableTab1);
+//		
+//	}
+//
+//	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
+//		mgr.add(openActionTableLeftTab1);
+//		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+//		mgr.add(selectAsSeedOperationTab1);
+//		mgr.add(new Separator());
+//		mgr.add(selectAllActionMethodsTableTab1);
+//		
+//	}
 	
 	/**
 	 * Create the actions.
 	 */
-	public void createActionsTab1() {
+	public void createActions() {
 		
-		selectAllActionMethodsTableTab1 = new Action("Select All") {
-			public void run() {
-				selectAll(tableViewerLeft);
-			}
-		};
-		
-		
-		selectAllActionCallsTableTab1 = new Action("Select All") {
-			public void run() {
-				selectAll(tableViewerRight);
-			}
-		};
-		
+		for (int i = 0 ; i < tablesVLeft.length ; i++){
+			selectAllActionsLeft[i] = new SelectAllAction(tablesVLeft[i]);
+			selectAllActionsRight[i] = new SelectAllAction(tablesVRight[i]); 
+		}
 		// Add selection listener.
-		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				openActionTableLeftTab1.setEnabled(sel.size() > 0);
-				selectAllActionMethodsTableTab1.setEnabled(sel.size() > 0);
-				selectAsSeedOperationTab1.setEnabled(sel.size() > 0);
-			}
-		});
+		for (int i = 0 ; i< tablesVLeft.length ; i++){
+			tablesVLeft[i].addSelectionChangedListener(new MenuLeftChangeListener(tablesVLeft[i],selectAllActionsLeft[i],openClassActionTableL[i],selectMethodAsSeedAction[i]));
+		}
+
+		for (int i = 0 ; i < tablesVRight.length ; i++){
+			tablesVRight[i].addSelectionChangedListener(new MenuRightChangeListener(tablesVRight[i],selectAllActionsRight[i],openClassActionTableR[i]));
 		
-		tableViewerRight.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
-				selectAllActionCallsTableTab1.setEnabled(sel.size() > 0);
-				openActionTableRightTab1.setEnabled(sel.size() > 0);
-			}
-		});
-		
-		
+		}
 	}
 	
-	private void hookGlobalActionsTab1() {
-		IActionBars bars = getViewSite().getActionBars();
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTableTab1);
-	
-	}
-	
-	protected void selectAll(TableViewer tableViewer) {
-		tableViewer.getTable().selectAll();
+	private void hookGlobalActions() {
 		
+		for (int i = 0 ; i < selectAllActionsLeft.length ; i++){
+			IActionBars bars = getViewSite().getActionBars();
+			bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsLeft[i]);
+			bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsRight[i]);			
+		}
+
 	}
+	
+//	protected void selectAll(TableViewer tableViewer) {
+//		tableViewer.getTable().selectAll();
+//		
+//	}
 
 }

@@ -290,7 +290,7 @@ public class FanInModel implements ISelectAsSeedModel{
 	}
 
 	@Override
-	public List<RelatedMethodDescription> getRelatedMethods(Method method) {
+	public List<RelatedMethodDescription> getRelatedMethods(Method method, String name) {
 		
 		List<Call_Counted> relatedMethods = getCalls(method.getId());
 		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
@@ -302,7 +302,6 @@ public class FanInModel implements ISelectAsSeedModel{
 			}
 		return resultRelatedMethods;
 	}
-
 
 	
 }

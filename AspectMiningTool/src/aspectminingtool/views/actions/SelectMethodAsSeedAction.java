@@ -34,7 +34,7 @@ public class SelectMethodAsSeedAction extends Action{
 		while (iter.hasNext()) {
 			MetricMethodResult fir = (MetricMethodResult) iter.next();
 			Method method = fir.getMetodo();
-			ViewPartUtil.selectAsSeed(method, ViewPartSeeds.ID_VIEW, ((ISelectAsSeedModel)model).getRelatedMethods(method), model.getProjectModel(), name);
+			ViewPartUtil.selectAsSeed(method, ViewPartSeeds.ID_VIEW, ((ISelectAsSeedModel)model).getRelatedMethods(method, name), model.getProjectModel(), name);
 		}
 	}
 	

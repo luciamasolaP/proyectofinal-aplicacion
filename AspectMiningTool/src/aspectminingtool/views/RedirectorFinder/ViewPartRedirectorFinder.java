@@ -79,6 +79,14 @@ public class ViewPartRedirectorFinder extends AbstractView{
 	private OpenClassAction openActionTableLeft;
 	private OpenClassAction openActionTableRight;
 //	private SelectMethodAsSeedAction selectAsSeedOperation;
+	
+	private String COLUMN1_CLASS1 = "Redirector Class";
+	private String COLUMN2_CLASS2 = "Redirected Class";
+	private String COLUMN3_QUANTITY = "Redirection";
+	private String COLUMN4_PERCENT = "%";
+	
+	private String COLUMN1_CALLER_M = "Calls";
+	
 
     
     /**
@@ -117,8 +125,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		composite1.setLayout(composite1Layout);
 
 		tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
-		
-		
+
 		createLeftTableViewer();
 		
 		// Set up the table, each column has a listener for the click
@@ -126,7 +133,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		// the sorter and refreshes the tree.
 		// Column 1
 		TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
-		tc1.setText("Clase");
+		tc1.setText(COLUMN1_CLASS1);
 		tc1.setWidth(200);
 		tc1
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -139,7 +146,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 
 		// Column 2
 		TableColumn tc2 = new TableColumn(tableLeft, SWT.LEFT);
-		tc2.setText("Clase Redireccionada");
+		tc2.setText(COLUMN2_CLASS2);
 		tc2.setWidth(200);
 		tc2
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -151,7 +158,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 				});
 		
 		TableColumn tc3 = new TableColumn(tableLeft, SWT.LEFT);
-		tc3.setText("Redirecciones");
+		tc3.setText(COLUMN3_QUANTITY);
 		tc3.setWidth(91);
 		tc3
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -163,7 +170,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		});
 		
 		TableColumn tc4 = new TableColumn(tableLeft, SWT.LEFT);
-		tc4.setText("%");
+		tc4.setText(COLUMN4_PERCENT);
 		tc4.setWidth(50);
 		tc4
 		.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -264,32 +271,28 @@ public class ViewPartRedirectorFinder extends AbstractView{
 			composite2.setBounds(0, 0, 77, 81);
 			{
 				tableRight = new Table(composite2, SWT.LEFT | SWT.MULTI);
-				
-				
+	
 				createTableViewerRight();
 				
 				{
 					TableColumn tableColumn1 = new TableColumn(tableRight,
 							SWT.NONE);
-					tableColumn1.setText("Metodo Llamador");
+					tableColumn1.setText(COLUMN1_CALLER_M);
 					tableColumn1.setWidth(150);
+					tableColumn1
+					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
+						public void widgetSelected(SelectionEvent event) {
+							((SorterRedirecFinderCalls) tableViewerRight
+									.getSorter()).doSort(0);
+							tableViewerRight.refresh();
+						}
+					});
 					
-					TableColumn tableColumn2 = new TableColumn(tableRight,
-							SWT.NONE);
-					tableColumn2.setText("Metodo Llamado");
-					tableColumn2.setWidth(150);
-//					tableColumn
-//					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
-//						public void widgetSelected(SelectionEvent event) {
-//							((SorterFanInViewCalls) tableViewerRight
-//									.getSorter()).doSort(0);
-//							tableViewerRight.refresh();
-//						}
-//					});
 				}
 
 
 				tableRight.setHeaderVisible(true);
+				tableRight.setLinesVisible(true);
 			
 		}
 	 }
@@ -305,6 +308,8 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		
 		tableViewerRight.addDoubleClickListener(new OpenClassListener(this));
 
+		tableViewerRight.setSorter(new SorterRedirecFinderCalls());
+		
 		
 	}
 

@@ -56,7 +56,7 @@ public class RelatedMethodDescription extends Results{
 
 	public String toString(){
 		
-		return relatedMethod + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
+		return MethodFormater.formatMethodIdToString(relatedMethod) + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
 		
 	}
 

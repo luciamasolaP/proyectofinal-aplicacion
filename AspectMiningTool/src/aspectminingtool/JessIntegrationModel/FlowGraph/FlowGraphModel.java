@@ -20,6 +20,7 @@ import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
+import aspectminingtool.views.FlowGraph.ViewPartFlowGraph;
 
 public class FlowGraphModel implements ISelectAsSeedModel {
 
@@ -470,9 +471,28 @@ public class FlowGraphModel implements ISelectAsSeedModel {
 	}
 
 	@Override
-	public List<RelatedMethodDescription> getRelatedMethods(Method method) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<RelatedMethodDescription> getRelatedMethods(Method method, String name) {
+
+		List<Method> relatedMethods = null;
+		if (name.contains(ViewPartFlowGraph.OBE))
+			relatedMethods = getOutsideBeforeExecutionMethods(method);
+		else if (name.contains(ViewPartFlowGraph.OAE))
+			relatedMethods = getOutsideAfterExecutionMethods(method);
+		else if (name.contains(ViewPartFlowGraph.IFE))
+			relatedMethods = getInsideFirstExecutionMethods(method);
+		else if (name.contains(ViewPartFlowGraph.ILE))
+			relatedMethods = getInsideLastExecutionMethods(method);
+
+		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
+		if (relatedMethods!=null)
+			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
+				//((FanInModel)model).getCalls(method.getId());
+				RelatedMethodDescription rmd = new RelatedMethodDescription(((Method)i.next()).getId());
+				resultRelatedMethods.add(rmd);
+			}
+		return resultRelatedMethods;
+
 	}
+
 
 }

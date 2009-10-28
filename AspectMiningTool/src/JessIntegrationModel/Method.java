@@ -1,8 +1,9 @@
 package JessIntegrationModel;
 
+import aspectminingtool.JessIntegrationModel.Results;
 import aspectminingtool.util.MethodFormater;
 
-public class Method {
+public class Method extends Results{
 	
 	private String id;
 	private String name;
@@ -75,6 +76,16 @@ public class Method {
 
 	public void setParametros(String parametros) {
 		this.parametros = parametros;
+	}
+
+	@Override
+	public String getSearchData() {
+		return name.toLowerCase();
+	}
+
+	@Override
+	public String getOpenableData() {
+		return class_id;
 	}
 
 	

@@ -170,6 +170,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 				composite1Layout.verticalSpacing = 0;
 				composite1Layout.marginHeight = 0;
 				composite1.setLayout(composite1Layout);
+				composite1.setBounds(-483, -25, 461, 81);
 				this.createTableLeft(composite1);
 			}
 			{
@@ -203,9 +204,9 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 	private void createTableRight(Composite composite2){
 		
 		// Set numColumns to 3 for the buttons
-		GridLayout layout = new GridLayout(3, false);
-		layout.marginWidth = 4;
-		composite2.setLayout(layout);
+//		GridLayout layout = new GridLayout(3, false);
+//		layout.marginWidth = 4;
+//		composite2.setLayout(layout);
 
 		// Create the table
 		createTableRightColumns(composite2);
@@ -488,7 +489,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 				SeedDescription metodo = (SeedDescription) ((IStructuredSelection) event
 						.getSelection()).getFirstElement();
 				String key = metodo.getMethod().getId();
-				tableViewerRight.setInput(key);
+				tableViewerRight.setInput(metodo);
 
 				createActionsTableRight();
 				createContextMenuTableRight();
@@ -704,8 +705,8 @@ public void createActionsTableRight() {
 
 		// Returns the callDescriptions of a given method_id
 		public Object[] getElements(Object inputElement) {
-			String method_id = (String)inputElement;
-			return (((SeedsGeneralModel)model).getRelatedMethodDescriptions(method_id)).toArray();
+			SeedDescription method = (SeedDescription)inputElement;
+			return (((SeedsGeneralModel)model).getRelatedMethodDescriptions(method)).toArray();
 
 		}
 

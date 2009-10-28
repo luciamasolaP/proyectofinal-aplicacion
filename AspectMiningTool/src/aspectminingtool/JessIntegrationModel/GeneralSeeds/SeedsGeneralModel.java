@@ -30,7 +30,7 @@ public class SeedsGeneralModel implements IResultsModel{
 	private List seedDescriptionList = new ArrayList();
 	private List changeListenersSeedDescription = new ArrayList();
 	
-	private Map<String,List<RelatedMethodDescription>> relatedMethodDescriptionList = new HashMap<String,List<RelatedMethodDescription>>();
+	private Map<SeedDescription,List<RelatedMethodDescription>> relatedMethodDescriptionList = new HashMap<SeedDescription,List<RelatedMethodDescription>>();
 	private List changeListenersRelatedMethodDescription = new ArrayList();
 	
 	ProjectModel projectModel = null;
@@ -56,8 +56,8 @@ public class SeedsGeneralModel implements IResultsModel{
 	/**
 	 * Return the collection of methodDescriptions
 	 */
-	public List<RelatedMethodDescription> getRelatedMethodDescriptions(String method_id) {
-		return relatedMethodDescriptionList.get(method_id);
+	public List<RelatedMethodDescription> getRelatedMethodDescriptions(SeedDescription seedDescription) {
+		return relatedMethodDescriptionList.get(seedDescription);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class SeedsGeneralModel implements IResultsModel{
 		if (!pertenece(et)){
 			seedDescriptionList.add(seedDescriptionList.size(), et);
 			if (methodsCalls != null)
-				this.relatedMethodDescriptionList.put(methodId, methodsCalls);
+				this.relatedMethodDescriptionList.put(et, methodsCalls);
 			Iterator iterator = changeListenersSeedDescription.iterator();
 			while (iterator.hasNext())
 				((SeedDescriptionListViewer) iterator.next()).addSeedDescription(et);
@@ -87,8 +87,10 @@ public class SeedsGeneralModel implements IResultsModel{
 	
 	private boolean pertenece(SeedDescription et) {
 		for (Iterator i = seedDescriptionList.iterator(); i.hasNext(); ){
-			String id = ((SeedDescription)i.next()).getMethod().getId();
-			if (id.equals(et.getMethod().getId()))
+			SeedDescription seed = (SeedDescription)i.next();
+			String id = seed.getMethod().getId();
+			String algorithm = seed.getAlgoritmo(); 
+			if (id.equals(et.getMethod().getId()) && algorithm.equals(et.getAlgoritmo()))
 				return true;
 		}
 		return false;
@@ -165,7 +167,7 @@ public class SeedsGeneralModel implements IResultsModel{
 	}
 	
 	
-	public Map<String, List<RelatedMethodDescription>> getRelatedMethods() {
+	public Map<SeedDescription, List<RelatedMethodDescription>> getRelatedMethods() {
 		return relatedMethodDescriptionList;
 	}
 	
@@ -175,7 +177,7 @@ public class SeedsGeneralModel implements IResultsModel{
 		
 	}
 
-	public void setRelatedMethods(Map<String, List<RelatedMethodDescription>> calls) {
+	public void setRelatedMethods(Map<SeedDescription, List<RelatedMethodDescription>> calls) {
 		this.relatedMethodDescriptionList = calls;
 	}
 
@@ -204,10 +206,9 @@ public class SeedsGeneralModel implements IResultsModel{
 				Method m = md.getMethod();
 				archive.write(md.toString());
 				archive.newLine();
-				String key = m.getId();
-				if (relatedMethodDescriptionList.containsKey(key)){
+				if (relatedMethodDescriptionList.containsKey(md)){
 					
-					List<RelatedMethodDescription> list = relatedMethodDescriptionList.get(key);
+					List<RelatedMethodDescription> list = relatedMethodDescriptionList.get(md);
 					for (Iterator<RelatedMethodDescription> callIterator=list.iterator();callIterator.hasNext();){
 						archive.write("                 " + callIterator.next().toString());
 						archive.newLine();

@@ -6,6 +6,7 @@ import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescripti
 
 public interface ISelectAsSeedModel extends IResultsModel{
 
-	List<RelatedMethodDescription> getRelatedMethods(Method method);
+	
+	List<RelatedMethodDescription> getRelatedMethods(Method method, String name);
 	
 }

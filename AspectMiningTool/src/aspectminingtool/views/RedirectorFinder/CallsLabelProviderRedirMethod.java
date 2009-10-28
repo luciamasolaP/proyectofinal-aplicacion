@@ -38,19 +38,7 @@ public class CallsLabelProviderRedirMethod implements ITableLabelProvider {
 		
 		if (element instanceof Call_Counted)
 		    if (columnIndex == 0)
-		    	return((Call_Counted)element).toString();
-		    else if (columnIndex == 1){
-		    	String caller_id = ((Call_Counted)element).getCalle_id();
-		    	String paquete = MethodFormater.formatPackageFromMethodId(caller_id);
-				//class_id.substring(0, index);
-				String clase = MethodFormater.formatClassFromMethodId(caller_id); 
-				String parameters = caller_id.substring(caller_id.indexOf("///")+3); 
-				parameters = MethodFormater.formatParameters(parameters);
-				String name = MethodFormater.formatMethodName(caller_id);
-				return name + "(" + parameters + "):" +"  Clase: "+clase+"   Paquete: "+ paquete;
-	    
-		    }
-		    	
+		    	return((Call_Counted)element).toString();    	
 		return "";
 	}
 

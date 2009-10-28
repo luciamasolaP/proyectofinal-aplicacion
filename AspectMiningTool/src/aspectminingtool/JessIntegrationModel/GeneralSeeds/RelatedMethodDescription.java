@@ -1,7 +1,10 @@
 package aspectminingtool.JessIntegrationModel.GeneralSeeds;
 
+import aspectminingtool.JessIntegrationModel.Results;
+import aspectminingtool.util.MethodFormater;
 
-public class RelatedMethodDescription {
+
+public class RelatedMethodDescription extends Results{
 
 	String relatedMethod;
 	String selected;
@@ -55,6 +58,16 @@ public class RelatedMethodDescription {
 		
 		return relatedMethod + "\n" +  "                      Seleccionado: " + selected + "\n" +  "                      Descripción: " + Description; 
 		
+	}
+
+	@Override
+	public String getOpenableData() {
+		return MethodFormater.getClassIdFromMethodId(relatedMethod);
+	}
+
+	@Override
+	public String getSearchData() {
+		return null;
 	}
 	
 }

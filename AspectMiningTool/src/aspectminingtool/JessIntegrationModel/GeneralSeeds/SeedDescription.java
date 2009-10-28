@@ -68,4 +68,9 @@ public class SeedDescription extends Results{
 		return method.getName().toLowerCase();
 	}
 
+	@Override
+	public String getOpenableData() {
+		return method.getClass_id();
+	}
+
 }

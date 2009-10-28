@@ -408,8 +408,7 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 				selectAll(tableViewerLeft);
 			}
 		};
-		
-		
+			
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
 				selectAll(tableViewerRight);

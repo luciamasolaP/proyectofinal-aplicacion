@@ -36,6 +36,7 @@ import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
 import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectClassAsSeedAction;
 
 
 
@@ -54,7 +55,8 @@ import aspectminingtool.views.actions.OpenClassAction;
 public class ViewPartRedirectorFinder extends AbstractView{
     public static final String ID_VIEW =
         "aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"; //$NON-NLS-1$
-	public static final String NAME = "Redirector Finder";
+	
+    public static final String NAME = "Redirector Finder";
      
 
 	private Composite composite1;
@@ -78,7 +80,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 	private Action selectAllActionMethodsTable, selectAllActionCallsTable;
 	private OpenClassAction openActionTableLeft;
 	private OpenClassAction openActionTableRight;
-//	private SelectMethodAsSeedAction selectAsSeedOperation;
+	private SelectClassAsSeedAction selectAsSeedOperation;
 	
 	private String COLUMN1_CLASS1 = "Redirector Class";
 	private String COLUMN2_CLASS2 = "Redirected Class";
@@ -339,6 +341,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		super.setPartName("Redirector Finder Results - " + model.getId());
 		tableViewerLeft.setInput(model);
 		openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
+		selectAsSeedOperation = new SelectClassAsSeedAction(model,tableViewerLeft,NAME);
 	}
 	
 
@@ -402,7 +405,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				openActionTableLeft.setEnabled(sel.size() > 0);
 				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-		//		selectAsSeedAction.setEnabled(sel.size() > 0);
+				selectAsSeedOperation.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -434,7 +437,7 @@ public class ViewPartRedirectorFinder extends AbstractView{
 				private void fillContextMenutableViewerLeft(IMenuManager mgr) {
 					mgr.add(openActionTableLeft);
 					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-				//	mgr.add(selectAsSeedAction);
+					mgr.add(selectAsSeedOperation);
 					mgr.add(new Separator());
 					mgr.add(selectAllActionMethodsTable);
 					

@@ -35,9 +35,14 @@
          </action>
          <action
                class="aspectminingtool.popup.actions.RedirectionFinderPopUp"
-               icon="AspectMiningTool.menu1/group1"
                id="aspectminingtool.popup.actions.RedirectionFinderPopUp"
                label="Redirector Finder"
+               menubarPath="AspectMiningTool.menu1/group1">
+         </action>
+         <action
+               class="aspectminingtool.popup.actions.Sinergia"
+               id="AspectMiningTool.action1"
+               label="Sinergia"
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
       </objectContribution>
@@ -84,6 +89,14 @@
             class="aspectminingtool.views.SeedsGeneral.ViewPartSeeds"
             id="aspectminingtool.views.SeedsGeneral.ViewPartSeeds"
             name="Seeds"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.RedirectorFinderSeeds.ViewPartClassesSeeds"
+            id="aspectminingtool.views.RedirectorFinderSeeds.ViewPartClassesSeeds"
+            name="Classes Seeds"
             restorable="true">
       </view>
    </extension>
@@ -133,6 +146,14 @@
       </menuContribution>
       <menuContribution
             locationURI="toolbar:aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder">
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.RedirectorFinderSeeds.ViewPartClassesSeeds">
          <command
                commandId="aspectminingtool.commands.CommandPrintModel"
                icon="images/save_edit.gif"

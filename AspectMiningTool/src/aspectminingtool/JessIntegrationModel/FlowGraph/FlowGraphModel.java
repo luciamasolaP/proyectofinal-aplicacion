@@ -13,7 +13,7 @@ import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
 import JessIntegrationModel.Call;
-import JessIntegrationModel.ISelectAsSeedModel;
+import JessIntegrationModel.ISelectMethodAsSeedModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
@@ -22,7 +22,7 @@ import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.views.FlowGraph.ViewPartFlowGraph;
 
-public class FlowGraphModel implements ISelectAsSeedModel {
+public class FlowGraphModel implements ISelectMethodAsSeedModel {
 
 	List<OutsideBeforeExecution> outsideBeforeExecutionRelations = new ArrayList<OutsideBeforeExecution>();
 	List<OutsideAfterExecution> outsideAfterExecutionRelations = new ArrayList<OutsideAfterExecution>();	

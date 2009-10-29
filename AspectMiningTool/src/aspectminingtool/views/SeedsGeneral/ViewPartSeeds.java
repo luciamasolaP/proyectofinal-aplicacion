@@ -46,7 +46,7 @@ import aspectminingtool.JessIntegrationModel.GeneralSeeds.SeedsGeneralModel;
 import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
-import aspectminingtool.views.ViewSeedsInterface;
+import aspectminingtool.views.ViewSeedsMethodsInterface;
 import aspectminingtool.views.actions.OpenClassAction;
 import aspectminingtool.views.actions.SelectAllAction;
 import aspectminingtool.views.listeners.MenuLeftChangeListener;
@@ -64,7 +64,7 @@ import aspectminingtool.views.listeners.MenuRightListener;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
+public class ViewPartSeeds extends AbstractView implements ViewSeedsMethodsInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.SeedsGeneral.ViewPartSeeds"; //$NON-NLS-1$
 	
 	private TableViewer tableViewerLeft;
@@ -488,7 +488,7 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsInterface{
 			if (event.getSelection() instanceof IStructuredSelection) {
 				SeedDescription metodo = (SeedDescription) ((IStructuredSelection) event
 						.getSelection()).getFirstElement();
-				String key = metodo.getMethod().getId();
+			//	String key = metodo.getMethod().getId();
 				tableViewerRight.setInput(metodo);
 
 				createActionsTableRight();

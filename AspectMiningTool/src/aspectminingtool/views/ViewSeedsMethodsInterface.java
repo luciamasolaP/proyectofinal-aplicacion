@@ -7,7 +7,7 @@ import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescripti
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 
-public interface ViewSeedsInterface {
+public interface ViewSeedsMethodsInterface {
 
 	
 	void addSeedToModel(Method method, String algorithm, List<RelatedMethodDescription> relatedMethods,

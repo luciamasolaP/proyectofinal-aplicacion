@@ -7,19 +7,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.ISelectMethodAsSeedModel;
-import JessIntegrationModel.Method;
-import aspectminingtool.JessIntegrationModel.MetricMethodResult;
+import JessIntegrationModel.ISelectClassAsSeedModel;
+import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
 import aspectminingtool.util.ViewPartUtil;
-import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
+import aspectminingtool.views.RedirectorFinderSeeds.ViewPartClassesSeeds;
 
-public class SelectMethodAsSeedAction extends Action{
+public class SelectClassAsSeedAction extends Action{
 
 	private IResultsModel model;
 	private TableViewer table;
 	private String name;
 	
-	public SelectMethodAsSeedAction(IResultsModel model, TableViewer table, String Name){
+	public SelectClassAsSeedAction(IResultsModel model, TableViewer table, String Name){
 		super("Select As Seed");
 		this.model = model;
 		this.table = table;
@@ -32,9 +31,9 @@ public class SelectMethodAsSeedAction extends Action{
 		IStructuredSelection sel = (IStructuredSelection)table.getSelection();
 		Iterator iter = sel.iterator();
 		while (iter.hasNext()) {
-			MetricMethodResult fir = (MetricMethodResult) iter.next();
-			Method method = fir.getMetodo();
-			ViewPartUtil.selectMethodAsSeed(method, ViewPartSeeds.ID_VIEW, ((ISelectMethodAsSeedModel)model).getRelatedMethods(method, name), model.getProjectModel(), name);
+			RedirectorFinderResults redirecFinder = (RedirectorFinderResults) iter.next();
+			//Method method = fir.getMetodo();
+			ViewPartUtil.selectClassAsSeed(redirecFinder, ViewPartClassesSeeds.ID_VIEW, ((ISelectClassAsSeedModel)model).getRelatedMethods(redirecFinder, name), model.getProjectModel(), name);
 		}
 	}
 	

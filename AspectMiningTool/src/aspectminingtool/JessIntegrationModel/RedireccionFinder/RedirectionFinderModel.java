@@ -12,14 +12,18 @@ import jess.RU;
 import jess.Rete;
 import jess.Value;
 import jess.ValueVector;
-import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ISelectClassAsSeedModel;
+import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
+import aspectminingtool.JessIntegrationModel.RedireccionFinderSeeds.RelatedCallCountedDescription;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
+import aspectminingtool.views.FlowGraph.ViewPartFlowGraph;
 
-public class RedirectionFinderModel implements IResultsModel{
+public class RedirectionFinderModel implements ISelectClassAsSeedModel{
 
 
 	private InferenceEngine inferenceEngine = null;
@@ -160,6 +164,25 @@ public class RedirectionFinderModel implements IResultsModel{
 	public void setRedirectorFinderResults(
 			List<RedirectorFinderResults> redirectorFinderResults) {
 		this.redirectorFinderResults = redirectorFinderResults;
+	}
+
+
+
+	@Override
+	public List<RelatedCallCountedDescription> getRelatedMethods(
+			RedirectorFinderResults redirResult, String name) {
+		
+		List<Call_Counted> relatedMethods = redirResult.getLlamados();
+		
+		List<RelatedCallCountedDescription> resultRelatedMethods = new ArrayList<RelatedCallCountedDescription>();
+		if (relatedMethods!=null)
+			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
+				//((FanInModel)model).getCalls(method.getId());
+				RelatedCallCountedDescription rmd = new RelatedCallCountedDescription(((Call_Counted)i.next()));
+				resultRelatedMethods.add(rmd);
+			}
+		return resultRelatedMethods;
+
 	}
 
 

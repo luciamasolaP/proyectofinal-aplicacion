@@ -4,7 +4,7 @@ import java.util.List;
 
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 
-public interface ISelectAsSeedModel extends IResultsModel{
+public interface ISelectMethodAsSeedModel extends IResultsModel{
 
 	
 	List<RelatedMethodDescription> getRelatedMethods(Method method, String name);

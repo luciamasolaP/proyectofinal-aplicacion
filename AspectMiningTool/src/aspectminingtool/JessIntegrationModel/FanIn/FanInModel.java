@@ -14,7 +14,7 @@ import jess.JessException;
 import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
-import JessIntegrationModel.ISelectAsSeedModel;
+import JessIntegrationModel.ISelectMethodAsSeedModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
@@ -23,7 +23,7 @@ import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
 
-public class FanInModel implements ISelectAsSeedModel{
+public class FanInModel implements ISelectMethodAsSeedModel{
 
 	Map<String,List<Call_Counted>> calls;
 	Map<String,final_fan_in_metric> metrics;

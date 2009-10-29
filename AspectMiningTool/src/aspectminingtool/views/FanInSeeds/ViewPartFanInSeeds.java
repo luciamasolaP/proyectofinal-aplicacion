@@ -57,7 +57,7 @@ import aspectminingtool.JessIntegrationModel.Seeds.MethodDescriptionListViewer;
 import aspectminingtool.JessIntegrationModel.Seeds.SeedsModel;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.views.AbstractView;
-import aspectminingtool.views.ViewSeedsInterface;
+import aspectminingtool.views.ViewSeedsMethodsInterface;
 import aspectminingtool.views.FanIn.SorterFanInViewCalls;
 
 /**
@@ -70,7 +70,7 @@ import aspectminingtool.views.FanIn.SorterFanInViewCalls;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsInterface{
+public class ViewPartFanInSeeds extends AbstractView implements ViewSeedsMethodsInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.FanInSeeds.ViewPartFanInSeeds"; //$NON-NLS-1$
 
 	private SashForm sashForm;

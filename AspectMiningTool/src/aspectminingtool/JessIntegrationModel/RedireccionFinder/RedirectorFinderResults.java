@@ -92,7 +92,20 @@ public class RedirectorFinderResults extends Results{
 	public String getOpenableData() {
 		return claseLlamadora;
 	}
+	
+	public String toString(){
+		return "Clase Base: " +MethodFormater.formatClassIdToString(claseLlamadora)+ "    Clase redireccionada: " + MethodFormater.formatClassIdToString(claseLlamada) + "    %:" + getPercent();
+	}
 
+	public boolean equals(Object obj){
+		RedirectorFinderResults r2 = (RedirectorFinderResults)obj;
+		if (	claseLlamadora.equals(r2.getClaseLlamadora()) &&
+				claseLlamada.equals(r2.getClaseLlamada()) &&
+				cantidadRedireccionados.equals(r2.getCantidadRedireccionados()) &&
+				getPercent().equals(r2.getPercent()) )
+			return true;
+		return false;
+	}
 
 
 }

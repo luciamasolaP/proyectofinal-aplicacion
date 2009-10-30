@@ -188,7 +188,6 @@
     (modify ?OldFanInMetricAcum (metric ?NewMetricAcum))
     )
 
-
 (defrule final_fan-in
 	"calcula el fan in total, esto es el propio más el acumulado"
 	(declare (salience -100))
@@ -218,8 +217,6 @@
 	"comment"
 	(declare (variables ?ln))
     (final_fan-in_metric(method_id ?metodo)(metric ?m))
-	
-   
     )
 
 (defquery fanInTotalBorderDec
@@ -242,7 +239,6 @@
 	"comment"
 	(declare (variables ?ln))
     (llamado_no_directo (caller_id ?Caller) (calle_id ?*metodo*))
-
     )
 
 

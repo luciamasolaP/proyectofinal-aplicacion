@@ -23,9 +23,10 @@ public abstract class InferenceEngine {
 		
 	}
 	
+	public abstract void clearEngine();	
+	
 	protected abstract void confirgureAlgorithm();
 	protected abstract void persistFacts(List facts);
 	protected abstract void executeAlgorithm();
-		
 	
 }

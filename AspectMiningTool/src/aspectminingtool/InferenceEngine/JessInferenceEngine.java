@@ -36,21 +36,17 @@ public class JessInferenceEngine extends InferenceEngine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		
 	}
 	
 	
 	@Override
 	protected void executeAlgorithm() {
-
 		try {
 			engine.run();
 		} catch (JessException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}	
-		
 	}
 
 	@Override
@@ -68,6 +64,14 @@ public class JessInferenceEngine extends InferenceEngine {
 		
 	}
 
+	public void clearEngine(){
+		try {
+			engine.clear();
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 
 }

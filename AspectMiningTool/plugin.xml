@@ -40,7 +40,7 @@
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
          <action
-               class="aspectminingtool.popup.actions.Sinergia"
+               class="aspectminingtool.popup.actions.SinergiaPopUp"
                id="AspectMiningTool.action1"
                label="Sinergia"
                menubarPath="AspectMiningTool.menu1/group1">

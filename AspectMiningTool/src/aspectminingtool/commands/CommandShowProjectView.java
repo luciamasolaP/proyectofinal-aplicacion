@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import aspectminingtool.dialogs.SettingsDialogs;
+import aspectminingtool.dialogs.ProjectTree.SettingsDialogs;
 import aspectminingtool.views.AbstractView;
 
 

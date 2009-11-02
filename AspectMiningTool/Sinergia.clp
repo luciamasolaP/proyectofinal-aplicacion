@@ -8,45 +8,57 @@
 (deftemplate UniqueMethodsMetric    (declare (from-class UniqueMethodsMetric)))
 
 
-(deftemplate fan-in_umbral
-	(slot umbral)    		
-)
+(deftemplate FanInUmbral    (declare (from-class FanInUmbral)))
+(deftemplate UniqueMethodUmbral    (declare (from-class UniqueMethodUmbral)))
+(deftemplate FanInTrust    (declare (from-class FanInTrust)))
+(deftemplate UniqueMethodTrust    (declare (from-class UniqueMethodTrust)))
+(deftemplate ExecutionRelationTrust    (declare (from-class ExecutionRelationTrust)))
+(deftemplate OutsideBeforeExecutionUmbral    (declare (from-class OutsideBeforeExecutionUmbral)))
+(deftemplate OutsideAfterExecutionUmbral    (declare (from-class OutsideAfterExecutionUmbral)))
+(deftemplate InsideFirstExecutionUmbral    (declare (from-class InsideFirstExecutionUmbral)))
+(deftemplate InsideLastExecutionUmbral    (declare (from-class InsideLastExecutionUmbral)))
+(deftemplate UmbralTrust    (declare (from-class UmbralTrust)))
 
-(deftemplate unique_method_umbral
-	(slot umbral)
-)
 
-(deftemplate fan-in_trust
-	(slot trust)    		
-)
+;(deftemplate FanInUmbral
+;	(slot umbral)    		
+;)
+;
+;(deftemplate UniqueMethodUmbral
+;	(slot umbral)
+;)
+;
+;(deftemplate FanInTrust
+;	(slot trust)    		
+;)
+;
+;(deftemplate UniqueMethodTrust
+;	(slot trust)
+;)
+;
+;(deftemplate ExecutionRelationTrust
+;	(slot trust)
+;)
 
-(deftemplate unique_method_trust
-	(slot trust)
-)
+;(deftemplate OutsideBeforeExecutionUmbral
+;    (slot umbral) 
+;)
 
-(deftemplate execution_relation_trust
-	(slot trust)
-)
+;(deftemplate OutsideAfterExecutionUmbral
+;    (slot umbral) 
+;)
 
-(deftemplate OutsideBeforeExecution_umbral
-    (slot umbral) 
-)
+;(deftemplate InsideFirstExecutionUmbral
+;    (slot umbral) 
+;)
 
-(deftemplate OutsideAfterExecution_umbral
-    (slot umbral) 
-)
+;(deftemplate InsideLastExecutionUmbral
+;    (slot umbral) 
+;)
 
-(deftemplate InsideFirstExecution_umbral
-    (slot umbral) 
-)
-
-(deftemplate InsideLastExecution_umbral
-    (slot umbral) 
-)
-
-(deftemplate umbral_trust
-	(slot trust)
-)
+;(deftemplate UmbralTrust
+;	(slot trust)
+;)
 
 (deftemplate fan-in_seed
 	(slot method)
@@ -77,22 +89,23 @@
     (slot trust)
 )
 
-(assert (fan-in_umbral (umbral 1)))
-(assert (unique_method_umbral (umbral 1)))
-(assert (InsideFirstExecution_umbral (umbral 1)))
-(assert (InsideLastExecution_umbral (umbral 1)))
-(assert (OutsideAfterExecution_umbral (umbral 1)))
-(assert (OutsideBeforeExecution_umbral (umbral 1)))
-(assert (fan-in_trust (trust 33)))
-(assert (unique_method_trust (trust 33)))
-(assert (execution_relation_trust (trust 33)))
-(assert (umbral_trust (trust 50)))
-;    (fan-in_trust (trust 33))
-;    (unique_method_trust (trust 33))
-;    (execution_relation_trust (trust 33))
+;(assert (FanInUmbral (umbral 1)))
+;(assert (UniqueMethodUmbral (umbral 1)))
+;(assert (InsideFirstExecutionUmbral (umbral 1)))
+;(assert (InsideLastExecutionUmbral (umbral 1)))
+;(assert (OutsideAfterExecutionUmbral (umbral 1)))
+;(assert (OutsideBeforeExecutionUmbral (umbral 1)))
+;
+;(assert (FanInTrust (trust 33)))
+;(assert (UniqueMethodTrust (trust 33)))
+;(assert (ExecutionRelationTrust (trust 33)))
+;(assert (UmbralTrust (trust 50)))
+;    (FanInTrust (trust 33))
+;    (UniqueMethodTrust (trust 33))
+;    (ExecutionRelationTrust (trust 33))
 ;    
 ;	;Umbral de confianza que debe alcanzar un seed para ser considerado como tal.
-;    (umbral_trust (trust 50))
+;    (UmbralTrust (trust 50))
 
 (deffacts global_facts
 	"comment"
@@ -101,50 +114,50 @@
 ;    (FanInMetric (method m3) (metric 30))
 ;    (FanInMetric (method m4) (metric 10))
     
-;    (fan-in_umbral (umbral 0))    
+;    (FanInUmbral (umbral 0))    
     
 ;    (UniqueMethodsMetric (method m1) (metric 80))
 ;    (UniqueMethodsMetric (method m2) (metric 50))
 ;    (UniqueMethodsMetric (method m3) (metric 20))
 ;    (UniqueMethodsMetric (method m4) (metric 5))
     
-;    (unique_method_umbral (umbral 0))    
+;    (UniqueMethodUmbral (umbral 0))    
     
 ;    (InsideFirstExecutionMetric (method m1) (metric 20))
 ;    (InsideFirstExecutionMetric (method m2) (metric 20))
 ;    (InsideFirstExecutionMetric (method m3) (metric 5))
 ;    (InsideFirstExecutionMetric (method m4) (metric 0))
     
-;    (InsideFirstExecution_umbral (umbral 0))
+;    (InsideFirstExecutionUmbral (umbral 0))
     
 ;    (InsideLastExecutionMetric (method m1) (metric 2))
 ;    (InsideLastExecutionMetric (method m2) (metric 2))
 ;    (InsideLastExecutionMetric (method m3) (metric 15))
 ;    (InsideLastExecutionMetric (method m4) (metric 50))
     
-;    (InsideLastExecution_umbral (umbral 0))
+;    (InsideLastExecutionUmbral (umbral 0))
     
 ;    (OutsideAfterExecutionMetric (method m1) (metric 80))
 ;    (OutsideAfterExecutionMetric (method m1) (metric 50))
 ;    (OutsideAfterExecutionMetric (method m1) (metric 40))
 ;    (OutsideAfterExecutionMetric (method m1) (metric 10))
     
-;    (OutsideAfterExecution_umbral (umbral 0))
+;    (OutsideAfterExecutionUmbral (umbral 0))
     
 ;    (OutsideBeforeExecutionMetric (method m1) (metric 80))
 ;    (OutsideBeforeExecutionMetric (method m1) (metric 50))
 ;    (OutsideBeforeExecutionMetric (method m1) (metric 40))
 ;    (OutsideBeforeExecutionMetric (method m1) (metric 10))
     
-;    (OutsideBeforeExecution_umbral (umbral 0))
+;    (OutsideBeforeExecutionUmbral (umbral 0))
     
     ;Algoritmos equiconfiables.
-;    (fan-in_trust (trust 33))
-;    (unique_method_trust (trust 33))
-;    (execution_relation_trust (trust 33))
+;    (FanInTrust (trust 33))
+;    (UniqueMethodTrust (trust 33))
+;    (ExecutionRelationTrust (trust 33))
     
 	;Umbral de confianza que debe alcanzar un seed para ser considerado como tal.
-;    (umbral_trust (trust 50))
+;    (UmbralTrust (trust 50))
 	
 )
 
@@ -154,7 +167,7 @@
 	"comment"
     (declare (salience 1500))
 	?FanInMetric <- (FanInMetric (method ?Method) (metric ?Metric))
-    (fan-in_umbral (umbral ?Umbral))
+    (FanInUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (fan-in_seed (method ?Method)))
@@ -166,7 +179,7 @@
 	"comment"
     (declare (salience 1500))
 	?UniqueMethodsMetric <- (UniqueMethodsMetric (method ?Method) (metric ?Metric))
-    (unique_method_umbral (umbral ?Umbral))
+    (UniqueMethodUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (unique_method_seed (method ?Method)))
@@ -178,7 +191,7 @@
 	"comment"
     (declare (salience 1500))
 	?OutsideBeforeExecutionMetric <- (OutsideBeforeExecutionMetric (method ?Method) (metric ?Metric))
-    (OutsideBeforeExecution_umbral (umbral ?Umbral))
+    (OutsideBeforeExecutionUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (execution_relation_seed (method ?Method)))
@@ -190,7 +203,7 @@
 	"comment"
     (declare (salience 1500))
 	?OutsideAfterExecutionMetric <- (OutsideAfterExecutionMetric (method ?Method) (metric ?Metric))
-    (OutsideAfterExecution_umbral (umbral ?Umbral))
+    (OutsideAfterExecutionUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (execution_relation_seed (method ?Method)))
@@ -202,7 +215,7 @@
 	"comment"
     (declare (salience 1500))
 	?InsideFirstExecutionMetric <- (InsideFirstExecutionMetric (method ?Method) (metric ?Metric))
-    (InsideFirstExecution_umbral (umbral ?Umbral))
+    (InsideFirstExecutionUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (execution_relation_seed (method ?Method)))
@@ -214,7 +227,7 @@
 	"comment"
     (declare (salience 1500))
 	?InsideLastExecutionMetric <- (InsideLastExecutionMetric (method ?Method) (metric ?Metric))
-    (InsideLastExecution_umbral (umbral ?Umbral))
+    (InsideLastExecutionUmbral (umbral ?Umbral))
     =>
     (if (>= ?Metric ?Umbral) then
        (assert (execution_relation_seed (method ?Method)))
@@ -256,7 +269,7 @@
     (declare (salience 500))
     ?FanInSeed <- (fan-in_seed (method ?Method))
     ?Seed <- (seed (method ?Method) (trust ?Trust))
-    (fan-in_trust (trust ?FanInTrust))    
+    (FanInTrust (trust ?FanInTrust))    
 	=>
     (bind ?NewTrust (+ ?FanInTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
@@ -269,7 +282,7 @@
     (declare (salience 500))
     ?UniqueMethodSeed <- (unique_method_seed (method ?Method))
     ?Seed <- (seed (method ?Method) (trust ?Trust))
-    (unique_method_trust (trust ?UniqueMethodTrust))    
+    (UniqueMethodTrust (trust ?UniqueMethodTrust))    
 	=>
     (bind ?NewTrust (+ ?UniqueMethodTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
@@ -282,7 +295,7 @@
     (declare (salience 500))
     ?ExecutionRelationSeed <- (execution_relation_seed (method ?Method))
     ?Seed <- (seed (method ?Method) (trust ?Trust))
-    (execution_relation_trust (trust ?ExecutionRelationTrust))    
+    (ExecutionRelationTrust (trust ?ExecutionRelationTrust))    
 	=>
     (bind ?NewTrust (+ ?ExecutionRelationTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
@@ -296,7 +309,8 @@
 	"comment"
     (declare (salience 100))
     ?Seed <- (seed (method ?Method) (trust ?Trust))
-    (umbral_trust (trust ?GeneralTrust))    
+    (UmbralTrust (trust ?GeneralTrust))
+        
 	=>
     (if (< ?Trust ?GeneralTrust) then
     	(retract ?Seed)    

@@ -36,8 +36,8 @@ public class SorterSinergiaSeeds extends ViewerSorter {
 	    	rc = method.compareTo(method2);
     		break;
 	    case 1:
-	    	Integer trust1 = Integer.valueOf(cc1.getTrust());
-	    	Integer trust2 = Integer.valueOf(cc2.getTrust());
+	    	Double trust1 = Double.valueOf(cc1.getTrust());
+	    	Double trust2 = Double.valueOf(cc2.getTrust());
 	    	rc = trust1.compareTo(trust2);
 	    	break;
 	    }

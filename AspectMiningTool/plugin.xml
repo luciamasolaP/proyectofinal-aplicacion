@@ -99,6 +99,13 @@
             name="Classes Seeds"
             restorable="true">
       </view>
+      <view
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.Sinergia.ViewPartSinergia"
+            id="aspectminingtool.views.Sinergia.ViewPartSinergia"
+            name="Sinergia Seeds"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

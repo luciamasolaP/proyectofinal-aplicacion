@@ -28,5 +28,5 @@ public abstract class InferenceEngine {
 	protected abstract void confirgureAlgorithm();
 	protected abstract void persistFacts(List facts);
 	protected abstract void executeAlgorithm();
-	
+	public abstract void assertFacts(List facts);
 }

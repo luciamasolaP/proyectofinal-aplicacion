@@ -72,6 +72,20 @@ public class JessInferenceEngine extends InferenceEngine {
 			e.printStackTrace();
 		}
 	}
+	
+	public void assertFacts(List facts){
+		try {
+			for (Iterator i = facts.iterator() ; i.hasNext() ; ){
+				Object o = i.next();
+				engine.add(o);
+					
+			}
+		} catch (JessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 
 
 }

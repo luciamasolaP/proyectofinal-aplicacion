@@ -73,7 +73,7 @@ public class MethodFormater {
 		String parameters = metodo.substring(metodo.indexOf("///")+3); 
 		parameters = MethodFormater.formatParameters(parameters);
 		String name = MethodFormater.formatMethodName(metodo);
-		return name + "(" + parameters + "):" +"  Clase: "+clase+"   Paquete: "+ paquete;
+		return name + "(" + parameters + "):" +"  Class: "+clase+"   Package: "+ paquete;
 		
 	}
 	
@@ -81,7 +81,7 @@ public class MethodFormater {
 		
 		int index = classId.indexOf("/");
 		if (index >= 0)
-			return "Clase: "+ classId.substring(index+1) + " Paquete: "+ classId.substring(0,index);
+			return "Class: "+ classId.substring(index+1) + " Package: "+ classId.substring(0,index);
 		return "";
 		
 	}

@@ -30,7 +30,7 @@ public class SeedsModel implements IResultsModel{
 	private List methodsDescriptionList = new ArrayList();
 	private List changeListenersMethodDescription = new ArrayList();
 	
-	private Map<String,List<CallDescription>> callDescriptionList = new HashMap<String,List<CallDescription>>();
+	private Map<MethodDescription,List<CallDescription>> callDescriptionList = new HashMap<MethodDescription,List<CallDescription>>();
 	private List changeListenersCallsDescription = new ArrayList();
 	
 	ProjectModel projectModel = null;
@@ -76,7 +76,7 @@ public class SeedsModel implements IResultsModel{
 		if (!pertenece(et)){
 			methodsDescriptionList.add(methodsDescriptionList.size(), et);
 			if (methodsCalls != null)
-				this.callDescriptionList.put(methodId, methodsCalls);
+				this.callDescriptionList.put(et, methodsCalls);
 			Iterator iterator = changeListenersMethodDescription.iterator();
 			while (iterator.hasNext())
 				((MethodDescriptionListViewer) iterator.next()).addMethodDescription(et);
@@ -165,7 +165,7 @@ public class SeedsModel implements IResultsModel{
 	}
 	
 	
-	public Map<String, List<CallDescription>> getCalls() {
+	public Map<MethodDescription, List<CallDescription>> getCalls() {
 		return callDescriptionList;
 	}
 	
@@ -175,7 +175,7 @@ public class SeedsModel implements IResultsModel{
 		
 	}
 
-	public void setCalls(Map<String, List<CallDescription>> calls) {
+	public void setCalls(Map<MethodDescription, List<CallDescription>> calls) {
 		this.callDescriptionList = calls;
 	}
 

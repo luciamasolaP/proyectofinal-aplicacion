@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -72,6 +73,10 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 
 	private Group group0;
 	private Composite composite001;
+	private Label PercentLabelSinergia;
+	private Label PercentLabelFlow;
+	private Label PercentLabelUnique;
+	private Label PercentLabel;
 
 	private CLabel LabelUmbralSinergia;
 	private Text TextUmbralSinergia;
@@ -160,7 +165,7 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 					composite112 = new Composite(group1, SWT.NONE);
 					GridLayout compositeUmbral2Layout = new GridLayout();
 					compositeUmbral2Layout.makeColumnsEqualWidth = true;
-					compositeUmbral2Layout.numColumns = 2;
+					compositeUmbral2Layout.numColumns = 3;
 					composite112.setLayout(compositeUmbral2Layout);
 					composite112.setLayoutData(compositeUmbral2LData);
 					{
@@ -179,6 +184,12 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 						UmbralLData.heightHint = 15;
 						TextConfianzaFanIn.setLayoutData(UmbralLData);
 						TextConfianzaFanIn.setText("33");
+					}
+					{
+						PercentLabel = new Label(composite112, SWT.NONE);
+						GridData PercentLabelLData = new GridData();
+						PercentLabel.setLayoutData(PercentLabelLData);
+						PercentLabel.setText("%");
 					}
 				}
 
@@ -228,7 +239,7 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 				composite992 = new Composite(group9, SWT.NONE);
 				GridLayout composite12Layout = new GridLayout();
 				composite12Layout.makeColumnsEqualWidth = true;
-				composite12Layout.numColumns = 2;
+				composite12Layout.numColumns = 3;
 				composite992.setLayout(composite12Layout);
 				composite992.setLayoutData(composite12LData);
 			}
@@ -249,6 +260,12 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 				TextConfianzaUniqueMLData.heightHint = 15;
 				TextConfianzaUniqueM.setLayoutData(TextConfianzaUniqueMLData);
 				TextConfianzaUniqueM.setText("33");
+			}
+			{
+				PercentLabelUnique = new Label(composite992, SWT.NONE);
+				GridData PercentLabelUniqueLData = new GridData();
+				PercentLabelUnique.setLayoutData(PercentLabelUniqueLData);
+				PercentLabelUnique.setText("%");
 			}
 
 			{
@@ -299,7 +316,7 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 					composite662 = new Composite(group6, SWT.NONE);
 					GridLayout composite3Layout = new GridLayout();
 					composite3Layout.makeColumnsEqualWidth = true;
-					composite3Layout.numColumns = 2;
+					composite3Layout.numColumns = 3;
 					composite662.setLayout(composite3Layout);
 					composite662.setLayoutData(composite13LData);
 				}
@@ -324,6 +341,12 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 							.setLayoutData(TextUmbralFlowGraphLData);
 					TextConfianzaFlowGraph.setText("33");
 				}
+				{
+					PercentLabelFlow = new Label(composite662, SWT.NONE);
+					GridData PercentLabelFlowLData = new GridData();
+					PercentLabelFlow.setLayoutData(PercentLabelFlowLData);
+					PercentLabelFlow.setText("%");
+				}
 
 				group0 = new Group(dialogShell, SWT.NONE);
 				group0.setText("Sinergia Analysis");
@@ -337,13 +360,14 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 				group0.setLayoutData(composite11LData);
 				group0.setLayout(composite11Layout);
 				{
-					GridData composite7LData = new GridData();
 					composite001 = new Composite(group0, SWT.NONE);
 					GridLayout composite7Layout = new GridLayout();
-					composite001.setLayout(composite7Layout);
-					composite7Layout.makeColumnsEqualWidth = true;
-					composite7Layout.numColumns = 2;
+					GridData composite7LData = new GridData();
+					composite7LData.widthHint = 166;
+					composite7LData.heightHint = 31;
 					composite001.setLayoutData(composite7LData);
+					composite001.setLayout(composite7Layout);
+					composite7Layout.numColumns = 3;
 
 					{
 						LabelUmbralSinergia = new CLabel(composite001, SWT.NONE);
@@ -364,6 +388,12 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 						TextUmbralSinergia
 								.setLayoutData(TextUmbralSinergiaLData);
 						TextUmbralSinergia.setText("50");
+					}
+					{
+						PercentLabelSinergia = new Label(composite001, SWT.NONE);
+						GridData PercentLabelSinergiaLData = new GridData();
+						PercentLabelSinergia.setLayoutData(PercentLabelSinergiaLData);
+						PercentLabelSinergia.setText("%");
 					}
 
 				}

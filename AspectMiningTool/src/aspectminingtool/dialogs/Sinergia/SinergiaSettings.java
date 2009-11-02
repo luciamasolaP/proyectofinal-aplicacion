@@ -378,18 +378,25 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 					okButton.addSelectionListener(new SelectionAdapter() {
 						public void widgetSelected(SelectionEvent evt) {
 							SinergiaAnalysis sA = new SinergiaAnalysis(javaProject);
-							sA.calculateFacts();
+//							sA.calculateFacts();
+//							Shell shell = new Shell();
+//
+//							try {
+//								new ProgressMonitorDialog(shell).run(true, true, sA);
+//														
+//							} catch (InvocationTargetException e) {
+//								MessageDialog.openError(shell, "Error", e.getMessage());
+//							} catch (InterruptedException e) {
+//								// TODO Auto-generated catch block
+//								 MessageDialog.openInformation(shell, "Cancelled", e.getMessage());
+//							}
 							Shell shell = new Shell();
-
 							try {
-								new ProgressMonitorDialog(shell).run(true, true, sA);
-								
-								System.out.println("salida del monitor");
+								sA.ejecutar();
 								
 							} catch (InvocationTargetException e) {
 								MessageDialog.openError(shell, "Error", e.getMessage());
 							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
 								 MessageDialog.openInformation(shell, "Cancelled", e.getMessage());
 							}
 							//leer seleccion de árbol

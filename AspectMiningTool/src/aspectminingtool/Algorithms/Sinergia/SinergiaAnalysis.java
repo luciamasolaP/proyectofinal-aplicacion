@@ -47,6 +47,11 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 	private InferenceEngine inferenceEngine;
 	private ProjectModel pm;
 	private IResultsModel model;
+	List restricciones;
+	
+	public void assertRestricciones(List restricciones){
+		this.restricciones =  restricciones;
+	}
 	
 	public SinergiaAnalysis(IJavaProject javaProject){
 		super();
@@ -100,10 +105,10 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 	@Override
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
+		
+			inferenceEngine = AspectMiningModel.getInferenceEngine();
 				
 			monitor.beginTask("Executing Sinergia Analysis...", IProgressMonitor.UNKNOWN);
-
-			 inferenceEngine = AspectMiningModel.getInferenceEngine();
 	 		 
 			 inferenceEngine.setAlgorithm(new FanInAlgorithm());
 			 inferenceEngine.execute(Facts);
@@ -131,7 +136,7 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 					throw new InterruptedException("Sinergia Analysis was cancelled");
 		 
 			 inferenceEngine.setAlgorithm(new SinergiaAlgorithm());
-			 
+			 inferenceEngine.assertFacts(restricciones);
 			 inferenceEngine.execute(SinergiaFacts);
 			 
 				try 

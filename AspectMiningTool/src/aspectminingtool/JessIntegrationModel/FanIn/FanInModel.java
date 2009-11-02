@@ -123,7 +123,7 @@ public class FanInModel implements ISelectMethodAsSeedModel{
 	
 	private void contructModel(ProjectModel projectModel){
 		
-		setProjectModel(projectModel);
+	//	setProjectModel(projectModel);
 		
 		setMethods(constructMethods(inferenceEngine));
 		setCalls(contructCalls(inferenceEngine));

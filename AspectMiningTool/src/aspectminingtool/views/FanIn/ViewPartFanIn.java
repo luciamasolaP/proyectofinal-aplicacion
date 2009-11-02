@@ -78,8 +78,6 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	private OpenClassAction openActionTableRight;
 	private SelectMethodAsSeedAction selectAsSeedOperation;
 
-	
-
 	/**
      * 
      */

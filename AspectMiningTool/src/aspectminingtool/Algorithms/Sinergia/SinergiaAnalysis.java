@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import jess.JessException;
@@ -19,6 +18,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.ProjectModel;
@@ -32,11 +33,12 @@ import aspectminingtool.JessIntegrationModel.Sinergia.InsideFirstExecutionMetric
 import aspectminingtool.JessIntegrationModel.Sinergia.InsideLastExecutionMetric;
 import aspectminingtool.JessIntegrationModel.Sinergia.OutsideAfterExecutionMetric;
 import aspectminingtool.JessIntegrationModel.Sinergia.OutsideBeforeExecutionMetric;
+import aspectminingtool.JessIntegrationModel.Sinergia.SinergiaResultsModel;
 import aspectminingtool.JessIntegrationModel.Sinergia.UniqueMethodsMetric;
 import aspectminingtool.model.AspectMiningModel;
-import aspectminingtool.model.Call_Counted;
 import aspectminingtool.parser.JessFactsVisitor;
 import aspectminingtool.parser.ProjectInspector;
+import aspectminingtool.views.Sinergia.ViewPartSinergia;
 
 public class SinergiaAnalysis implements IRunnableWithProgress{
 
@@ -44,10 +46,34 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 	private List Facts;
 	private InferenceEngine inferenceEngine;
 	private ProjectModel pm;
+	private IResultsModel model;
 	
 	public SinergiaAnalysis(IJavaProject javaProject){
 		super();
 		this.javaProject = javaProject;
+	}
+	
+	public void OpenView(){
+		
+	    ViewPartSinergia view;
+		try {
+			view = (ViewPartSinergia) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+			.getActivePage().showView(ViewPartSinergia.ID_VIEW );
+			view.setModel(model);
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
+	public void ejecutar() throws InvocationTargetException, InterruptedException{
+		calculateFacts();
+		Shell shell = new Shell();
+		new ProgressMonitorDialog(shell).run(true, true, this);
+		getResults();
+		OpenView();
 	}
 	
 	public void calculateFacts(){
@@ -134,9 +160,7 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 			    catch (IOException e)    {    }
 			 
 			 SinergiaFacts.clear();
-		
-			 showResults(getResults(inferenceEngine));
-	 
+ 
 			 monitor.done();
       //  return Status.OK_STATUS;
 		
@@ -149,31 +173,33 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\Seeds.txt"));
 	        
 
-	        		    		
+	           		results2.generateArchive(outfile1);
 
-					Rete jessEngine = ((JessInferenceEngine) inferenceEngine).getEngine();
-					QueryResult result;
-					try {
-						result = jessEngine.runQueryStar("getSeeds", new ValueVector().add(""));
-						 while (result.next()) {
-							 outfile1.write("Metodo: "+ result.getString("method") + "            Trust: " + result.getString("trust"));
-							outfile1.newLine();   
-					        }
-					} catch (JessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-			        outfile1.close();
+//					Rete jessEngine = ((JessInferenceEngine) inferenceEngine).getEngine();
+//					QueryResult result;
+//					try {
+//						result = jessEngine.runQueryStar("getSeeds", new ValueVector().add(""));
+//						 while (result.next()) {
+//							 outfile1.write("Metodo: "+ result.getString("method") + "            Trust: " + result.getString("trust"));
+//							outfile1.newLine();   
+//					        }
+//					} catch (JessException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//			        outfile1.close();
 			}
 
 	    catch (IOException e)    {    }
-			
+		
+	    
 	}
 
-	protected IResultsModel getResults(InferenceEngine InferenceEngine){
-		return null;		
+	protected void getResults(){
+		model = new SinergiaResultsModel(pm,inferenceEngine);		
 	}
+
 
 	protected List getFanInMetric(){
 		List fanInMetrics = new ArrayList();

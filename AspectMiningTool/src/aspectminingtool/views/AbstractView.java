@@ -16,14 +16,11 @@ public abstract class AbstractView extends ViewPart{
 //	protected int searchCounted = 0;
 //	protected List<TableItem> searchHistoryResults;
     
-	
-	
+
 	public IResultsModel getModel(){
 		return model;
 	}
-	
-	
-	
+
 //	public void locateItemInTable(Table tableLeft, String searchHistory, int searchCounted,List<TableItem> searchHistoryResults) {
 //
 //		String searchClass = textSearch.getText().toLowerCase();

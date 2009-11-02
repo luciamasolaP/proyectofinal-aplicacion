@@ -8,14 +8,6 @@
 (deftemplate UniqueMethodsMetric    (declare (from-class UniqueMethodsMetric)))
 
 
-(deftemplate fan-in_seed
-	(slot method)
-)
-
-(deftemplate unique_method_seed
-	(slot method)
-)
-
 (deftemplate fan-in_umbral
 	(slot umbral)    		
 )
@@ -36,15 +28,6 @@
 	(slot trust)
 )
 
-(deftemplate umbral_trust
-	(slot trust)
-)
-
-(deftemplate seed
-	(slot method)
-    (slot trust)
-)
-
 (deftemplate OutsideBeforeExecution_umbral
     (slot umbral) 
 )
@@ -61,8 +44,37 @@
     (slot umbral) 
 )
 
+(deftemplate umbral_trust
+	(slot trust)
+)
+
+(deftemplate fan-in_seed
+	(slot method)
+)
+
+(deftemplate fan-in_seed_Counted
+	"comment"
+	(slot method))
+
+(deftemplate unique_method_seed
+	(slot method)
+)
+
+(deftemplate unique_method_seed_Counted
+	"comment"
+	(slot method))
+
 (deftemplate execution_relation_seed
 	(slot method)    
+)
+
+(deftemplate execution_relation_seed_Counted
+	"comment"
+	(slot method))
+
+(deftemplate seed
+	(slot method)
+    (slot trust)
 )
 
 (assert (fan-in_umbral (umbral 1)))
@@ -249,6 +261,7 @@
     (bind ?NewTrust (+ ?FanInTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
     (retract ?FanInSeed) ;Si luego se quiere usar entonces no debemos eliminarlo sino contarlo como computado.
+    (assert (fan-in_seed_Counted(method ?Method)))
 )
 
 (defrule acum_seed_unique_method
@@ -261,6 +274,7 @@
     (bind ?NewTrust (+ ?UniqueMethodTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
     (retract ?UniqueMethodSeed)
+    (assert (unique_method_seed_Counted(method ?Method)))
 )
 
 (defrule acum_seed_execution_relation
@@ -273,6 +287,7 @@
     (bind ?NewTrust (+ ?ExecutionRelationTrust ?Trust))
     (modify ?Seed (trust ?NewTrust))
     (retract ?ExecutionRelationSeed)
+    (assert (execution_relation_seed_Counted(method ?Method)))
 )
 
 ;Remove the seeds that do not reach the threshold.
@@ -292,6 +307,24 @@
 	"comment"
 	(declare (variables ?ln))
     (seed (method ?method)(trust ?trust))
+    )
+
+(defquery getFanInSeeds
+	"comment"
+	(declare (variables ?method))
+    (fan-in_seed_Counted (method ?method))
+    )
+
+(defquery getUniqueMethodsSeeds
+	"comment"
+	(declare (variables ?method))
+    (unique_method_seed_Counted (method ?method))
+    )
+
+(defquery getFlowGraphSeeds
+	"comment"
+	(declare (variables ?method))
+    (execution_relation_seed_Counted (method ?method))
     )
 
 ;(reset)

@@ -12,16 +12,6 @@
 	(slot idClase)
     (slot cantMet))
 
-(deftemplate cantMetodosLlamados
-    "cantidad de metodos llamados"
-    (slot method)
-    (slot cantidad))
-
-(deftemplate cantMetodosMeLlaman
-    "cantidad de metodos llamados"
-    (slot method)
-    (slot cantidad))
-
 (deftemplate methodCounted
     (slot idMethod)
     (slot idClass)
@@ -102,13 +92,13 @@
 ;
 ;(assert(Call (caller_id Dd1)(callee_id Bb4)))
 
-(defrule initData1
-    (declare (salience 1000000))
-    (Method (id ?method))
-	=>
-    (assert (cantMetodosLlamados (method ?method) (cantidad 0)))
-    (assert (cantMetodosMeLlaman (method ?method) (cantidad 0)))
-    )
+;(defrule initData1
+;    (declare (salience 1000000))
+;    (Method (id ?method))
+;	=>
+;    (assert (cantMetodosLlamados (method ?method) (cantidad 0)))
+;    (assert (cantMetodosMeLlaman (method ?method) (cantidad 0)))
+;    )
 
 (defrule initData2
     (declare (salience 1000000))
@@ -138,7 +128,7 @@
     )
 
 (defrule cantidadMetodosClaseAbstracta
-    "Calcula la cantidad de métodos de cada clase"
+    "Calcula la cantidad de métodos de las clases abstractas"
     (declare (salience 100000))
     (Abstract (id ?idClass))
     (Method (id ?metodo) (class_id ?idClass))
@@ -150,45 +140,25 @@
     (modify ?OldCantMetodos (cantMet ?NewMetric))
     )
 
-(defrule callerMethods
-    "Defino la cantidad de métodos que llama un método"
-    (declare (salience 10000))
-    (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
-    (not (caller_counted (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado)))
-    (Method (id ?MetodoLlamador))
-    (Method (id ?MetodoLlamado))
-    ?OldCantMetodosLlamados <- (cantMetodosLlamados (method ?MetodoLlamador) (cantidad ?Cant))
-    =>
-    (assert (caller_counted (caller_id ?MetodoLlamador)(callee_id ?MetodoLlamado)))
-    (bind ?NewMetric (+ ?Cant 1))
-    (modify ?OldCantMetodosLlamados (cantidad ?NewMetric))
-    )
-
-(defrule calleeMethods
-    "Defino la cantidad de métodos que llaman a un método"
-    (declare (salience 10000))
-    (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
-    (not (callee_counted (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado)))
-    (Method (id ?MetodoLlamador))
-    (Method (id ?MetodoLlamado))
-    ?OldCantMetodosLlamados <- (cantMetodosMeLlaman (method ?MetodoLlamado) (cantidad ?Cant))
-    =>
-    (assert (callee_counted (caller_id ?MetodoLlamador)(callee_id ?MetodoLlamado)))
-    (bind ?NewMetric (+ ?Cant 1))
-    (modify ?OldCantMetodosLlamados (cantidad ?NewMetric))
-    )
 
 
-"el siguiente método da error al hacer el execute, es el que hace que se vaya de memoria"
 (defrule redirectorMethod
+    "define los métodos redireccionadores"
     (declare (salience 1000))
     (Call (caller_id ?MetodoLlamador) (callee_id ?MetodoLlamado))
-
 	(Method (id ?MetodoLlamador)(class_id ?classIdLlamador))
 	(Method (id ?MetodoLlamado)(class_id ?classIdLlamada))
-
-    (not (and (Call (caller_id ?otroMetodoClaseLlamadora) (callee_id ?MetodoLlamado))(Method (id ?otroMetodoClaseLlamadora&~?MetodoLlamador)(class_id ?classIdLlamador))))    
-    (not (and  (Call (caller_id ?MetodoLlamador)(callee_id ?otroMetodoClaseLlamada))(Method (id ?otroMetodoClaseLlamada&~?MetodoLlamado)(class_id ?classIdLlamada))))
+    (not 
+        (and 
+            	(Call (caller_id ?otroMetodoClaseLlamadora) (callee_id ?MetodoLlamado))
+              	(Method (id ?otroMetodoClaseLlamadora&~?MetodoLlamador)(class_id ?classIdLlamador))
+        )
+    ); no existe una llamada al ?MetodoLlamado desde un método de la misma clase del método llamados ?classIdLlamador    
+    (not (and  
+            	(Call (caller_id ?MetodoLlamador)(callee_id ?otroMetodoClaseLlamada))
+              	(Method (id ?otroMetodoClaseLlamada&~?MetodoLlamado)(class_id ?classIdLlamada))
+         )
+    );el metodo llamador ?MetodoLlamados no llama a otro ningún otro método de la clase llamadas ?classIdLlamada
     
     =>
     (assert (redirectMethod	(metodoBase ?MetodoLlamador)(claseBase ?classIdLlamador)(metodoRedireccionado ?MetodoLlamado) (claseRedireccionada ?classIdLlamada)))
@@ -198,6 +168,7 @@
 
 
 (defrule initRedirectorDataClass
+    "crea el hecho cantRedirecPorClase para las clases que posean algún método redireccionador"
     (declare (salience 500))
 	(redirectMethod	(claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada))
     (not (redirectClassCounted (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)))
@@ -207,6 +178,7 @@
     )
 
 (defrule finalRedirectMetodosPorClase
+    "calcula la cantidad de métodos redireccionadores por clase"
    	(declare (salience 250))
 	?OldCantRedicMetodos <- (cantRedirecPorClase (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)(cant ?Cant))
 	(redirectMethod	(claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)(metodoBase ?MetodoLlamador)(metodoRedireccionado ?MetodoLlamado))

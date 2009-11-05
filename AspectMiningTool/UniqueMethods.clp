@@ -201,8 +201,7 @@
 	(declare (variables ?ln))
     (Method (id ?mi)(class_id ?class)(returnType ?*x*)(name ?name)(parametros ?parametros))
     (final_fan-in_metric(method_id ?mi)(metric ?m))
-    
-   
+
     )
 
 

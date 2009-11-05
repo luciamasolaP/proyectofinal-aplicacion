@@ -13,6 +13,7 @@ import jess.ValueVector;
 import JessIntegrationModel.Call;
 import JessIntegrationModel.Implements;
 import JessIntegrationModel.Inherits;
+import JessIntegrationModel.Interface;
 import JessIntegrationModel.Method;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 
@@ -152,7 +153,8 @@ public class FanInAlgorithm extends Algorithm {
 
 	@Override
 	public boolean filerFact(Object fact) {
-		if (fact instanceof Method || fact instanceof JessIntegrationModel.Class || fact instanceof Inherits || fact instanceof Implements || fact instanceof Call ) 
+		if (fact instanceof Method || fact instanceof JessIntegrationModel.Class || fact instanceof Inherits || fact instanceof Implements 
+				|| fact instanceof Call || fact instanceof Interface) 
 			return false;
 		return true;
 	}

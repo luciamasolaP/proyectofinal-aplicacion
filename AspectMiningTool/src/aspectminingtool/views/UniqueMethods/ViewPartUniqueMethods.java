@@ -36,13 +36,13 @@ import JessIntegrationModel.IResultsModel;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.AbstractFilterView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
-import aspectminingtool.views.ViewAlgorithmInterface;
-import aspectminingtool.views.FanIn.FanInContentProvider;
 import aspectminingtool.views.FanIn.FanInLabelProvider;
 import aspectminingtool.views.FanIn.SorterFanInViewFanIn;
+import aspectminingtool.views.FanIn.Filters.FilterFanInUmbral;
+import aspectminingtool.views.FanIn.Filters.FilterGettterSetter;
 import aspectminingtool.views.actions.OpenClassAction;
 import aspectminingtool.views.actions.SelectMethodAsSeedAction;
 
@@ -57,7 +57,7 @@ import aspectminingtool.views.actions.SelectMethodAsSeedAction;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartUniqueMethods extends AbstractView implements ViewAlgorithmInterface{
+public class ViewPartUniqueMethods extends AbstractFilterView{
 	public static final String ID_VIEW = "aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods"; //$NON-NLS-1$
 	public static final String NAME = "Unique Method";
 	
@@ -254,6 +254,11 @@ public class ViewPartUniqueMethods extends AbstractView implements ViewAlgorithm
 		});
 
 		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
+		filterUmbral = new FilterFanInUmbral(new Integer(1));
+		tableViewerLeft.addFilter(filterUmbral);
+		
+		filterGetSetter = new FilterGettterSetter(true);
+		tableViewerLeft.addFilter(filterGetSetter);
 		
 	
 	}
@@ -456,6 +461,20 @@ openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
 	protected void selectAll(TableViewer tableViewer) {
 		tableViewer.getTable().selectAll();
 		
+	}
+
+	@Override
+	public void setGetterSetterFilter(boolean filter) {
+		((FilterGettterSetter)filterGetSetter).setFilterOut(filter);
+		tableViewerLeft.refresh();
+		
+	}
+
+	@Override
+	public void setUmbralFilter(String umbral) {
+
+		((FilterFanInUmbral)filterUmbral).setUmbralText(umbral);
+		tableViewerLeft.refresh();
 	}
  
 

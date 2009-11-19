@@ -1,20 +1,14 @@
 package aspectminingtool.views.UniqueMethods;
 
 
-import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -37,20 +31,20 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.ide.IDE;
 
 import JessIntegrationModel.IResultsModel;
-import JessIntegrationModel.Method;
-import JessIntegrationModel.ProjectModel;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethodsModel;
-import aspectminingtool.JessIntegrationModel.UniqueMethods.UniqueMethods_Result;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.AbstractView;
-import aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds;
+import aspectminingtool.views.OpenClassListener;
+import aspectminingtool.views.SearchInTable;
+import aspectminingtool.views.ViewAlgorithmInterface;
+import aspectminingtool.views.FanIn.FanInContentProvider;
+import aspectminingtool.views.FanIn.FanInLabelProvider;
+import aspectminingtool.views.FanIn.SorterFanInViewFanIn;
+import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectMethodAsSeedAction;
 
 
 /**
@@ -63,8 +57,9 @@ import aspectminingtool.views.UniqueMethodsSeeds.ViewPartUniqueMethodsSeeds;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartUniqueMethods extends AbstractView{
+public class ViewPartUniqueMethods extends AbstractView implements ViewAlgorithmInterface{
 	public static final String ID_VIEW = "aspectminingtool.views.UniqueMethods.ViewPartUniqueMethods"; //$NON-NLS-1$
+	public static final String NAME = "Unique Method";
 	
 	private SashForm sashForm1;
 	private TableColumn tableCallsColumn1;
@@ -73,16 +68,29 @@ public class ViewPartUniqueMethods extends AbstractView{
 	private Composite composite2;
 	private Composite composite3;
 	
-	private Action openItemActionMethodsTable, openItemActionCallsTable, selectAsSeedAction, selectAllActionMethodsTable, selectAllActionCallsTable;
+	private TableViewer tableViewerLeft;
+	private Table tableLeft;
+	private Table tableRight;
+	private TableViewer tableViewerRight;
+	
+	private Button buttonSearch;
+	private CLabel labelSearch;
+	private Text textSearch;
+	
+	private SearchInTable searchInTable = new SearchInTable();
 
 	
+	//actions
+	private Action selectAllActionMethodsTable, selectAllActionCallsTable;
+	private OpenClassAction openActionTableLeft;
+	private OpenClassAction openActionTableRight;
+	private SelectMethodAsSeedAction selectAsSeedOperation;
 
 	/**
      * 
      */
 	public ViewPartUniqueMethods() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -131,37 +139,22 @@ public class ViewPartUniqueMethods extends AbstractView{
 		
 	}
 
-	private void hookGlobalActions() {
-		IActionBars bars = getViewSite().getActionBars();
-		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
-	
-	}
 	
 	private void createTableLeft(){
 		
 		tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
-		tableViewerLeft = new TableViewer(tableLeft);
-
-		// Set the sorter
-		ViewerSorter sorter = new SorterMethodsUniqueMethodsView();
-		tableViewerLeft.setSorter(sorter);
-
-		// Set the content and label providers
-		tableViewerLeft
-				.setContentProvider(new UniqueMethodsContentProvider());
-		tableViewerLeft.setLabelProvider(new UniqueMethodsLabelProvider());
 
 		// Set up the table, each column has a listener for the click
 		// that calls
 		// the sorter and refreshes the tree.
 		// Column 1
 		final TableColumn tc1 = new TableColumn(tableLeft, SWT.LEFT);
-		tc1.setText("Method");
+		tc1.setText("Unique Method");
 		tc1.setWidth(398);
 		tc1
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterMethodsUniqueMethodsView) tableViewerLeft
+						((SorterFanInViewFanIn) tableViewerLeft
 								.getSorter()).doSort(0);
 						tableViewerLeft.refresh();
 					}
@@ -169,12 +162,12 @@ public class ViewPartUniqueMethods extends AbstractView{
 
 		// Column 2
 		TableColumn tc2 = new TableColumn(tableLeft, SWT.LEFT);
-		tc2.setText("Fan In");
+		tc2.setText("Fan-In");
 		tc2.setWidth(50);
 		tc2
 				.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
 					public void widgetSelected(SelectionEvent event) {
-						((SorterMethodsUniqueMethodsView) tableViewerLeft
+						((SorterFanInViewFanIn) tableViewerLeft
 								.getSorter()).doSort(1);
 						tableViewerLeft.refresh();
 					}
@@ -224,7 +217,7 @@ public class ViewPartUniqueMethods extends AbstractView{
 				
 				buttonSearch.addListener (SWT.Selection, new Listener () {
 					public void handleEvent (Event event) {
-						locateItemInTable();
+						searchInTable.locateItemInTable(textSearch.getText().toLowerCase(),tableLeft);
 						
 					}
 				});
@@ -232,49 +225,44 @@ public class ViewPartUniqueMethods extends AbstractView{
 			}
 		}
 
-		tableViewerLeft
-				.addSelectionChangedListener(new ISelectionChangedListener() {
-					public void selectionChanged(
-							SelectionChangedEvent event) {
-						selectionItem(event);
+		createTableViewerLeft();
 
-					}
-
-				});
 		
-		tableViewerLeft.addDoubleClickListener(new IDoubleClickListener(){
+	}
 
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					
-					if (event.getSelection() instanceof IStructuredSelection) {
-						
-						UniqueMethods_Result UniqueMethodResult = (UniqueMethods_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
-						openResource(UniqueMethodResult.getMetodo().getClass_id());
-					}
-				}
-				
+	private void createTableViewerLeft() {
+		
+		tableViewerLeft = new TableViewer(tableLeft);
+
+		// Set the sorter
+		ViewerSorter sorter = new SorterFanInViewFanIn();
+		tableViewerLeft.setSorter(sorter);
+
+		// Set the content and label providers
+		tableViewerLeft
+				.setContentProvider(new UniqueMethodsContentProvider());
+		tableViewerLeft.setLabelProvider(new FanInLabelProvider());
+		
+		tableViewerLeft
+		.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(
+					SelectionChangedEvent event) {
+				selectionItem(event);
+
 			}
-			
+
 		});
 
+		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
 		
+	
 	}
 
 	private void createTableRight(){
 		
 		{
 			tableRight = new Table(composite2, SWT.LEFT | SWT.MULTI);
-			tableViewerRight = new TableViewer(tableRight);
-			
-			// Set the sorter
-			ViewerSorter sorterCalls = new SorterCallsUniqueMethodsView();
-			tableViewerRight.setSorter(sorterCalls);
-			
-			// Set the content and label providers
-			tableViewerRight.setContentProvider(new CallsContentProviderUniqueMethods());
-			tableViewerRight.setLabelProvider(new CallsLabelProviderUniqueMethods());
+		
 			
 			{
 				tableCallsColumn1 = new TableColumn(tableRight,
@@ -294,31 +282,36 @@ public class ViewPartUniqueMethods extends AbstractView{
 
 			tableRight.setHeaderVisible(true);
 			
-			tableViewerRight.addDoubleClickListener(new IDoubleClickListener(){
-
-				@Override
-				public void doubleClick(DoubleClickEvent event) {
-					if (!event.getSelection().isEmpty()) {
-						
-						if (event.getSelection() instanceof IStructuredSelection) {
-							
-							Call_Counted callCounted = (Call_Counted) ((IStructuredSelection) event.getSelection()).getFirstElement();
-							String name = callCounted.getCaller_id();
-							int index = name.indexOf("//");
-							name = name.substring(0, index);
-							openResource(name);
-						}
-					}
-					
-				}
+		
 				
-			});
+			
 
 
 		}
+createTableViewerRight();
 	}
-		
+	
+	private void createTableViewerRight(){
 
+	tableViewerRight = new TableViewer(tableRight);
+			
+			// Set the sorter
+			ViewerSorter sorterCalls = new SorterCallsUniqueMethodsView();
+			tableViewerRight.setSorter(sorterCalls);
+			
+			// Set the content and label providers
+			tableViewerRight.setContentProvider(new CallsContentProviderUniqueMethods());
+			tableViewerRight.setLabelProvider(new CallsLabelProviderUniqueMethods());
+			
+			tableViewerRight.addDoubleClickListener(new OpenClassListener(this));
+
+	}	
+
+	private void hookGlobalActions() {
+		IActionBars bars = getViewSite().getActionBars();
+		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
+	
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -346,6 +339,8 @@ public class ViewPartUniqueMethods extends AbstractView{
 		this.model = model;
 		super.setPartName("Unique Methods Results - " + model.getId());
 		tableViewerLeft.setInput(model);
+openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
+		selectAsSeedOperation = new SelectMethodAsSeedAction(model,tableViewerLeft,NAME);
 	}
 
 
@@ -354,32 +349,14 @@ public class ViewPartUniqueMethods extends AbstractView{
 		if (!event.getSelection().isEmpty()) {
 
 			if (event.getSelection() instanceof IStructuredSelection) {
-				UniqueMethods_Result metodo = (UniqueMethods_Result) ((IStructuredSelection) event.getSelection()).getFirstElement();
+				MetricMethodResult metodo = (MetricMethodResult) ((IStructuredSelection) event.getSelection()).getFirstElement();
 				String key = metodo.getMetodo().getId();
 				List<Call_Counted> llamadas = ((UniqueMethodsModel) model).getCalls().get(key);
 				tableViewerRight.setInput(llamadas);
+				openActionTableRight = new OpenClassAction(model,tableViewerRight);
 
 			}
-
 		}
-
-	}
-	
-	private void openResource(String resourceName) {
-		
-			ProjectModel projectModel = model.getProjectModel();
-			IResource resource = projectModel.getAssociatedResource(resourceName);
-			if (resource != null){
-				IFile fileStore = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
-	            IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	            try {
-					IDE.openEditor(page, fileStore,true);
-				} catch (PartInitException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-	
 	}
 	
 	
@@ -420,7 +397,7 @@ public class ViewPartUniqueMethods extends AbstractView{
  }
 
 	protected void fillContextMenuCallsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionCallsTable);
+		mgr.add(openActionTableRight);
 		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 		mgr.add(new Separator());
 		mgr.add(selectAllActionCallsTable);
@@ -428,9 +405,9 @@ public class ViewPartUniqueMethods extends AbstractView{
 	}
 
 	protected void fillContextMenuMethodsTableViewer(IMenuManager mgr) {
-		mgr.add(openItemActionMethodsTable);
+		mgr.add(openActionTableLeft);
 		mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-		mgr.add(selectAsSeedAction);
+		mgr.add(selectAsSeedOperation);
 		mgr.add(new Separator());
 		mgr.add(selectAllActionMethodsTable);
 		
@@ -440,33 +417,7 @@ public class ViewPartUniqueMethods extends AbstractView{
 	 * Create the actions.
 	 */
 	public void createActions() {
-		openItemActionMethodsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					UniqueMethods_Result uniqueMethodsResult = (UniqueMethods_Result) iter.next();
-					String id = uniqueMethodsResult.getMetodo().getClass_id();
-					openResource(id);
 
-			}
-			}
-		};
-		
-		selectAsSeedAction = new Action("Select As a Seed") {
-			public void run() {
-
-					IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-					Iterator iter = sel.iterator();
-					while (iter.hasNext()) {
-						UniqueMethods_Result umr = (UniqueMethods_Result) iter.next();
-						Method method = umr.getMetodo();
-						ViewPartUtil.selectAsSeed(method, ViewPartUniqueMethodsSeeds.ID_VIEW, ((UniqueMethodsModel)model).getCalls(method.getId()), ((UniqueMethodsModel)model).getProjectModel());
-
-					}
-
-			}
-		};
 
 		selectAllActionMethodsTable = new Action("Select All") {
 			public void run() {
@@ -474,20 +425,6 @@ public class ViewPartUniqueMethods extends AbstractView{
 			}
 		};
 		
-		openItemActionCallsTable = new Action("Open") {
-			public void run() { 
-				IStructuredSelection sel = (IStructuredSelection)tableViewerRight.getSelection();
-				Iterator iter = sel.iterator();
-				while (iter.hasNext()) {
-					Call_Counted callCounted = (Call_Counted) iter.next();
-					String name = callCounted.getCaller_id();
-					int index = name.indexOf("//");
-					name = name.substring(0, index);
-					openResource(name);
-
-			}
-			}
-		};
 		
 		selectAllActionCallsTable = new Action("Select All") {
 			public void run() {
@@ -499,9 +436,9 @@ public class ViewPartUniqueMethods extends AbstractView{
 		tableViewerLeft.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
-				openItemActionMethodsTable.setEnabled(sel.size() > 0);
+				openActionTableLeft.setEnabled(sel.size() > 0);
 				selectAllActionMethodsTable.setEnabled(sel.size() > 0);
-				selectAsSeedAction.setEnabled(sel.size() > 0);
+				selectAsSeedOperation.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -509,7 +446,7 @@ public class ViewPartUniqueMethods extends AbstractView{
 			public void selectionChanged(SelectionChangedEvent event) {
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				selectAllActionCallsTable.setEnabled(sel.size() > 0);
-				openItemActionCallsTable.setEnabled(sel.size() > 0);
+				openActionTableRight.setEnabled(sel.size() > 0);
 			}
 		});
 		
@@ -520,6 +457,7 @@ public class ViewPartUniqueMethods extends AbstractView{
 		tableViewer.getTable().selectAll();
 		
 	}
+ 
 
 	
 }

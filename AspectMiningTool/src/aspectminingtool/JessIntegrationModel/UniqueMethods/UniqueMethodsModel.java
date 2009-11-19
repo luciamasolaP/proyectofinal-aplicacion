@@ -13,22 +13,24 @@ import jess.JessException;
 import jess.QueryResult;
 import jess.Rete;
 import jess.ValueVector;
-import JessIntegrationModel.IResultsModel;
+import JessIntegrationModel.ISelectMethodAsSeedModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
+import aspectminingtool.JessIntegrationModel.MetricMethodResult;
+import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.model.Call_Counted;
 
 
 
-public class UniqueMethodsModel implements IResultsModel{
+public class UniqueMethodsModel implements ISelectMethodAsSeedModel{
 
 	Map<String,List<Call_Counted>> calls;
 	Map<String,Final_UniqueMehtods_metric> metrics;
 	Map<String,Method> methods;
 	ProjectModel projectModel;
-	List<UniqueMethods_Result> resultadoUniqueMethods = new ArrayList<UniqueMethods_Result>();
+	List<MetricMethodResult> resultadoUniqueMethods = new ArrayList<MetricMethodResult>();
 	InferenceEngine inferenceEngine = null;
 	
 
@@ -154,7 +156,7 @@ public class UniqueMethodsModel implements IResultsModel{
 				    
 				    addFanInMetric(ff);
 				    
-				    UniqueMethods_Result fir = new UniqueMethods_Result(method,fanInValue);
+				    MetricMethodResult fir = new MetricMethodResult(method,fanInValue);
 					this.resultadoUniqueMethods.add(fir);
 				    
 				 //Call_Counted cc = new Call_Counted(result.getString("Caller"), result.getString("Method"));
@@ -235,11 +237,11 @@ public class UniqueMethodsModel implements IResultsModel{
 		return calls;
 	}
 	
-	public List<UniqueMethods_Result> getResultadoFanIn() {
+	public List<MetricMethodResult> getResultadoFanIn() {
 		return resultadoUniqueMethods;
 	}
 
-	public void setResultadoFanIn(List<UniqueMethods_Result> resultadoFanIn) {
+	public void setResultadoFanIn(List<MetricMethodResult> resultadoFanIn) {
 		this.resultadoUniqueMethods = resultadoFanIn;
 	}
 
@@ -248,8 +250,8 @@ public class UniqueMethodsModel implements IResultsModel{
 	public void generateArchive(BufferedWriter archive) {
 		try 
 	    {
-			for (Iterator<UniqueMethods_Result> i = resultadoUniqueMethods.iterator(); i.hasNext() ;){
-				UniqueMethods_Result umr = i.next(); 
+			for (Iterator<MetricMethodResult> i = resultadoUniqueMethods.iterator(); i.hasNext() ;){
+				MetricMethodResult umr = i.next(); 
 				Method m = umr.getMetodo();
 				String metric = umr.getMetric();
 				archive.write("Método: " + m.toString() + "    FanIn: "+ metric);
@@ -271,6 +273,21 @@ public class UniqueMethodsModel implements IResultsModel{
 	    }
 	    catch (IOException e)    {    }
 		
+	}
+
+	@Override
+	public List<RelatedMethodDescription> getRelatedMethods(Method method,
+			String name) {
+		
+		List<Call_Counted> relatedMethods = getCalls(method.getId());
+		List<RelatedMethodDescription> resultRelatedMethods = new ArrayList<RelatedMethodDescription>();
+		if (relatedMethods!=null)
+			for (Iterator i = relatedMethods.iterator() ; i.hasNext() ; ){
+				//((FanInModel)model).getCalls(method.getId());
+				RelatedMethodDescription rmd = new RelatedMethodDescription(((Call_Counted)i.next()).getCaller_id());
+				resultRelatedMethods.add(rmd);
+			}
+		return resultRelatedMethods;
 	}
 	
 	

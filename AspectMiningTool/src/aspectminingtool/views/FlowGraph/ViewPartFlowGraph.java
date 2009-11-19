@@ -33,11 +33,11 @@ import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FlowGraph.FlowGraphModel;
-import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.AbstractMultipleFilterView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
-import aspectminingtool.views.ViewAlgorithmInterface;
-import aspectminingtool.views.FanIn.SorterFanInViewCalls;
+import aspectminingtool.views.FanIn.Filters.FilterFanInUmbral;
+import aspectminingtool.views.FanIn.Filters.FilterGettterSetter;
 import aspectminingtool.views.actions.OpenClassAction;
 import aspectminingtool.views.actions.SelectAllAction;
 import aspectminingtool.views.actions.SelectMethodAsSeedAction;
@@ -59,7 +59,7 @@ import aspectminingtool.views.listeners.MenuRightListener;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInterface{
+public class ViewPartFlowGraph extends AbstractMultipleFilterView{
     public static final String ID_VIEW =
         "aspectminingtool.views.FlowGraph.ViewPartFlowGraph"; //$NON-NLS-1$
 		public static final String NAME = "Execution Relations";
@@ -311,6 +311,11 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				tableLeft = new Table(composite1, SWT.BORDER | SWT.MULTI);
 				tablesVLeft[0] = new TableViewer(tableLeft);
 				
+				filterUmbral1 = new FilterFanInUmbral(new Integer(1));
+				tablesVLeft[0].addFilter(filterUmbral1);			
+				filterGetSetter1 = new FilterGettterSetter(true);
+				tablesVLeft[0].addFilter(filterGetSetter1);
+				
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab1Left();
 				tablesVLeft[0].setSorter(sorter);
@@ -483,6 +488,11 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				
 				tableLeftTab2 = new Table(composite3, SWT.BORDER | SWT.MULTI);
 				tablesVLeft[1] = new TableViewer(tableLeftTab2);
+				
+				filterUmbral2 = new FilterFanInUmbral(new Integer(1));
+				tablesVLeft[1].addFilter(filterUmbral2);			
+				filterGetSetter1 = new FilterGettterSetter(true);
+				tablesVLeft[1].addFilter(filterGetSetter2);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab2Left();
@@ -653,6 +663,11 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				
 				tableLeftTab3 = new Table(composite5, SWT.BORDER | SWT.MULTI);
 				tablesVLeft[2] = new TableViewer(tableLeftTab3);
+				
+				filterUmbral3 = new FilterFanInUmbral(new Integer(1));
+				tablesVLeft[2].addFilter(filterUmbral3);			
+				filterGetSetter3 = new FilterGettterSetter(true);
+				tablesVLeft[2].addFilter(filterGetSetter3);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab3Left();
@@ -826,6 +841,11 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 				
 				tableLeftTab4 = new Table(composite7, SWT.BORDER | SWT.MULTI);
 				tablesVLeft[3] = new TableViewer(tableLeftTab4);
+				
+				filterUmbral4 = new FilterFanInUmbral(new Integer(1));
+				tablesVLeft[3].addFilter(filterUmbral4);			
+				filterGetSetter4 = new FilterGettterSetter(true);
+				tablesVLeft[3].addFilter(filterGetSetter4);
 
 				// Set the sorter
 				ViewerSorter sorter = new SorterFlowGraphTab4Left();
@@ -1044,6 +1064,20 @@ public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInte
 	private void hookGlobalActionsTableRight(int i) {
 			IActionBars bars = getViewSite().getActionBars();
 			bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsRight[i]);			
+	}
+
+	@Override
+	public void setGetterSetterFilter(boolean filter1, boolean filter2,
+			boolean filter3, boolean filter4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setUmbralFilter(String umbral1, String umbral2, String umbral3,
+			String umbral4) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

@@ -40,7 +40,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 	private Button okButton;
 	private CTabFolder cTabFolder1;
 	private CTabItem cTabItem1;
-	private Group composite6;
+	private Composite composite6;
 	private Composite composite5;
 	private Composite composite3;
 	private Button acceptButton;
@@ -135,139 +135,8 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 					filterGetSet.setSelection(true);
 				}
 			}
-			{
-				composite6 = new Group(dialogShell, SWT.NONE);
-				composite6.setText("Filtrado");
-				GridLayout composite6Layout = new GridLayout();
-				composite6Layout.makeColumnsEqualWidth = true;
-				GridData composite6LData = new GridData();
-				composite6LData.horizontalAlignment = GridData.FILL;
-				composite6LData.grabExcessHorizontalSpace = true;
-				composite6.setLayoutData(composite6LData);
-				composite6.setLayout(composite6Layout);
 				{
-					composite3 = new Composite(composite6, SWT.NONE);
-					FillLayout composite3Layout = new FillLayout(org.eclipse.swt.SWT.HORIZONTAL);
-					GridData composite3LData = new GridData();
-					composite3LData.horizontalAlignment = GridData.FILL;
-					composite3LData.grabExcessHorizontalSpace = true;
-					composite3LData.verticalAlignment = GridData.BEGINNING;
-					composite3LData.grabExcessVerticalSpace = true;
-					composite3LData.heightHint = 318;
-					composite3.setLayoutData(composite3LData);
-					composite3.setLayout(composite3Layout);
-					{
-						cTabFolder1 = new CTabFolder(composite3, SWT.NONE);
-						{
-							cTabItem1 = new CTabItem(cTabFolder1, SWT.NONE);
-							cTabItem1.setText("Filter Callers");
-							{
-								groupLeft = new Group(cTabFolder1, SWT.NONE);
-								groupLeft.setText("Clases Llamadoras a Excluir");
-								
-								{
-									
-									treeViewerLlamadoras = new CheckboxTreeViewer(groupLeft, SWT.NONE | SWT.BORDER);
-
-									treeViewerLlamadoras
-									.setContentProvider(new ProjectTreeContentProvider(
-											project));
-									treeViewerLlamadoras
-									.setLabelProvider(new ProjectTreeLabelProvider());
-									GridData treeViewerLlamadorasLData = new GridData();
-									treeViewerLlamadorasLData.horizontalAlignment = GridData.FILL;
-									treeViewerLlamadorasLData.grabExcessHorizontalSpace = true;
-									treeViewerLlamadorasLData.verticalAlignment = GridData.FILL;
-									treeViewerLlamadorasLData.grabExcessVerticalSpace = true;
-									treeViewerLlamadoras.getControl().setLayoutData(treeViewerLlamadorasLData);
-									treeViewerLlamadoras.setInput("root");
-									treeViewerLlamadoras
-									.addCheckStateListener(new ICheckStateListener() {
-										
-										@Override
-										public void checkStateChanged(
-												CheckStateChangedEvent event) {
-											
-											treeViewerLlamadoras
-											.setSubtreeChecked(
-													event
-													.getElement(),
-													event
-													.getChecked());
-											ProjectTreeContentProvider projectTreeContentProvider = (ProjectTreeContentProvider) treeViewerLlamadoras
-											.getContentProvider();
-											checkPath(event.getElement(),
-													treeViewerLlamadoras,
-													projectTreeContentProvider);
-											
-										}
-										
-									});
-									
-								}
-								cTabItem1.setControl(groupLeft);
-								GridLayout composite1Layout = new GridLayout();
-								composite1Layout.makeColumnsEqualWidth = true;
-								groupLeft.setLayout(composite1Layout);
-								//composite1.setBackground(SWTResourceManager.getColor(255, 255, 255));
-
-							}
-							
-							
-						}
-						{
-							cTabItem2 = new CTabItem(cTabFolder1, SWT.NONE);
-							cTabItem2.setText("Filters Callees");
-							{
-								groupCallees = new Group(cTabFolder1, SWT.NONE);
-								GridLayout groupCalleesLayout = new GridLayout();
-								groupCalleesLayout.makeColumnsEqualWidth = true;
-								groupCallees.setLayout(groupCalleesLayout);
-								cTabItem2.setControl(groupCallees);
-								groupCallees.setText("Clases Llamadas a Excluir:");
-								{
-									treeViewerLlamadas = new CheckboxTreeViewer(groupCallees, SWT.NONE | SWT.BORDER);
-
-									treeViewerLlamadas
-									.setContentProvider(new ProjectTreeContentProvider(
-											project));
-									treeViewerLlamadas
-									.setLabelProvider(new ProjectTreeLabelProvider());
-									GridData treeViewerLlamadasLData = new GridData();
-									treeViewerLlamadasLData.horizontalAlignment = GridData.FILL;
-									treeViewerLlamadasLData.grabExcessHorizontalSpace = true;
-									treeViewerLlamadasLData.verticalAlignment = GridData.FILL;
-									treeViewerLlamadasLData.grabExcessVerticalSpace = true;
-									treeViewerLlamadas.getControl().setLayoutData(treeViewerLlamadasLData);
-									treeViewerLlamadas.setInput("root");
-									treeViewerLlamadas
-									.addCheckStateListener(new ICheckStateListener() {
-										
-										@Override
-										public void checkStateChanged(
-												CheckStateChangedEvent event) {
-											
-											treeViewerLlamadas
-											.setSubtreeChecked(event
-													.getElement(),
-													event.getChecked());
-											ProjectTreeContentProvider projectTreeContentProvider = (ProjectTreeContentProvider) treeViewerLlamadas
-											.getContentProvider();
-											checkPath(event.getElement(),
-													treeViewerLlamadas,
-													projectTreeContentProvider);
-											
-										}
-										
-									});
-								}
-							}
-						}
-						cTabFolder1.setSelection(0);
-					}
-				}
-				{
-					composite5 = new Composite(composite6, SWT.NONE);
+					composite5 = new Composite(dialogShell, SWT.NONE);
 					GridLayout composite5Layout = new GridLayout();
 					composite5Layout.numColumns = 2;
 					GridData composite5LData = new GridData();
@@ -293,10 +162,6 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 								//mandar a hacer filtrados
 								((ViewPartFanIn)viewPartFanIn).setUmbralFilter(Umbral.getText());
 								((ViewPartFanIn)viewPartFanIn).setGetterSetterFilter(filterGetSet.getSelection());
-								
-								List getSelectedClasses();
-								
-								
 								dialogShell.dispose();
 							}
 						});
@@ -317,10 +182,8 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 						});
 					}
 				}
-			}
 
 			dialogShell.layout();
-			dialogShell.setSize(490,500);
 			dialogShell.pack();
 		//	dialogShell.setLocation(getParent().toDisplay(100, 100));
 			dialogShell.open();
@@ -333,36 +196,5 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 			e.printStackTrace();
 		}
 	}
-
-	protected void checkPath(
-			Object element,
-			CheckboxTreeViewer treeViewerLlamadoras2,
-			ProjectTreeContentProvider projectTreeContentProvider) {
-
-		Object parentElement = projectTreeContentProvider.getParent(element);
-		if (parentElement == null)
-			return;
-		int index = 0;
-		Object[] children = projectTreeContentProvider
-				.getChildren(parentElement);
-		boolean check = true;
-		while (index < children.length) {
-			if (!treeViewerLlamadoras2.getChecked(children[index])) {
-				check = false;
-				break;
-			}
-			index++;
-		}
-		treeViewerLlamadoras2.setChecked(parentElement, check);
-		checkPath(parentElement, treeViewerLlamadoras2,
-				projectTreeContentProvider);
-
-	}
 	
-	List getSelectedClasses(CheckboxTreeViewer treeViewer, ProjectTreeContentProvider projectTreeContentProvider){
-		Object[] checkedElements = treeViewer.getCheckedElements();
-		if ()
-		
-	}
-
 }

@@ -62,7 +62,7 @@ import aspectminingtool.views.listeners.MenuRightListener;
 public class ViewPartFlowGraph extends AbstractView implements ViewAlgorithmInterface{
     public static final String ID_VIEW =
         "aspectminingtool.views.FlowGraph.ViewPartFlowGraph"; //$NON-NLS-1$
-		public static final String NAME = "Flow Graph";
+		public static final String NAME = "Execution Relations";
 		
 		public static final String OBE = "OBE";
 		public static final String OAE = "OAE";

@@ -179,11 +179,11 @@ public class SinergiaPopUp implements IObjectActionDelegate {
 		
 	}
 	
-	protected IResultsModel getResults(InferenceEngine InferenceEngine){
-	
-		return new SinergiaResultsModel(null, null, null, pm);
-		
-	}
+//	protected IResultsModel getResults(InferenceEngine InferenceEngine){
+//	
+//		return new SinergiaResultsModel(null, null, null, pm);
+//		
+//	}
 
 	/**
 	 * guarda la seleccción realizada por el usuario.

@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.AbstractFilterView;
 import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 /**
@@ -56,7 +56,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 	static private CheckboxTreeViewer treeViewerLlamadas;
 	private Button CancelButton;
 	private CTabItem cTabItem2;
-	private AbstractView viewPartFanIn;
+	private AbstractFilterView viewPartFanIn;
 
 	private IJavaProject project;
 
@@ -64,7 +64,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 		super(parent,style);
 	}
 	
-	public SettingsDialogs(Shell parent, int style, IJavaProject project, AbstractView viewPartFanIn) {
+	public SettingsDialogs(Shell parent, int style, IJavaProject project, AbstractFilterView viewPartFanIn) {
 		super(parent, style);
 		this.project = project;
 		this.viewPartFanIn = viewPartFanIn;
@@ -160,8 +160,8 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 								//leer seleccion de árbol
 								//leer los checkboxs
 								//mandar a hacer filtrados
-								((ViewPartFanIn)viewPartFanIn).setUmbralFilter(Umbral.getText());
-								((ViewPartFanIn)viewPartFanIn).setGetterSetterFilter(filterGetSet.getSelection());
+								((AbstractFilterView)viewPartFanIn).setUmbralFilter(Umbral.getText());
+								((AbstractFilterView)viewPartFanIn).setGetterSetterFilter(filterGetSet.getSelection());
 								dialogShell.dispose();
 							}
 						});

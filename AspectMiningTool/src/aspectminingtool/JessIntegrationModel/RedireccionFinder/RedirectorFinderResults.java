@@ -79,8 +79,8 @@ public class RedirectorFinderResults extends Results{
 	}
 
 	public Double getPercent() {
-		return Double.valueOf(cantidadRedireccionados)
-				/ Double.valueOf(cantTotal);
+		return (Double.valueOf(cantidadRedireccionados)
+				/ Double.valueOf(cantTotal))*100;
 	}
 
 	@Override

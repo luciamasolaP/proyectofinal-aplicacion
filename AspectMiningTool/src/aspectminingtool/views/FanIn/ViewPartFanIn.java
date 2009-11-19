@@ -36,10 +36,9 @@ import JessIntegrationModel.IResultsModel;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.FanIn.FanInModel;
 import aspectminingtool.model.Call_Counted;
-import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.AbstractFilterView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
-import aspectminingtool.views.ViewAlgorithmInterface;
 import aspectminingtool.views.FanIn.Filters.FilterFanInUmbral;
 import aspectminingtool.views.FanIn.Filters.FilterGettterSetter;
 import aspectminingtool.views.actions.OpenClassAction;
@@ -55,7 +54,7 @@ import aspectminingtool.views.actions.SelectMethodAsSeedAction;
  * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
  * ANY CORPORATE OR COMMERCIAL PURPOSE.
  */
-public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterface{
+public class ViewPartFanIn extends AbstractFilterView{
 	public static final String ID_VIEW = "aspectminingtool.views.ViewPartFanIn"; //$NON-NLS-1$
 	public static final String NAME = "Fan-In";
 	private Composite composite1;
@@ -65,8 +64,8 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	
 	private TableViewer tableViewerLeft;
 	private Table tableLeft;
-	private ViewerFilter filterUmbral;
-	private ViewerFilter filterGetSetter;
+//	private ViewerFilter filterUmbral;
+//	private ViewerFilter filterGetSetter;
 	private Table tableRight;
 	private TableViewer tableViewerRight;
 	

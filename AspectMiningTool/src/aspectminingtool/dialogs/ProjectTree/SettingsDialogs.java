@@ -21,6 +21,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.FanIn.ViewPartFanIn;
+
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
  * Builder, which is free for non-commercial use. If Jigloo is being used
@@ -53,6 +56,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 	static private CheckboxTreeViewer treeViewerLlamadas;
 	private Button CancelButton;
 	private CTabItem cTabItem2;
+	private AbstractView viewPartFanIn;
 
 	private IJavaProject project;
 
@@ -60,9 +64,10 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 		super(parent,style);
 	}
 	
-	public SettingsDialogs(Shell parent, int style, IJavaProject project) {
+	public SettingsDialogs(Shell parent, int style, IJavaProject project, AbstractView viewPartFanIn) {
 		super(parent, style);
 		this.project = project;
+		this.viewPartFanIn = viewPartFanIn;
 	}
 
 	public void open() {
@@ -119,7 +124,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 						UmbralLData.widthHint = 24;
 						UmbralLData.heightHint = 15;
 						Umbral.setLayoutData(UmbralLData);
-						Umbral.setText("0");
+						Umbral.setText("1");
 					}
 				}
 				{
@@ -127,6 +132,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 					GridData filterGetSetLData = new GridData();
 					filterGetSet.setLayoutData(filterGetSetLData);
 					filterGetSet.setText("Filtrar métodos Getters y Setters");
+					filterGetSet.setSelection(true);
 				}
 			}
 			{
@@ -285,6 +291,12 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 								//leer seleccion de árbol
 								//leer los checkboxs
 								//mandar a hacer filtrados
+								((ViewPartFanIn)viewPartFanIn).setUmbralFilter(Umbral.getText());
+								((ViewPartFanIn)viewPartFanIn).setGetterSetterFilter(filterGetSet.getSelection());
+								
+								List getSelectedClasses();
+								
+								
 								dialogShell.dispose();
 							}
 						});
@@ -345,6 +357,12 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 		checkPath(parentElement, treeViewerLlamadoras2,
 				projectTreeContentProvider);
 
+	}
+	
+	List getSelectedClasses(CheckboxTreeViewer treeViewer, ProjectTreeContentProvider projectTreeContentProvider){
+		Object[] checkedElements = treeViewer.getCheckedElements();
+		if ()
+		
 	}
 
 }

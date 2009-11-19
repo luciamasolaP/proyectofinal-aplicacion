@@ -80,7 +80,7 @@ public class ViewPartSinergia extends AbstractView{
 	
 	private String COLUMN1_FANIN_SEED = "Fan-In Seed";
 	private String COLUMN1_UNIQUE_SEED = "Unique Methods Seed";
-	private String COLUMN1_FLOWGRAPH_SEED = "Flow Graph Seed";
+	private String COLUMN1_EXECRELATIONS_SEED = "Execution Relations Seed";
 	
 
     public ViewPartSinergia() {
@@ -267,7 +267,7 @@ public class ViewPartSinergia extends AbstractView{
 					
 					TableColumn tableColumn3 = new TableColumn(tableRight,
 							SWT.NONE);
-					tableColumn3.setText(COLUMN1_FLOWGRAPH_SEED);
+					tableColumn3.setText(COLUMN1_EXECRELATIONS_SEED);
 					tableColumn3.setWidth(150);
 					tableColumn3
 					.addSelectionListener(new org.eclipse.swt.events.SelectionAdapter() {
@@ -321,7 +321,7 @@ public class ViewPartSinergia extends AbstractView{
 	 */
 	public void setModel(IResultsModel model) {
 		this.model = model;
-		super.setPartName("Redirector Finder Results - " + model.getId());
+		super.setPartName("Sinergia Results - " + model.getId());
 		tableViewerLeft.setInput(model);
 		openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
 	}

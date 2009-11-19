@@ -170,7 +170,7 @@
 (defrule initRedirectorDataClass
     "crea el hecho cantRedirecPorClase para las clases que posean algún método redireccionador"
     (declare (salience 500))
-	(redirectMethod	(claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada))
+    (redirectMethod	(claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada))
     (not (redirectClassCounted (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)))
 	=>
     (assert (redirectClassCounted (claseBase ?classIdeLlamador)(claseRedireccionada ?classIdLlamada)))

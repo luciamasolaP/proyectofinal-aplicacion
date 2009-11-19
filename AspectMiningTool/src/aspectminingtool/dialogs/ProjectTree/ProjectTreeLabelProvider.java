@@ -36,19 +36,8 @@ class ProjectTreeLabelProvider extends LabelProvider {
    * Constructs a FileTreeLabelProvider
    */
   public ProjectTreeLabelProvider() {
-    
-	  
-	  /*
-
-	  // Create the images
-	  	project = new Image(null, "F:\\workspace-Tesis\\workspacePlugin\\popUp-Dialog-JFace\\images\\prj_obj.gif");
-    	packageFolder  = new Image(null, "F:\\workspace-Tesis\\workspacePlugin\\popUp-Dialog-JFace\\images\\packagefolder_obj.gif");
-    	packageObj  = new Image(null, "F:\\workspace-Tesis\\workspacePlugin\\popUp-Dialog-JFace\\images\\package_obj.gif");
-    	classIm  = new Image(null,  "F:\\workspace-Tesis\\workspacePlugin\\popUp-Dialog-JFace\\images\\classf_obj.gif");
-*/    
+  
   }
-
-
 
   /**
    * Gets the image to display for a node in the tree
@@ -84,21 +73,6 @@ class ProjectTreeLabelProvider extends LabelProvider {
 		   return image;
 	   }
 
-	  /*
-	  if(arg0 instanceof IJavaProject) {
-			return project;
-			
-	  }else if (arg0 instanceof IPackageFragmentRoot){
-		  return packageFolder;
-		 
-		 
-	  	}else if (arg0 instanceof IPackageFragment){
-	  		return packageObj;
-		}
-	  	else if (arg0 instanceof ICompilationUnit){
-	  		return classIm;
-	  	}
-	  return null;*/
   }
 
   /**
@@ -119,7 +93,6 @@ class ProjectTreeLabelProvider extends LabelProvider {
 		  IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot)arg0;
 		  name = packageFragmentRoot.getElementName();
  
-		 
 	  	}else if (arg0 instanceof IPackageFragment){
 	  		IPackageFragment ipf = (IPackageFragment)arg0;
 	  		name = ipf.getElementName();
@@ -130,7 +103,7 @@ class ProjectTreeLabelProvider extends LabelProvider {
 	  		name = unit.getElementName();
 
 	  	}
-	  
+  
 	  return name;
 
   }
@@ -141,17 +114,6 @@ class ProjectTreeLabelProvider extends LabelProvider {
    * Called when this LabelProvider is being disposed
    */
   public void dispose() {
-/*
-    // Dispose the images
-    if (project != null)
-    	project.dispose();
-    if (packageFolder != null)
-    	packageFolder.dispose();
-    if (packageObj != null)
-    	packageObj.dispose();
-    if (classIm != null)
-    	classIm.dispose();
-    	*/
 	  
 	  for (Iterator i = imageCache.values().iterator(); i.hasNext();) {
 			((Image) i.next()).dispose();

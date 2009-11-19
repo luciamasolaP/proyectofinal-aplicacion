@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -39,6 +40,8 @@ import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.ViewAlgorithmInterface;
+import aspectminingtool.views.FanIn.Filters.FilterFanInUmbral;
+import aspectminingtool.views.FanIn.Filters.FilterGettterSetter;
 import aspectminingtool.views.actions.OpenClassAction;
 import aspectminingtool.views.actions.SelectMethodAsSeedAction;
 
@@ -62,6 +65,8 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	
 	private TableViewer tableViewerLeft;
 	private Table tableLeft;
+	private ViewerFilter filterUmbral;
+	private ViewerFilter filterGetSetter;
 	private Table tableRight;
 	private TableViewer tableViewerRight;
 	
@@ -244,6 +249,11 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 		});
 
 		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
+		filterUmbral = new FilterFanInUmbral(new Integer(1));
+		tableViewerLeft.addFilter(filterUmbral);
+		
+		filterGetSetter = new FilterGettterSetter(true);
+		tableViewerLeft.addFilter(filterGetSetter);
 		
 	}
 
@@ -440,5 +450,14 @@ public class ViewPartFanIn extends AbstractView implements ViewAlgorithmInterfac
 	}
 
 
+	public void setUmbralFilter(String umbral){
+		((FilterFanInUmbral)filterUmbral).setUmbralText(umbral);
+		tableViewerLeft.refresh();
+	}
+	
+	public void setGetterSetterFilter(boolean filter){
+		((FilterGettterSetter)filterGetSetter).setFilterOut(filter);
+		tableViewerLeft.refresh();
+	}
 	
 }

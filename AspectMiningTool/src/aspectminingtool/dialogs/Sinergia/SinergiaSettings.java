@@ -270,7 +270,7 @@ public class SinergiaSettings extends org.eclipse.swt.widgets.Dialog {
 
 			{
 				group6 = new Group(dialogShell, SWT.NONE);
-				group6.setText("Flow Graph Analysis");
+				group6.setText("Execution Relations Analysis");
 				GridLayout composite6Layout = new GridLayout();
 				composite6Layout.makeColumnsEqualWidth = true;
 				composite6Layout.marginLeft = 60;

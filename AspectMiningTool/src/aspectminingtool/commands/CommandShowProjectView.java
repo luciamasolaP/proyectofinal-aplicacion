@@ -27,7 +27,7 @@ public class CommandShowProjectView extends AbstractHandler implements IHandler 
 		
 			Display display = Display.getDefault();
 			Shell shell1 = new Shell(display);
-			SettingsDialogs inst = new SettingsDialogs(shell1, SWT.NULL, javaProject);
+			SettingsDialogs inst = new SettingsDialogs(shell1, SWT.NULL, javaProject,view);
 			inst.open();
 		}
 		

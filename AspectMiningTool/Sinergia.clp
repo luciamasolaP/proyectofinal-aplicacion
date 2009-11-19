@@ -341,9 +341,7 @@
     (execution_relation_seed_Counted (method ?method))
     )
 
-;(reset)
-;(run)
-(facts)
+
 
 
 

@@ -13,15 +13,12 @@ import jess.Rete;
 import jess.Value;
 import jess.ValueVector;
 import JessIntegrationModel.ISelectClassAsSeedModel;
-import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
-import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.JessIntegrationModel.RedireccionFinderSeeds.RelatedCallCountedDescription;
 import aspectminingtool.model.Call_Counted;
 import aspectminingtool.util.MethodFormater;
-import aspectminingtool.views.FlowGraph.ViewPartFlowGraph;
 
 public class RedirectionFinderModel implements ISelectClassAsSeedModel{
 
@@ -58,30 +55,33 @@ public class RedirectionFinderModel implements ISelectClassAsSeedModel{
 			 while (result.next()) {
 				 String classLlamadora = result.getString("classIdeLlamador");
 				 String claseLlamada = result.getString("classIdLlamada");
-				 String cant = result.getString("Cant");
+
+				 if (!classLlamadora.equals(claseLlamada)){
 				 
-				 RedirectorFinderResults redirecMethod = new RedirectorFinderResults(classLlamadora,claseLlamada,cant);
-				 
-				 ValueVector params = new ValueVector();
-				 params.add(new Value(classLlamadora, RU.STRING));
-				 params.add(new Value(claseLlamada, RU.STRING));
-				 QueryResult result1 = jessEngine.runQueryStar("metodosRedirectorsPorClase", params);
-				 
-				 List<Call_Counted> llamados = new ArrayList<Call_Counted>();
-				 
-				 while (result1.next()){
-//					 String a = result1.getString("MetodoLlamador");
-//					 String b =  result1.getString("MetodoLlamado");
-//					 System.out.println("A: "+ a + " B: "+ b  );
-//					 Call_Counted c = new Call_Counted(a, b);
-					 Call_Counted c = new Call_Counted(result1.getString("MetodoLlamador"), result1.getString("MetodoLlamado"));
-					 llamados.add(c);
-				 }
-				 redirecMethod.setLlamados(llamados);
-				 
-				 this.redirectorFinderResults.add(redirecMethod);
-		        }
-			 
+						 String cant = result.getString("Cant");	 
+						 RedirectorFinderResults redirecMethod = new RedirectorFinderResults(classLlamadora,claseLlamada,cant);
+						 
+						 ValueVector params = new ValueVector();
+						 params.add(new Value(classLlamadora, RU.STRING));
+						 params.add(new Value(claseLlamada, RU.STRING));
+						 QueryResult result1 = jessEngine.runQueryStar("metodosRedirectorsPorClase", params);
+						 
+						 List<Call_Counted> llamados = new ArrayList<Call_Counted>();
+						 
+						 while (result1.next()){
+		//					 String a = result1.getString("MetodoLlamador");
+		//					 String b =  result1.getString("MetodoLlamado");
+		//					 System.out.println("A: "+ a + " B: "+ b  );
+		//					 Call_Counted c = new Call_Counted(a, b);
+							 Call_Counted c = new Call_Counted(result1.getString("MetodoLlamador"), result1.getString("MetodoLlamado"));
+							 llamados.add(c);
+						 }
+						 redirecMethod.setLlamados(llamados);
+						 
+						 this.redirectorFinderResults.add(redirecMethod);
+				 	}
+			 }
+				
 			 addCantidadTotalMetodos();
 			 
 		} catch (JessException e) {

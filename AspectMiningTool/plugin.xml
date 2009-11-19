@@ -30,19 +30,19 @@
          <action
                class="aspectminingtool.popup.actions.FlowGraphPopUp"
                id="aspectminingtool.popup.actions.FlowGraphPopUp"
-               label="Flow Graph"
+               label="Execution Relations Analysis"
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
          <action
                class="aspectminingtool.popup.actions.RedirectionFinderPopUp"
                id="aspectminingtool.popup.actions.RedirectionFinderPopUp"
-               label="Redirector Finder"
+               label="Redirector Finder Analysis"
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
          <action
                class="aspectminingtool.popup.actions.SinergiaPopUp"
                id="AspectMiningTool.action1"
-               label="Sinergia"
+               label="Sinergia Analysis"
                menubarPath="AspectMiningTool.menu1/group1">
          </action>
       </objectContribution>

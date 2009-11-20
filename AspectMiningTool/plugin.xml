@@ -103,6 +103,14 @@
             category="AspectMiningTool.category1"
             class="aspectminingtool.views.Sinergia.ViewPartSinergia"
             id="aspectminingtool.views.Sinergia.ViewPartSinergia"
+            name="Sinergia Results"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="AspectMiningTool.category1"
+            class="aspectminingtool.views.Sinergia.Seeds.ViewPartSinergiaSeedsDesc"
+            id="aspectminingtool.views.Sinergia.Seeds.ViewPartSinergiaSeedsDesc"
             name="Sinergia Seeds"
             restorable="true">
       </view>
@@ -154,6 +162,11 @@
       <menuContribution
             locationURI="toolbar:aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder">
          <command
+               commandId="aspectminingtool.commands.CommandShowFiltersRedirecFinder"
+               icon="images/configure.gif"
+               style="push">
+         </command>
+         <command
                commandId="aspectminingtool.commands.CommandPrintModel"
                icon="images/save_edit.gif"
                style="push">
@@ -188,6 +201,14 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.Sinergia.Seeds.ViewPartSinergiaSeedsDesc">
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -205,6 +226,11 @@
             defaultHandler="aspectminingtool.commands.CommandShowFiltersExecRel"
             id="aspectminingtool.commands.CommandShowFiltersExecRel"
             name="multipleFilter">
+      </command>
+      <command
+            defaultHandler="aspectminingtool.commands.CommandShowFiltersRedirecFinder"
+            id="aspectminingtool.commands.CommandShowFiltersRedirecFinder"
+            name="multipleFilterRedire">
       </command>
    </extension>
 

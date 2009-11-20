@@ -17,8 +17,10 @@ import JessIntegrationModel.ProjectModel;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
 import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
 import aspectminingtool.JessIntegrationModel.RedireccionFinderSeeds.RelatedCallCountedDescription;
+import aspectminingtool.JessIntegrationModel.Sinergia.Seed;
 import aspectminingtool.views.RedirectorFinderSeeds.ViewPartClassesSeeds;
 import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
+import aspectminingtool.views.Sinergia.Seeds.ViewPartSinergiaSeedsDesc;
 
 public class ViewPartUtil {
 
@@ -102,10 +104,44 @@ public class ViewPartUtil {
 				.getActivePage().showView(ViewPartClassesSeeds.ID_VIEW, projectModel.getName() , IWorkbenchPage.VIEW_CREATE);
 				view.setName(secondaryId);
 				view.addSeedClassToModel(redirectorFinderResult, algorithm, relatedMethods, projectModel);
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ViewPartSeeds.ID_VIEW, projectModel.getName() , IWorkbenchPage.VIEW_ACTIVATE);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ViewPartClassesSeeds.ID_VIEW, projectModel.getName() , IWorkbenchPage.VIEW_ACTIVATE);	
+			}	
 			
+		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	
+	public static void selectSinergiaResultAsSeed(Seed sinergiaSeed, String idView, List<String> algorithmResults , ProjectModel projectModel){
+		
+		try {
+			
+			String secondaryId = projectModel.getName();
+			
+			IViewReference[] vistas = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getViewReferences();
+			boolean found = false;
+			for ( int i = 0; i < vistas.length && !found; i++){
 				
+				if ( idView.equals(vistas[i].getId()) && secondaryId.equals(vistas[i].getSecondaryId())) {
+					
+					ViewPartSinergiaSeedsDesc viewSeeds = (ViewPartSinergiaSeedsDesc) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().showView(ViewPartSinergiaSeedsDesc.ID_VIEW, secondaryId, IWorkbenchPage.VIEW_ACTIVATE);
+					viewSeeds.addSeedToModel(sinergiaSeed, algorithmResults, projectModel);
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ViewPartSinergiaSeedsDesc.ID_VIEW, secondaryId , IWorkbenchPage.VIEW_ACTIVATE);
+					found = true;					
+				}				
+			}
+			
+			if (!found){
+				
+				ViewPartSinergiaSeedsDesc view = (ViewPartSinergiaSeedsDesc) PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getActivePage().showView(ViewPartSinergiaSeedsDesc.ID_VIEW, projectModel.getName() , IWorkbenchPage.VIEW_CREATE);
+				view.setName(secondaryId);
+				view.addSeedToModel(sinergiaSeed, algorithmResults, projectModel);
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(ViewPartSinergiaSeedsDesc.ID_VIEW, projectModel.getName() , IWorkbenchPage.VIEW_ACTIVATE);
+	
 			}
 			
 		
@@ -116,6 +152,7 @@ public class ViewPartUtil {
 		}
 		
 	}
+	
 	
 /**
  * Abre una determinada clase resourceName de un proyecto dado projectModel

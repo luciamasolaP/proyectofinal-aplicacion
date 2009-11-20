@@ -12,14 +12,12 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import aspectminingtool.dialogs.ProjectTree.SettingsDialogs;
 import aspectminingtool.views.AbstractFilterView;
-import aspectminingtool.views.AbstractView;
 
 
 public class CommandShowProjectView extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
 		
 		AbstractFilterView view = (AbstractFilterView)HandlerUtil.getActivePart(event);
 		

@@ -1,6 +1,7 @@
 package aspectminingtool.JessIntegrationModel.FlowGraph;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +21,9 @@ import aspectminingtool.InferenceEngine.InferenceEngine;
 import aspectminingtool.InferenceEngine.JessInferenceEngine;
 import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.JessIntegrationModel.GeneralSeeds.RelatedMethodDescription;
+import aspectminingtool.util.MethodFormater;
 import aspectminingtool.views.FlowGraph.ViewPartFlowGraph;
+import aspectminingtool.views.Sinergia.Seeds.SeedDescription;
 
 public class FlowGraphModel implements ISelectMethodAsSeedModel {
 
@@ -430,8 +433,46 @@ public class FlowGraphModel implements ISelectMethodAsSeedModel {
 
 	@Override
 	public void generateArchive(BufferedWriter archive) {
-		// TODO Auto-generated method stub
-		
+		try 
+	    {
+			archive.write("Outside Before Execution Relations:");
+			archive.newLine();
+			for (Iterator<MetricMethodResult> methodIterator = outsideBeforeExecutionResult.iterator(); methodIterator.hasNext() ;){
+				MetricMethodResult seedDescr = methodIterator.next(); 
+				archive.write("       " + MethodFormater.formatMethodIdToString(seedDescr.getMetodo().getId()) + "    Metric: "+ seedDescr.getMetric());
+				archive.newLine();		
+			}
+			
+			archive.newLine();
+			archive.write("Outside After Execution Relations:");
+			archive.newLine();
+			for (Iterator<MetricMethodResult> methodIterator = outsideAfterExecutionResult.iterator(); methodIterator.hasNext() ;){
+				MetricMethodResult seedDescr = methodIterator.next(); 
+				archive.write("       " + MethodFormater.formatMethodIdToString(seedDescr.getMetodo().getId()) + "    Metric: "+ seedDescr.getMetric());
+				archive.newLine();		
+			}
+			
+			archive.newLine();
+			archive.write("Inside First Execution Relations:");
+			archive.newLine();
+			for (Iterator<MetricMethodResult> methodIterator = insideFirstExecutionResult.iterator(); methodIterator.hasNext() ;){
+				MetricMethodResult seedDescr = methodIterator.next(); 
+				archive.write("       " + MethodFormater.formatMethodIdToString(seedDescr.getMetodo().getId()) + "    Metric: "+ seedDescr.getMetric());
+				archive.newLine();		
+			}	
+			
+			archive.newLine();
+			archive.write("Inside Last Execution Relations:");
+			archive.newLine();
+			for (Iterator<MetricMethodResult> methodIterator = insideLastExecutionResult.iterator(); methodIterator.hasNext() ;){
+				MetricMethodResult seedDescr = methodIterator.next(); 
+				archive.write("       " + MethodFormater.formatMethodIdToString(seedDescr.getMetodo().getId()) + "    Metric: "+ seedDescr.getMetric());
+				archive.newLine();		
+			}	
+			
+	        archive.close();
+	    }
+	    catch (IOException e)    {    }
 	}
 
 	public List<MetricMethodResult> getOutsideBeforeExecutionResult() {

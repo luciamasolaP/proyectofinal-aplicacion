@@ -73,7 +73,7 @@
             category="AspectMiningTool.category1"
             class="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
             id="aspectminingtool.views.FlowGraph.ViewPartFlowGraph"
-            name="Flow Graph Results"
+            name="Execution Relation Results"
             restorable="true">
       </view>
       <view
@@ -175,6 +175,19 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:aspectminingtool.views.FlowGraph.ViewPartFlowGraph">
+         <command
+               commandId="aspectminingtool.commands.CommandShowFiltersExecRel"
+               icon="images/configure.gif"
+               style="push">
+         </command>
+         <command
+               commandId="aspectminingtool.commands.CommandPrintModel"
+               icon="images/save_edit.gif"
+               style="push">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -187,6 +200,11 @@
             defaultHandler="aspectminingtool.commands.CommandPrintModel"
             id="aspectminingtool.commands.CommandPrintModel"
             name="printModel">
+      </command>
+      <command
+            defaultHandler="aspectminingtool.commands.CommandShowFiltersExecRel"
+            id="aspectminingtool.commands.CommandShowFiltersExecRel"
+            name="multipleFilter">
       </command>
    </extension>
 

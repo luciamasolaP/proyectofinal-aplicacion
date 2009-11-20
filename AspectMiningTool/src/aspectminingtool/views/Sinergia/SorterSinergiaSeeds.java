@@ -31,8 +31,8 @@ public class SorterSinergiaSeeds extends ViewerSorter {
 		Seed cc2 = (Seed)e2;
 		switch (column) {
 	    case 0:
-	    	String method = cc1.getMethod();
-	    	String method2 = cc2.getMethod();
+	    	String method = cc1.getSearchData();
+	    	String method2 = cc2.getSearchData();
 	    	rc = method.compareTo(method2);
     		break;
 	    case 1:

@@ -36,6 +36,7 @@ import aspectminingtool.views.AbstractView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.actions.OpenClassAction;
+import aspectminingtool.views.actions.SelectSinergiaResultAsSeedAction;
 
 
 
@@ -74,6 +75,7 @@ public class ViewPartSinergia extends AbstractView{
 	
 	private Action selectAllTableLeft;
 	private OpenClassAction openActionTableLeft;
+	private SelectSinergiaResultAsSeedAction selectAsSeedAction;
 	
 	private String COLUMN1_SEED = "Seed";
 	private String COLUMN2_TRUST = "Trust Value";
@@ -324,6 +326,7 @@ public class ViewPartSinergia extends AbstractView{
 		super.setPartName("Sinergia Results - " + model.getId());
 		tableViewerLeft.setInput(model);
 		openActionTableLeft = new OpenClassAction(model,tableViewerLeft);
+		selectAsSeedAction = new SelectSinergiaResultAsSeedAction(model,tableViewerLeft,NAME);
 	}
 	
 
@@ -362,6 +365,7 @@ public class ViewPartSinergia extends AbstractView{
 				IStructuredSelection sel = (IStructuredSelection)tableViewerLeft.getSelection();
 				openActionTableLeft.setEnabled(sel.size() > 0);
 				selectAllTableLeft.setEnabled(sel.size() > 0);
+				selectAsSeedAction.setEnabled(sel.size() > 0);
 			}
 		});		
 	}
@@ -383,6 +387,7 @@ public class ViewPartSinergia extends AbstractView{
 				private void fillContextMenutableViewerLeft(IMenuManager mgr) {
 					mgr.add(openActionTableLeft);
 					mgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+					mgr.add(selectAsSeedAction);
 					mgr.add(new Separator());
 					mgr.add(selectAllTableLeft);
 					

@@ -1,10 +1,3 @@
-/**
- * (c) Copyright Mirasol Op'nWorks Inc. 2002, 2003. 
- * http://www.opnworks.com
- * Created on Apr 2, 2003 by lgauthier@opnworks.com
- * 
- */
-
 package aspectminingtool.JessIntegrationModel.Seeds;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -18,12 +11,6 @@ import JessIntegrationModel.IResultsModel;
 import JessIntegrationModel.Method;
 import JessIntegrationModel.ProjectModel;
 
-
-/**
- * Class that plays the role of the domain model in the TableViewerExample
- * In real life, this class would access a persistent store of some kind.
- * 
- */
 
 public class SeedsModel implements IResultsModel{
 

@@ -2,7 +2,6 @@ package aspectminingtool.views.actions;
 
 import java.util.Iterator;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
@@ -13,18 +12,17 @@ import aspectminingtool.JessIntegrationModel.MetricMethodResult;
 import aspectminingtool.util.ViewPartUtil;
 import aspectminingtool.views.SeedsGeneral.ViewPartSeeds;
 
-public class SelectMethodAsSeedAction extends Action{
+public class SelectMethodAsSeedAction extends AbstractSelectAsSeedAction{
 
-	private IResultsModel model;
-	private TableViewer table;
-	private String name;
-	
-	public SelectMethodAsSeedAction(IResultsModel model, TableViewer table, String Name){
-		super("Select As Seed");
-		this.model = model;
-		this.table = table;
-		this.name = Name;
 
+	public SelectMethodAsSeedAction(IResultsModel model, TableViewer table,
+			String Name) {
+		super(model, table, Name);
+
+	}
+
+	protected String getViewPartSeedsId(){
+		return ViewPartSeeds.ID_VIEW;
 	}
 	
 	public void run() { 
@@ -34,8 +32,8 @@ public class SelectMethodAsSeedAction extends Action{
 		while (iter.hasNext()) {
 			MetricMethodResult fir = (MetricMethodResult) iter.next();
 			Method method = fir.getMetodo();
-			ViewPartUtil.selectMethodAsSeed(method, ViewPartSeeds.ID_VIEW, ((ISelectMethodAsSeedModel)model).getRelatedMethods(method, name), model.getProjectModel(), name);
+			ViewPartUtil.selectMethodAsSeed(method, getViewPartSeedsId(), ((ISelectMethodAsSeedModel)model).getRelatedMethods(method, name), model.getProjectModel(), name);
 		}
 	}
-	
+		
 }

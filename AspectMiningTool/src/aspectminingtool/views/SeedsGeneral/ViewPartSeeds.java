@@ -83,26 +83,16 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsMethodsInter
 	
 	private SearchInTable searchInTable = new SearchInTable();
 	
-
-//	private Action openItemActionMethodsTable, openItemActionCallsTable,
-//			deleteAction, selectAllActionMethodsTable,
-//			selectAllActionCallsTable;
-
 	Action selectAllActionsRight;
 	Action selectAllActionsLeft;
 	Action deleteAction;
 	OpenClassAction openClassActionTableL;
 	OpenClassAction openClassActionTableR;
 	
-	
-	// Create a ExampleTaskList and assign it to an instance variable
-	//private IResultsModel model = new SeedsGeneralModel();
-
 	// Set the table column property names for tableViewerMethod
 	public final String SEED_NAME_COLUMN = "Seed";
 	public final String SEED_ALGORITH_COLUMN = "Algorithm";
 	public final String SEED_DESCRIPTION_COLUMN = "Description";
-	
 
 	// Set the table column property names for callsTableViewer
 	public final String RMETHOD_SELECTED_COLUMN = "";
@@ -244,7 +234,6 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsMethodsInter
 				tableViewerLeft.refresh();
 			}
 		});
-		
 
 
 		// 3er column with algorithmn
@@ -567,8 +556,6 @@ public class ViewPartSeeds extends AbstractView implements ViewSeedsMethodsInter
 	private void hookGlobalActionsTableLeft() {
 		IActionBars bars = getViewSite().getActionBars();
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionsLeft);
-
-
 	}
 
 	private void hookGlobalActionsTableRight() {

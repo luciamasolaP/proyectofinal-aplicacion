@@ -152,7 +152,7 @@ public class ViewPartFlowGraph extends AbstractMultipleFilterView{
     
 	public void setModel(IResultsModel model) {
 		this.model = model;
-		super.setPartName("FlowControl Results - " + model.getId());
+		super.setPartName("Execution Relation Results - " + model.getId());
 		//aca les seteas el modelo a las tablas, los content y label saben leerlos y llenar las tablas.
 		tablesVLeft[0].setInput(model);
 		
@@ -491,7 +491,7 @@ public class ViewPartFlowGraph extends AbstractMultipleFilterView{
 				
 				filterUmbral2 = new FilterFanInUmbral(new Integer(1));
 				tablesVLeft[1].addFilter(filterUmbral2);			
-				filterGetSetter1 = new FilterGettterSetter(true);
+				filterGetSetter2 = new FilterGettterSetter(true);
 				tablesVLeft[1].addFilter(filterGetSetter2);
 
 				// Set the sorter
@@ -1069,15 +1069,30 @@ public class ViewPartFlowGraph extends AbstractMultipleFilterView{
 	@Override
 	public void setGetterSetterFilter(boolean filter1, boolean filter2,
 			boolean filter3, boolean filter4) {
-		// TODO Auto-generated method stub
+		
+		((FilterGettterSetter)filterGetSetter1).setFilterOut(filter1);
+		((FilterGettterSetter)filterGetSetter2).setFilterOut(filter2);
+		((FilterGettterSetter)filterGetSetter3).setFilterOut(filter3);
+		((FilterGettterSetter)filterGetSetter4).setFilterOut(filter4);
+		
+		for (int i = 0; i < 4 ; i++){
+			tablesVLeft[i].refresh();
+		}
 		
 	}
 
 	@Override
 	public void setUmbralFilter(String umbral1, String umbral2, String umbral3,
 			String umbral4) {
-		// TODO Auto-generated method stub
+
+		((FilterFanInUmbral)filterUmbral1).setUmbralText(umbral1);
+		((FilterFanInUmbral)filterUmbral2).setUmbralText(umbral2);
+		((FilterFanInUmbral)filterUmbral3).setUmbralText(umbral3);
+		((FilterFanInUmbral)filterUmbral4).setUmbralText(umbral4);
 		
+		for (int i = 0; i < 4 ; i++){
+			tablesVLeft[i].refresh();
+		}
 	}
 
 

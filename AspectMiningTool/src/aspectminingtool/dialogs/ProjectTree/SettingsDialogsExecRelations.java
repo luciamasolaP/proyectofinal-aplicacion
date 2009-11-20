@@ -287,8 +287,8 @@ public class SettingsDialogsExecRelations extends org.eclipse.swt.widgets.Dialog
 								//leer seleccion de árbol
 								//leer los checkboxs
 								//mandar a hacer filtrados
-								((AbstractMultipleFilterView)viewPart).setUmbralFilter(Umbral.getText());
-								((AbstractMultipleFilterView)viewPart).setGetterSetterFilter(filterGetSet.getSelection());
+								((AbstractMultipleFilterView)viewPart).setUmbralFilter(Umbral.getText(),textThreshold2.getText(),textThreshold3.getText(),textThreshold4.getText());
+								((AbstractMultipleFilterView)viewPart).setGetterSetterFilter(filterGetSet.getSelection(),buttonGetSet2.getSelection(),buttonGetSet3.getSelection(),buttonGetSet4.getSelection());
 								dialogShell.dispose();
 							}
 						});

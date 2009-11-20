@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import aspectminingtool.dialogs.ProjectTree.SettingsDialogsExecRelations;
-import aspectminingtool.views.AbstractFilterView;
+import aspectminingtool.views.AbstractMultipleFilterView;
 
 
 public class CommandShowFiltersExecRel extends AbstractHandler implements IHandler {
@@ -19,9 +19,9 @@ public class CommandShowFiltersExecRel extends AbstractHandler implements IHandl
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		// TODO Auto-generated method stub
 		
-		AbstractFilterView view = (AbstractFilterView)HandlerUtil.getActivePart(event);
+		AbstractMultipleFilterView view = (AbstractMultipleFilterView)HandlerUtil.getActivePart(event);
 		
-		if (view != null){
+		if (view.getModel() != null){
 		
 			Display display = Display.getDefault();
 			Shell shell1 = new Shell(display);

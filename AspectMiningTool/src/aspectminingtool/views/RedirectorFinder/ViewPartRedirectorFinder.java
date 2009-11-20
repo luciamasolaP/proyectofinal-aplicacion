@@ -31,10 +31,13 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 
 import JessIntegrationModel.IResultsModel;
 import aspectminingtool.JessIntegrationModel.RedireccionFinder.RedirectorFinderResults;
-import aspectminingtool.views.AbstractView;
+import aspectminingtool.views.AbstractMultipleThresholdsView;
 import aspectminingtool.views.OpenClassListener;
 import aspectminingtool.views.SearchInTable;
 import aspectminingtool.views.FanIn.CallsContentProviderFanIn;
+import aspectminingtool.views.FanIn.Filters.FilterFanInUmbral;
+import aspectminingtool.views.FanIn.Filters.FilterRedirPercent;
+import aspectminingtool.views.FanIn.Filters.FilterRedirQuantity;
 import aspectminingtool.views.actions.OpenClassAction;
 import aspectminingtool.views.actions.SelectClassAsSeedAction;
 
@@ -52,7 +55,7 @@ import aspectminingtool.views.actions.SelectClassAsSeedAction;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class ViewPartRedirectorFinder extends AbstractView{
+public class ViewPartRedirectorFinder extends AbstractMultipleThresholdsView{
     public static final String ID_VIEW =
         "aspectminingtool.views.RedirectorFinder.ViewPartRedirectorFinder"; //$NON-NLS-1$
 	
@@ -262,6 +265,13 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		});
 
 		tableViewerLeft.addDoubleClickListener(new OpenClassListener(this));
+		
+		filterUmbral1 = new FilterRedirQuantity(new Integer(1));
+		tableViewerLeft.addFilter(filterUmbral1);
+		
+		filterUmbral2 = new FilterRedirPercent(new Double(40));
+		tableViewerLeft.addFilter(filterUmbral2);
+		
 	}
 	
 	 private void createRightTable() {
@@ -482,6 +492,13 @@ public class ViewPartRedirectorFinder extends AbstractView{
 		IActionBars bars = getViewSite().getActionBars();
 		bars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, selectAllActionMethodsTable);
 		
+	}
+
+	@Override
+	public void setUmbralFilter(String umbral1, String umbral2) {
+		((FilterRedirQuantity)filterUmbral1).setUmbralText(umbral1);
+		((FilterRedirPercent)filterUmbral2).setUmbralText(umbral2);
+		tableViewerLeft.refresh();		
 	}
 	
     

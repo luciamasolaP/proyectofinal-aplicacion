@@ -1,10 +1,3 @@
-/**
- * (c) Copyright Mirasol Op'nWorks Inc. 2002, 2003. 
- * http://www.opnworks.com
- * Created on Apr 2, 2003 by lgauthier@opnworks.com
- * 
- */
-
 package aspectminingtool.JessIntegrationModel.GeneralSeeds;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,7 +14,6 @@ import JessIntegrationModel.ProjectModel;
 
 /**
  * Class that plays the role of the domain model in the TableViewerExample
- * In real life, this class would access a persistent store of some kind.
  * 
  */
 
@@ -71,6 +63,12 @@ public class SeedsGeneralModel implements IResultsModel{
 			((SeedDescriptionListViewer) iterator.next()).addSeedDescription(seedDescription);
 	}
 
+	/**
+	 * Adds a new SeedDescription to the model and tells all the listener to add the new SeedDescription
+	 * @param et
+	 * @param methodId
+	 * @param methodsCalls
+	 */
 	public void addMethodAsASeed(SeedDescription et, String methodId,List<RelatedMethodDescription> methodsCalls) {
 		
 		if (!pertenece(et)){
@@ -151,7 +149,7 @@ public class SeedsGeneralModel implements IResultsModel{
 
 	
 	/**
-	 * It removes a listener of the type CallDescriptionListViewer
+	 * It removes a listener of the type RelatedMethodDescriptionListViewer
 	 * @param viewer
 	 */
 	public void removeChangeListenerRelatedMethodDescription(RelatedMethodDescriptionListViewer viewer) {

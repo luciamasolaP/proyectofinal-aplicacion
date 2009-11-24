@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Synergy Analysis User&apos;s Guide" topic="resource/help/html/hello.html">
+   <topic href="resource/help/html/FanInAnalysis.html" label="Fan-in Analysis">
+   </topic>
+   <topic href="resource/help/html/UniqueMethodsAnalysis.html" label="Unique Methods Analysis">
+   </topic>
+   <topic href="resource/help/html/RedirectorFinderAnalysis.html" label="Redirections finder Analysis">
+   </topic>
+   <topic href="resource/help/html/ExecRelationsAnalysis.html" label="Execution Relation Analysis">
+   </topic>
+   <topic href="resource/help/html/SynergyAnalysis.html" label="Synergy Analysis">
+   </topic>
+   <topic href="resource/help/html/EditSeedsInformation.html" label="Edit Seeds Information">
+   </topic>
+   <!--<topic label="Javadoc" href="resource/help/html/javadoc/index.html" /> -->
+</toc>

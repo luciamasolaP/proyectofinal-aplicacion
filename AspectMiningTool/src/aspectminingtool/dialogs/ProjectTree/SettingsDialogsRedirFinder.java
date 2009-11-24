@@ -75,7 +75,7 @@ public class SettingsDialogsRedirFinder extends org.eclipse.swt.widgets.Dialog {
 			dialogShell.setDragDetect(false);
 			{
 				composite1 = new Group(dialogShell, SWT.NONE);
-				composite1.setText("Configuración");
+				composite1.setText("Configuration");
 				GridLayout composite1Layout = new GridLayout();
 				composite1Layout.numColumns = 2;
 				GridData composite1LData = new GridData();

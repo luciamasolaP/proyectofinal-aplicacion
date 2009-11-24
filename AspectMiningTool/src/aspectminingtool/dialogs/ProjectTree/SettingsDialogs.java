@@ -2,16 +2,13 @@ package aspectminingtool.dialogs.ProjectTree;
 
 //import com.cloudgarden.resource.SWTResourceManager;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -22,7 +19,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import aspectminingtool.views.AbstractFilterView;
-import aspectminingtool.views.FanIn.ViewPartFanIn;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -90,7 +86,7 @@ public class SettingsDialogs extends org.eclipse.swt.widgets.Dialog {
 			dialogShell.setDragDetect(false);
 			{
 				composite1 = new Group(dialogShell, SWT.NONE);
-				composite1.setText("Configuración");
+				composite1.setText("Configuration");
 				GridLayout composite1Layout = new GridLayout();
 				composite1Layout.numColumns = 2;
 				GridData composite1LData = new GridData();

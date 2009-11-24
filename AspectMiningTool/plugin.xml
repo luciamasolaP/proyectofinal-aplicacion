@@ -233,5 +233,8 @@
             name="multipleFilterRedire">
       </command>
    </extension>
+   <extension point="org.eclipse.help.toc">
+    <toc file="resource/help/toc.xml" primary="true"/>
+ </extension>
 
 </plugin>

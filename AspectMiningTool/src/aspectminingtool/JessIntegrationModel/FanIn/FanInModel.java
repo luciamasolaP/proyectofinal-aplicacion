@@ -168,22 +168,6 @@ public class FanInModel implements ISelectMethodAsSeedModel{
 			e.printStackTrace();
 		}
 		
-		try 
-	    {
-	        BufferedWriter outfile = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\fan-in result.txt"));
-	        
-	        for (Iterator i = metrics.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	outfile.write(((final_fan_in_metric)metrics.get(nombre)).toString());
-				outfile.newLine();
-
-
-			}
-	       
-	     
-	        outfile.close();
-	    }
-	    catch (IOException e)    {    }
 		
 		return metrics;
 	}
@@ -202,29 +186,7 @@ public class FanInModel implements ISelectMethodAsSeedModel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		try 
-	    {
-	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados.txt"));
-	        
-	        for (Iterator i = calls.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	List<Call_Counted> llamadas = calls.get(nombre);
-	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
-	        		
-	        		Call_Counted ll = (Call_Counted)ii.next();
-	        		outfile1.write(ll.toString());
-					outfile1.newLine();       		
-	        		
-	        	}
-
-			}
-	       
-	     
-	        outfile1.close();
-	    }
-	    catch (IOException e)    {    }
-		
+			
 		return calls;
 	}
 
@@ -237,24 +199,6 @@ public class FanInModel implements ISelectMethodAsSeedModel{
 			Method m = (Method)methodsResult.next();
 			addMethod(m);
 		}
-		
-		
-		try 
-	    {
-	        BufferedWriter outfile2 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\metodos.txt"));
-	        
-	        for (Iterator i = methods.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	Method m = methods.get(nombre);
-	        	
-	        	outfile2.write(m.toString());
-				outfile2.newLine();       		
-	        		
-	        	}
- 
-	        outfile2.close();
-	    }
-	    catch (IOException e)    {    }
 		
 		return methods;
 	}

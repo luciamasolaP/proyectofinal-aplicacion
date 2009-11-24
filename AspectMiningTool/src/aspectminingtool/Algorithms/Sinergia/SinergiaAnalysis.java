@@ -138,32 +138,7 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 			 inferenceEngine.setAlgorithm(new SinergiaAlgorithm());
 			 inferenceEngine.assertFacts(restricciones);
 			 inferenceEngine.execute(SinergiaFacts);
-			 
-				try 
-			    {
-			        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\Seeds.txt"));
-			        
-
-			        		    		
-
-							Rete jessEngine = ((JessInferenceEngine) inferenceEngine).getEngine();
-							QueryResult result;
-							try {
-								result = jessEngine.runQueryStar("getSeeds", new ValueVector().add(""));
-								 while (result.next()) {
-									 outfile1.write("Metodo: "+ result.getString("method") + "            Trust: " + result.getString("trust"));
-									outfile1.newLine();   
-							        }
-							} catch (JessException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-					        outfile1.close();
-					}
-
-			    catch (IOException e)    {    }
-			 
+			 			 
 			 SinergiaFacts.clear();
  
 			 monitor.done();
@@ -171,35 +146,6 @@ public class SinergiaAnalysis implements IRunnableWithProgress{
 		
 	}
 	
-	protected void showResults(IResultsModel results2){
-		
-		try 
-	    {
-	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\Seeds.txt"));
-	        
-
-	           		results2.generateArchive(outfile1);
-
-//					Rete jessEngine = ((JessInferenceEngine) inferenceEngine).getEngine();
-//					QueryResult result;
-//					try {
-//						result = jessEngine.runQueryStar("getSeeds", new ValueVector().add(""));
-//						 while (result.next()) {
-//							 outfile1.write("Metodo: "+ result.getString("method") + "            Trust: " + result.getString("trust"));
-//							outfile1.newLine();   
-//					        }
-//					} catch (JessException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					
-//			        outfile1.close();
-			}
-
-	    catch (IOException e)    {    }
-		
-	    
-	}
 
 	protected void getResults(){
 		model = new SinergiaResultsModel(pm,inferenceEngine);		

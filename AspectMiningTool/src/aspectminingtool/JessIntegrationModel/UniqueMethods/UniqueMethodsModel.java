@@ -165,30 +165,7 @@ public class UniqueMethodsModel implements ISelectMethodAsSeedModel{
 		} catch (JessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		try 
-	    {
-	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados.txt"));
-	        
-	        for (Iterator i = calls.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	List<Call_Counted> llamadas = calls.get(nombre);
-	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
-	        		
-	        		Call_Counted ll = (Call_Counted)ii.next();
-	        		outfile1.write(ll.callerToString());
-					outfile1.newLine();       		
-	        		
-	        	}
-
-			}
-	       
-	     
-	        outfile1.close();
-	    }
-	    catch (IOException e)    {    }
-		
+		}	
 
 	}
 	
@@ -211,28 +188,6 @@ public class UniqueMethodsModel implements ISelectMethodAsSeedModel{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		try 
-	    {
-	        BufferedWriter outfile1 = new BufferedWriter(new FileWriter("C:\\Users\\maria\\Desktop\\llamados.txt"));
-	        
-	        for (Iterator i = calls.keySet().iterator(); i.hasNext() ; ){
-	        	String nombre = (String)i.next();
-	        	List<Call_Counted> llamadas = calls.get(nombre);
-	        	for (Iterator ii = llamadas.iterator(); ii.hasNext() ; ){
-	        		
-	        		Call_Counted ll = (Call_Counted)ii.next();
-	        		outfile1.write(ll.callerToString());
-					outfile1.newLine();       		
-	        		
-	        	}
-
-			}
-	       
-	     
-	        outfile1.close();
-	    }
-	    catch (IOException e)    {    }
 		
 		return calls;
 	}

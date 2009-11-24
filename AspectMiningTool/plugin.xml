@@ -215,22 +215,22 @@
       <command
             defaultHandler="aspectminingtool.commands.CommandShowProjectView"
             id="aspectminingtool.commands.CommandShowProjectView"
-            name="showProjectView">
+            name="Filter">
       </command>
       <command
             defaultHandler="aspectminingtool.commands.CommandPrintModel"
             id="aspectminingtool.commands.CommandPrintModel"
-            name="printModel">
+            name="Save">
       </command>
       <command
             defaultHandler="aspectminingtool.commands.CommandShowFiltersExecRel"
             id="aspectminingtool.commands.CommandShowFiltersExecRel"
-            name="multipleFilter">
+            name="Filter">
       </command>
       <command
             defaultHandler="aspectminingtool.commands.CommandShowFiltersRedirecFinder"
             id="aspectminingtool.commands.CommandShowFiltersRedirecFinder"
-            name="multipleFilterRedire">
+            name="Filter">
       </command>
    </extension>
    <extension point="org.eclipse.help.toc">
